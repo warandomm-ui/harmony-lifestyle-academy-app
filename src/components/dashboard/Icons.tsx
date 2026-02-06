@@ -8,7 +8,10 @@ import {
   BookOpen, 
   TrendingUp,
   MessageCircle,
-  Linkedin
+  Linkedin,
+  CheckCircle,
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -50,4 +53,16 @@ export const ChatIcon: React.FC<IconProps> = ({ className }) => (
 
 export const LinkedInIcon: React.FC<IconProps> = ({ className }) => (
   <Linkedin className={cn("w-5 h-5", className)} />
+);
+
+export const CheckCircleIcon: React.FC<IconProps> = ({ className }) => (
+  <CheckCircle className={cn("w-5 h-5", className)} />
+);
+
+export const ChevronRightIcon: React.FC<IconProps> = ({ className }) => (
+  <ChevronRight className={cn("w-5 h-5", className)} />
+);
+
+export const SparklesIcon: React.FC<IconProps> = ({ className }) => (
+  <Sparkles className={cn("w-5 h-5", className)} />
 );

@@ -125,3 +125,34 @@ export interface Toast {
   message?: string;
   duration?: number;
 }
+
+// Survey/Assessment types
+export interface SurveySection {
+  id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  type: 'multiple-choice' | 'rating-scale' | 'selection' | 'text';
+  value?: string;
+  options?: QuestionOption[];
+  scale?: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface QuestionOption {
+  value: string | number;
+  text: string;
+}
+
+export interface SurveyAnswers {
+  [sectionId: string]: {
+    [questionId: string]: any;
+  };
+}
