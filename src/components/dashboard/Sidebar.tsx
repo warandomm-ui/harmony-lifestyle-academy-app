@@ -30,6 +30,7 @@ interface SidebarProps {
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: HomeIcon },
+  { id: 'planner', label: 'Planner', icon: LearnIcon },
   { id: 'goals', label: 'Goals', icon: GoalsIcon },
   { id: 'progress', label: 'Progress', icon: ProgressIcon },
   { id: 'learn', label: 'Learn', icon: LearnIcon },

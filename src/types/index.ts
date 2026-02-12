@@ -156,3 +156,31 @@ export interface SurveyAnswers {
     [questionId: string]: any;
   };
 }
+
+// Intelligence Assessment types
+export interface IntelligenceResult {
+  dominantType: string;
+  scores: Record<string, number>;
+}
+
+// Planner types
+export interface PlannerTask {
+  id: string;
+  text: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+export interface PlannerGoal {
+  id: string;
+  text: string;
+  progress: number;
+  createdAt: string;
+}
+
+export interface ScheduleItem {
+  id: string;
+  startTime: string;
+  endTime: string;
+  title: string;
+}

@@ -5,22 +5,20 @@ import MainDashboard from '../components/dashboard/MainDashboard';
 import AnimatedBackground from '../components/AnimatedBackground';
 import ToastContainer from '../components/ToastContainer';
 import { LinkedInIcon } from '../components/dashboard/Icons';
-import type { AnalysisResult, UserStatus, UserProfile, LifeVision } from '../types';
+import type { AnalysisResult, UserStatus, UserProfile, LifeVision, IntelligenceResult } from '../types';
 import { DEFAULT_ANALYSIS_RESULT } from '../constants';
 
-// Storage keys
 const STORAGE_KEY_PROFILE = 'hla_user_profile';
 const STORAGE_KEY_RESULTS = 'hla_results';
 const STORAGE_KEY_STATUS = 'hla_status';
 const STORAGE_KEY_VISION = 'hla_vision';
 const STORAGE_KEY_SKILLS = 'hla_skills';
 const STORAGE_KEY_ONBOARDING = 'hla_onboarding_complete';
+const STORAGE_KEY_INTELLIGENCE = 'hla_intelligence';
 
 const Index: React.FC = () => {
-  // Initialize state from LocalStorage
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_ONBOARDING);
-    return saved === 'true';
+    return localStorage.getItem(STORAGE_KEY_ONBOARDING) === 'true';
   });
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(() => {
@@ -50,11 +48,7 @@ const Index: React.FC = () => {
     const saved = localStorage.getItem(STORAGE_KEY_VISION);
     if (saved) {
       const parsed = JSON.parse(saved);
-      return {
-        ...parsed,
-        createdAt: new Date(parsed.createdAt),
-        updatedAt: new Date(parsed.updatedAt),
-      };
+      return { ...parsed, createdAt: new Date(parsed.createdAt), updatedAt: new Date(parsed.updatedAt) };
     }
     return null;
   });
@@ -64,28 +58,35 @@ const Index: React.FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Persistence Effects
+  const [intelligenceResult, setIntelligenceResult] = useState<IntelligenceResult | null>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY_INTELLIGENCE);
+    return saved ? JSON.parse(saved) : null;
+  });
+
   useEffect(() => {
     if (userProfile) localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(userProfile));
     if (userResults) localStorage.setItem(STORAGE_KEY_RESULTS, JSON.stringify(userResults));
     if (userStatus) localStorage.setItem(STORAGE_KEY_STATUS, JSON.stringify(userStatus));
     if (lifeVision) localStorage.setItem(STORAGE_KEY_VISION, JSON.stringify(lifeVision));
     if (userSkills.length) localStorage.setItem(STORAGE_KEY_SKILLS, JSON.stringify(userSkills));
+    if (intelligenceResult) localStorage.setItem(STORAGE_KEY_INTELLIGENCE, JSON.stringify(intelligenceResult));
     localStorage.setItem(STORAGE_KEY_ONBOARDING, String(isOnboardingComplete));
-  }, [userProfile, userResults, userStatus, lifeVision, userSkills, isOnboardingComplete]);
+  }, [userProfile, userResults, userStatus, lifeVision, userSkills, intelligenceResult, isOnboardingComplete]);
 
   const handleOnboardingComplete = (
     profile: UserProfile,
     results: AnalysisResult,
     status: UserStatus,
     vision: LifeVision,
-    skills: string[]
+    skills: string[],
+    intelligence: IntelligenceResult
   ) => {
     setUserProfile(profile);
     setUserResults(results);
     setUserStatus(status);
     setLifeVision(vision);
     setUserSkills(skills);
+    setIntelligenceResult(intelligence);
     setIsOnboardingComplete(true);
   };
 
@@ -101,6 +102,7 @@ const Index: React.FC = () => {
     setUserStatus(null);
     setLifeVision(null);
     setUserSkills([]);
+    setIntelligenceResult(null);
   };
 
   return (
@@ -108,7 +110,6 @@ const Index: React.FC = () => {
       <ToastContainer />
       <AnimatedBackground />
 
-      {/* Theme Toggle - Absolute position for onboarding */}
       {!isOnboardingComplete && (
         <div className="absolute top-4 right-4 z-50">
           <ThemeToggle />
@@ -122,6 +123,7 @@ const Index: React.FC = () => {
           selectedSkills={userSkills}
           userStatus={userStatus}
           lifeVision={lifeVision}
+          intelligenceResult={intelligenceResult}
           onProfileUpdate={handleProfileUpdate}
         />
       ) : (
@@ -132,23 +134,15 @@ const Index: React.FC = () => {
           <footer className="flex-shrink-0 w-full py-6 border-t border-border glass-card">
             <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
               <div className="flex justify-center items-center space-x-4">
-                <a
-                  href="https://www.linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
+                  className="text-muted-foreground hover:text-primary transition-colors">
                   <LinkedInIcon className="h-6 w-6" />
                 </a>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
                 &copy; {new Date().getFullYear()} Harmony Lifestyle Academy. All rights reserved.
               </p>
-              <button
-                onClick={handleReset}
-                className="text-xs text-muted-foreground/50 mt-2 hover:text-destructive underline"
-              >
+              <button onClick={handleReset} className="text-xs text-muted-foreground/50 mt-2 hover:text-destructive underline">
                 Reset App Data
               </button>
             </div>
