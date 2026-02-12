@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import DashboardHome from './DashboardHome';
+import StudyPlanner from './StudyPlanner';
+import ProfilePage from './ProfilePage';
+import AIChatModal from './AIChatModal';
 import AnimatedBackground from '../AnimatedBackground';
-import type { UserProfile, AnalysisResult, UserStatus, LifeVision } from '../../types';
+import { INTELLIGENCE_TYPES } from '../../constants/intelligenceData';
+import type { UserProfile, AnalysisResult, UserStatus, LifeVision, IntelligenceResult } from '../../types';
 
 interface MainDashboardProps {
   userProfile: UserProfile;
@@ -10,6 +14,7 @@ interface MainDashboardProps {
   selectedSkills: string[];
   userStatus: UserStatus;
   lifeVision: LifeVision;
+  intelligenceResult: IntelligenceResult | null;
   onProfileUpdate: (profile: UserProfile) => void;
 }
 
@@ -19,6 +24,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   selectedSkills,
   userStatus,
   lifeVision,
+  intelligenceResult,
   onProfileUpdate,
 }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -27,6 +33,10 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     localStorage.clear();
     window.location.reload();
   };
+
+  const intelligenceTypeName = intelligenceResult
+    ? INTELLIGENCE_TYPES[intelligenceResult.dominantType]?.name
+    : undefined;
 
   const renderContent = () => {
     switch (activeTab) {
@@ -37,8 +47,11 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             userResults={userResults}
             userStatus={userStatus}
             lifeVision={lifeVision}
+            intelligenceResult={intelligenceResult}
           />
         );
+      case 'planner':
+        return <StudyPlanner />;
       case 'goals':
         return (
           <div className="glass-card p-8 rounded-2xl text-center">
@@ -69,30 +82,11 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
         );
       case 'profile':
         return (
-          <div className="glass-card p-8 rounded-2xl">
-            <h2 className="text-2xl font-bold mb-6">Profile</h2>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center text-3xl font-bold text-primary-foreground">
-                  {userProfile.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold">{userProfile.name}</h3>
-                  <p className="text-muted-foreground">{userProfile.email}</p>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-border">
-                <h4 className="font-medium mb-2">Selected Skills</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedSkills.map((skill) => (
-                    <span key={skill} className="px-3 py-1 bg-secondary rounded-full text-sm">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProfilePage
+            userProfile={userProfile}
+            selectedSkills={selectedSkills}
+            intelligenceResult={intelligenceResult}
+          />
         );
       case 'settings':
         return (
@@ -120,6 +114,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
           {renderContent()}
         </div>
       </main>
+      <AIChatModal userName={userProfile.name} intelligenceType={intelligenceTypeName} />
     </div>
   );
 };
