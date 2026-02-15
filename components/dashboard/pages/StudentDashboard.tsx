@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Course } from '../../../types';
 import { PlayIcon, CheckBadgeIcon, BookOpenIcon, AcademicCapIcon, TrophyIcon, UsersIcon } from '../Icons';
