@@ -54,7 +54,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, onPlayCour
                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-4 flex items-center gap-2">
                             <BookOpenIcon className="h-6 w-6 text-[var(--primary)]" />
                             My Courses
-                        </h2>
+                        </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {courses.map(course => (
                                 <div key={course.id} className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 hover:shadow-md transition-all cursor-pointer" onClick={() => onPlayCourse(course)}>
@@ -79,7 +79,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, onPlayCour
                         <h3 className="text-xl font-bold text-[var(--foreground)] mb-4 flex items-center gap-2">
                             <AcademicCapIcon className="h-6 w-6 text-yellow-500" />
                             Certificates & Achievements
-                        </h2>
+                        </h3>
                         {completedCourses.length > 0 ? (
                             <div className="space-y-3">
                                 {completedCourses.map(course => (
