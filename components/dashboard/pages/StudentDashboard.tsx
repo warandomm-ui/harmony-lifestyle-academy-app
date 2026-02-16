@@ -1,26 +1,4 @@
-import React from 'react';
-import { Course } from '../../../types';
-import { PlayIcon, CheckBadgeIcon, BookOpenIcon, AcademicCapIcon, TrophyIcon, UsersIcon } from '../Icons';
-import { ProgressBar } from '../shared/ProgressBar';
-import { useGamification } from '../../../contexts/GamificationContext';
-import { MOCK_BADGES } from '../../../constants';
 
-interface StudentDashboardProps {
-    courses: Course[];
-    onPlayCourse: (course: Course) => void;
-}
-
-const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, onPlayCourse }) => {
-    const { profile } = useGamification();
-    const completedCourses = courses.filter(c => c.progress === 100);
-    const inProgressCourses = courses.filter(c => c.progress < 100 && c.progress > 0);
-    const activeCourse = inProgressCourses.length > 0 ? inProgressCourses[0] : courses[0];
-
-    const recentBadges = MOCK_BADGES
-        .filter(badge => profile.badges.includes(badge.id))
-        .slice(0, 4);
-
-    return (
         <div className="space-y-8 animate-fade-in">
             {/* Hero: Resume Learning */}
             <section className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-8 text-white shadow-lg">
