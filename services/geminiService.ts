@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Modality } from "@google/genai";
 import type { AnalysisResult, CourseDifficulty, CourseOutline, Goal, SkillSuggestion, SurveyAnswers, AdminAssistanceResult, GroundedCareerDetail, StudentDataItem, StudyMode, StudyBuddyMessage, Emotion, WeeklyEmotionReview } from '../types';
 
@@ -13,7 +12,7 @@ const escapePrompt = (content: string, tag: string = "user_content") => {
 // Common instruction to ensure 5th-grade level understanding
 const SIMPLE_EXPLANATION_INSTRUCTION = "Keep your explanations very simple, like you are talking to a 5th grader (10-11 years old). Use easy words and helpful examples.";
 
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
 
 export const getPersonalityAnalysis = async (answers: SurveyAnswers): Promise<AnalysisResult> => {
   try {
