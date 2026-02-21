@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Goal, SkillSuggestion } from '../types';
 import { getSkillRecommendations } from '../services/geminiService';
 import { SKILLS } from '../constants';
 import SkillPill from './SkillPill';
+import { useToast } from '../contexts/ToastContext';
 
 interface SkillSelectionStepProps {
   onComplete: (skills: string[]) => void;
@@ -17,12 +17,21 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
   const [recommendations, setRecommendations] = useState<SkillSuggestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { addToast } = useToast();
 
   useEffect(() => {
     const fetchRecommendations = async () => {
       setIsLoading(true);
-      const recs = await getSkillRecommendations(personalityType, goal, selectedCareers);
-      setRecommendations(recs);
+      try {
+        const recs = await getSkillRecommendations(personalityType, goal, selectedCareers);
+        setRecommendations(recs);
+      } catch (err) {
+        console.error("Failed to fetch skill recommendations:", err);
+        setRecommendations({
+          recommendedSkills: [],
+          smartSuggestions: []
+        });
+      }
       setIsLoading(false);
     };
     fetchRecommendations();
@@ -35,17 +44,19 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         newSet.delete(skill);
       } else if (newSet.size < 10) {
         newSet.add(skill);
+      } else {
+        addToast("You can only select up to 10 skills.", "info");
       }
       return newSet;
     });
   };
 
   const isRecommended = (skill: string) => {
-    return recommendations?.recommendedSkills.some(rec => rec.skill.toLowerCase() === skill.toLowerCase()) ?? false;
+    return recommendations?.recommendedSkills?.some(rec => rec.skill?.toLowerCase() === skill.toLowerCase()) ?? false;
   };
   
   const getRecommendationReason = (skill: string) => {
-    return recommendations?.recommendedSkills.find(rec => rec.skill.toLowerCase() === skill.toLowerCase())?.reason;
+    return recommendations?.recommendedSkills?.find(rec => rec.skill?.toLowerCase() === skill.toLowerCase())?.reason;
   };
 
   const skillCategoriesToDisplay = useMemo(() => {
@@ -75,11 +86,42 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
 
   const canContinue = selectedSkills.size >= 3 && selectedSkills.size <= 10;
 
+  const progressPercentage = (selectedSkills.size / 10) * 100;
+  let progressText = 'Choose 3 to 10 skills.';
+  let progressColor = "text-gray-500 dark:text-gray-400";
+
+  if (selectedSkills.size < 3) {
+    progressText = `Select at least ${3 - selectedSkills.size} more skill(s).`;
+    progressColor = "text-orange-600 dark:text-orange-400";
+  } else if (selectedSkills.size < 10) {
+    progressText = `You can select up to ${10 - selectedSkills.size} more skill(s).`;
+    progressColor = "text-blue-600 dark:text-blue-400";
+  } else if (selectedSkills.size === 10) {
+    progressText = `Maximum skills selected!`;
+    progressColor = "text-green-600 dark:text-green-400 font-bold";
+  }
+
   return (
     <div className="animate-fade-in">
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Select Skills to Develop</h2>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">These skills will help you reach your goals. Choose 3 to 10 skills.</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">These skills will help you reach your goals.</p>
+        <div className="mt-4 max-w-md mx-auto">
+            <div className="flex justify-between items-center mb-1">
+                <span className={`text-sm font-semibold ${selectedSkills.size === 10 ? 'text-green-600' : 'text-green-700 dark:text-green-400'}`}>
+                    {selectedSkills.size} / 10 Skills Selected
+                </span>
+                <span className={`text-sm font-medium ${progressColor}`}>
+                    {progressText}
+                </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                <div 
+                    className={`h-2.5 rounded-full transition-all duration-300 ${selectedSkills.size === 10 ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 'bg-green-600 dark:bg-green-500'}`} 
+                    style={{ width: `${progressPercentage}%` }}
+                ></div>
+            </div>
+        </div>
       </div>
 
       <div className="mb-6">
@@ -89,9 +131,9 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-4 py-3 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-transparent focus:border-green-500 focus:ring-green-500 focus:outline-none transition"
+          aria-label="Search skills"
         />
       </div>
-
 
       {isLoading ? (
         <div className="text-center py-10">Loading recommendations...</div>
@@ -149,7 +191,7 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         <button
           onClick={() => onComplete(Array.from(selectedSkills))}
           disabled={!canContinue}
-          className="bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed dark:disabled:bg-gray-600 enabled:hover:bg-green-700 enabled:hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          className="bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed dark:disabled:bg-gray-600 enabled:hover:bg-green-700 enabled:hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] dark:focus:ring-offset-[var(--card)]"
         >
           {`Continue (${selectedSkills.size}/10)`}
         </button>
