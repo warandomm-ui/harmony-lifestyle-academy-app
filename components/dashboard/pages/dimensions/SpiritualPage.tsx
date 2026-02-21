@@ -4,6 +4,7 @@ import { SPIRITUAL_PATHWAYS } from '../../../../constants/quranData';
 import type { Surah, SpiritualCategory } from '../../../../types';
 import { useToast } from '../../../../contexts/ToastContext';
 import { useGamification } from '../../../../contexts/GamificationContext';
+import AyatCourseViewer from './AyatCourseViewer';
 
 // --- Components ---
 
@@ -58,13 +59,12 @@ const SurahFolder: React.FC<{ surah: Surah; onClick: () => void }> = ({ surah, o
 );
 
 const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; onClose: () => void }> = ({ surah, category, onClose }) => {
-    const [activeTab, setActiveTab] = useState<'video' | 'reading'>('video');
+    const [activeTab, setActiveTab] = useState<'video' | 'reading' | 'ayat'>('ayat');
     const [isCompleted, setIsCompleted] = useState(false);
     const { addToast } = useToast();
     const { addPoints } = useGamification();
 
     useEffect(() => {
-        // Reset completion status when Surah changes
         const key = `completed_surah_${surah.number}`;
         setIsCompleted(localStorage.getItem(key) === 'true');
     }, [surah.number]);
@@ -98,7 +98,14 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
                 </div>
                 
                 <div className="flex items-center gap-4">
+                    {/* Tab Switcher - 3 tabs with Ayat as default */}
                     <div className="flex bg-[var(--secondary)]/50 rounded-xl p-1.5 border border-[var(--border)] mr-4">
+                        <button 
+                            onClick={() => setActiveTab('ayat')}
+                            className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'ayat' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
+                        >
+                            📖 Ayat
+                        </button>
                         <button 
                             onClick={() => setActiveTab('video')}
                             className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'video' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
@@ -113,29 +120,36 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
                         </button>
                     </div>
                     
-                    <button 
-                        onClick={handleComplete}
-                        disabled={isCompleted}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-full font-black text-xs uppercase tracking-widest transition-all ${
-                            isCompleted 
-                            ? 'bg-green-100 text-green-700 border-2 border-green-500 cursor-default' 
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg'
-                        }`}
-                    >
-                        {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : <ArrowUpCircleIcon className="h-4 w-4" />}
-                        {isCompleted ? 'Completed' : 'Mark as Done'}
-                    </button>
+                    {activeTab !== 'ayat' && (
+                        <button 
+                            onClick={handleComplete}
+                            disabled={isCompleted}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-full font-black text-xs uppercase tracking-widest transition-all ${
+                                isCompleted 
+                                ? 'bg-green-100 text-green-700 border-2 border-green-500 cursor-default' 
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg'
+                            }`}
+                        >
+                            {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : <ArrowUpCircleIcon className="h-4 w-4" />}
+                            {isCompleted ? 'Completed' : 'Mark as Done'}
+                        </button>
+                    )}
                 </div>
             </header>
 
             {/* Content Container */}
             <main className="flex-1 overflow-hidden flex flex-col md:flex-row bg-[var(--background)]">
-                {/* Scrollable Sidebar for Context - Optional, but keeping it simple for now */}
-                
-                {/* Main Content Area */}
                 <div className="flex-1 overflow-y-auto p-6 md:p-12">
                     <div className="max-w-4xl mx-auto">
-                        {activeTab === 'video' ? (
+                        {/* Ayat Tab - Quran Course Viewer */}
+                        {activeTab === 'ayat' && (
+                            <AyatCourseViewer
+                                surahNumber={surah.number}
+                                onBack={onClose}
+                            />
+                        )}
+
+                        {activeTab === 'video' && (
                             <div className="space-y-8 animate-fade-in-fast">
                                 {surah.videoUrl ? (
                                     <div className="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl relative group border-4 border-[var(--card)]">
@@ -177,7 +191,9 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
                                     </div>
                                 </div>
                             </div>
-                        ) : (
+                        )}
+
+                        {activeTab === 'reading' && (
                             <div className="animate-fade-in-fast min-h-[70vh] bg-white dark:bg-gray-800 rounded-[3rem] shadow-2xl p-10 md:p-16 border border-[var(--border)] relative">
                                 <div className="absolute top-10 right-10 opacity-5 text-9xl font-serif">
                                     {surah.number}
