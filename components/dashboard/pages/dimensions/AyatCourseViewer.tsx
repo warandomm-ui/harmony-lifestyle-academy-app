@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { fetchSurahCourses, fetchSingleAyat } from '../../services/quranApiService';
-import type { QuranAyat, QuranSurahDetail } from '../../services/quranApiService';
-import { useGamification } from '../../contexts/GamificationContext';
-import { useToast } from '../../contexts/ToastContext';
+import { fetchSurahCourses, fetchSingleAyat } from '../../../../services/quranApiService';
+import type { QuranAyat, QuranSurahDetail } from '../../../../services/quranApiService';
+import { useGamification } from '../../../../contexts/GamificationContext';
+import { useToast } from '../../../../contexts/ToastContext';
 
 interface AyatCourseViewerProps {
   surahNumber: number;
@@ -64,7 +64,6 @@ const AyatCourseViewer: React.FC<AyatCourseViewerProps> = ({ surahNumber, initia
     }
   };
 
-  // Count completed ayat for this surah
   const getCompletedCount = (): number => {
     let count = 0;
     for (let i = 1; i <= totalAyat; i++) {
