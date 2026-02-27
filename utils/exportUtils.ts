@@ -11,6 +11,10 @@ export const exportToCSV = (data: any[], filename: string) => {
         let cell = row[k] === null || row[k] === undefined ? '' : row[k];
         // Handle dates and escape quotes
         cell = cell instanceof Date ? cell.toLocaleString() : cell.toString().replace(/"/g, '""');
+        // Escape CSV formula injection (cells starting with =, +, -, @)
+        if (/^[=+\-@\t\r]/.test(cell)) {
+          cell = `'${cell}`;
+        }
         if (cell.search(/("|,|\n)/g) >= 0) {
           cell = `"${cell}"`;
         }

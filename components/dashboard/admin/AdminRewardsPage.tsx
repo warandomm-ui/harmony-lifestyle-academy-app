@@ -22,20 +22,20 @@ const StatCard: React.FC<{ title: string; value: string; icon: React.ReactNode; 
 
 // --- Confirmation Modal ---
 const ConfirmationModal: React.FC<{ student: StudentRewardInfo; onConfirm: () => void; onCancel: () => void; }> = ({ student, onConfirm, onCancel }) => (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-        <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="p-6">
-                <h2 className="text-lg font-bold text-[var(--foreground)]">Confirm Payout Approval</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+        <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md">
+            <div className="p-4 sm:p-6">
+                <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)]">Confirm Payout Approval</h2>
                 <p className="text-sm text-[var(--muted)] mt-2">
                     Are you sure you want to approve a payout of <strong className="text-[var(--primary)]">{student.suggested_payout} Harmony Coins</strong> to <strong>{student.name}</strong>?
                 </p>
                 <p className="text-xs text-[var(--muted)] mt-1">This action cannot be undone.</p>
             </div>
-            <div className="px-6 py-4 bg-[var(--background)] flex justify-end gap-3 rounded-b-2xl">
-                <button onClick={onCancel} className="px-4 py-2 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition">
+            <div className="px-4 sm:px-6 py-4 bg-[var(--background)] flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 rounded-b-2xl">
+                <button onClick={onCancel} className="px-4 py-2.5 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition min-h-[44px]">
                     Cancel
                 </button>
-                <button onClick={onConfirm} className="bg-green-600 text-white font-bold py-2 px-4 rounded-full hover:bg-green-700 transition">
+                <button onClick={onConfirm} className="bg-green-600 text-white font-bold py-2.5 px-4 rounded-full hover:bg-green-700 transition min-h-[44px]">
                     Confirm & Approve
                 </button>
             </div>

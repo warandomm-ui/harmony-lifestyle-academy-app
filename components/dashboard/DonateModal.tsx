@@ -22,24 +22,23 @@ const DonateModal: React.FC<DonateModalProps> = ({ onClose }) => {
             return;
         }
         // Simulate donation
-        console.log(`Donating RM${amount}`);
         addToast(`Thank you for your generous RM${amount.toFixed(2)} donation! ❤️`, 'success');
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col">
                 <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-                    <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-                        <GiftIcon className="h-6 w-6 text-[var(--primary)]" />
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
+                        <GiftIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--primary)]" />
                         Support Your Community
                     </h2>
-                    <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+                    <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <XIcon className="h-5 w-5" />
                     </button>
                 </header>
-                <div className="overflow-y-auto p-6">
+                <div className="overflow-y-auto p-4 sm:p-6">
                     <p className="text-center text-[var(--muted)] mb-6">
                         Your contribution directly helps students in our community during times of need. Every little bit helps!
                     </p>
@@ -83,9 +82,9 @@ const DonateModal: React.FC<DonateModalProps> = ({ onClose }) => {
                             Payment will be processed securely.
                         </div>
 
-                        <div className="pt-4 flex justify-end gap-3">
-                            <button type="button" onClick={onClose} className="px-6 py-2 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition">Cancel</button>
-                            <button type="submit" className="bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition">Confirm Donation</button>
+                        <div className="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                            <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition min-h-[44px]">Cancel</button>
+                            <button type="submit" className="bg-[var(--primary)] text-white font-bold py-2.5 px-6 rounded-full hover:opacity-90 transition min-h-[44px]">Confirm Donation</button>
                         </div>
                     </form>
                 </div>

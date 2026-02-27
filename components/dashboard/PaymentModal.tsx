@@ -89,47 +89,47 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, onSave }) => {
 
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col">
                 <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-                    <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-                        <CreditCardIcon className="h-6 w-6 text-[var(--primary)]" />
-                        Add New Payment Method
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
+                        <CreditCardIcon className="h-5 w-5 text-[var(--primary)]" />
+                        Add Payment Method
                     </h2>
-                    <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+                    <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <XIcon className="h-5 w-5" />
                     </button>
                 </header>
-                <div className="overflow-y-auto p-6">
+                <div className="overflow-y-auto p-4 sm:p-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label htmlFor="cardName" className="block text-sm font-medium text-[var(--muted)]">Cardholder Name</label>
-                            <input type="text" id="cardName" value={cardName} onChange={(e) => setCardName(e.target.value)} className="mt-1 block w-full px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition" required />
+                            <input type="text" id="cardName" value={cardName} onChange={(e) => setCardName(e.target.value)} className="mt-1 block w-full px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition text-sm" required />
                         </div>
                         <div>
                             <label htmlFor="cardNumber" className="block text-sm font-medium text-[var(--muted)]">Card Number</label>
                             <div className="relative">
-                                <input type="text" id="cardNumber" value={cardNumber} onChange={handleCardNumberChange} className="mt-1 block w-full px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition" required />
+                                <input type="text" id="cardNumber" value={cardNumber} onChange={handleCardNumberChange} className="mt-1 block w-full px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition text-sm" required />
                                 <div className="absolute inset-y-0 right-3 flex items-center">
                                     {getCardType(cardNumber.replace(/\s/g, '')) === 'Visa' && <VisaIcon />}
                                     {getCardType(cardNumber.replace(/\s/g, '')) === 'Mastercard' && <MastercardIcon />}
                                 </div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                              <div>
-                                <label htmlFor="expiry" className="block text-sm font-medium text-[var(--muted)]">Expiry Date</label>
-                                <input type="text" id="expiry" placeholder="MM / YY" value={expiry} onChange={handleExpiryChange} className="mt-1 block w-full px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition" required />
+                                <label htmlFor="expiry" className="block text-sm font-medium text-[var(--muted)]">Expiry (MM/YY)</label>
+                                <input type="text" id="expiry" placeholder="MM / YY" value={expiry} onChange={handleExpiryChange} className="mt-1 block w-full px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition text-sm" required />
                             </div>
                              <div>
                                 <label htmlFor="cvc" className="block text-sm font-medium text-[var(--muted)]">CVC</label>
-                                <input type="text" id="cvc" value={cvc} onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))} className="mt-1 block w-full px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition" required />
+                                <input type="text" id="cvc" value={cvc} onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))} className="mt-1 block w-full px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition text-sm" required />
                             </div>
                         </div>
                         {error && <p className="text-red-500 text-sm">{error}</p>}
-                        <div className="pt-4 flex justify-end gap-3">
-                            <button type="button" onClick={onClose} className="px-6 py-2 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition">Cancel</button>
-                            <button type="submit" className="bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition">Save Card</button>
+                        <div className="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                            <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition min-h-[44px]">Cancel</button>
+                            <button type="submit" className="bg-[var(--primary)] text-white font-bold py-2.5 px-6 rounded-full hover:opacity-90 transition min-h-[44px]">Save Card</button>
                         </div>
                     </form>
                 </div>

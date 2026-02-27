@@ -1,16 +1,153 @@
 import React from 'react';
-import { Course } from '../../../types';
-import { PlayIcon, CheckBadgeIcon, BookOpenIcon, AcademicCapIcon, TrophyIcon, UsersIcon } from '../Icons';
+import { Course, UserProfile } from '../../../types';
+import { PlayIcon, CheckBadgeIcon, BookOpenIcon, AcademicCapIcon, TrophyIcon, UsersIcon, DownloadIcon } from '../Icons';
 import { ProgressBar } from '../shared/ProgressBar';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { MOCK_BADGES } from '../../../constants';
 
 interface StudentDashboardProps {
     courses: Course[];
+    userProfile: UserProfile;
     onPlayCourse: (course: Course) => void;
 }
 
-const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, onPlayCourse }) => {
+const downloadCertificate = (course: Course, studentName: string) => {
+    const W = 1200, H = 850;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+
+    // Cream background
+    ctx.fillStyle = '#fdfaf4';
+    ctx.fillRect(0, 0, W, H);
+
+    // Outer gold border
+    ctx.strokeStyle = '#c9a84c';
+    ctx.lineWidth = 14;
+    ctx.strokeRect(18, 18, W - 36, H - 36);
+    // Inner thin border
+    ctx.lineWidth = 2;
+    ctx.strokeRect(34, 34, W - 68, H - 68);
+
+    // Corner ornament helper
+    const drawCorner = (x: number, y: number, sx: number, sy: number) => {
+        ctx.strokeStyle = '#c9a84c';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x, y + sy * 30); ctx.lineTo(x, y); ctx.lineTo(x + sx * 30, y); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x + sx * 15, y + sy * 15, 6, 0, Math.PI * 2); ctx.stroke();
+    };
+    drawCorner(44, 44, 1, 1);
+    drawCorner(W - 44, 44, -1, 1);
+    drawCorner(44, H - 44, 1, -1);
+    drawCorner(W - 44, H - 44, -1, -1);
+
+    // Header — Academy name
+    ctx.fillStyle = '#c9a84c';
+    ctx.font = 'bold 26px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('HARMONY LIFESTYLE ACADEMY', W / 2, 115);
+
+    // Subtitle
+    ctx.fillStyle = '#7a6530';
+    ctx.font = 'italic 17px Georgia, serif';
+    ctx.fillText('Empowering Youth for a Harmonious Life', W / 2, 148);
+
+    // Divider
+    const drawDivider = (y: number) => {
+        const g = ctx.createLinearGradient(150, y, W - 150, y);
+        g.addColorStop(0, 'transparent');
+        g.addColorStop(0.3, '#c9a84c');
+        g.addColorStop(0.7, '#c9a84c');
+        g.addColorStop(1, 'transparent');
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(150, y); ctx.lineTo(W - 150, y); ctx.stroke();
+    };
+    drawDivider(172);
+
+    // Certificate of Completion
+    ctx.fillStyle = '#1a1a2e';
+    ctx.font = '22px Georgia, serif';
+    ctx.fillText('Certificate of Completion', W / 2, 222);
+
+    // Body text
+    ctx.fillStyle = '#555';
+    ctx.font = '17px Georgia, serif';
+    ctx.fillText('This is to certify that', W / 2, 295);
+
+    // Student name
+    ctx.fillStyle = '#1a1a2e';
+    ctx.font = 'bold 58px Georgia, serif';
+    ctx.fillText(studentName, W / 2, 380);
+
+    // Underline beneath name
+    const nameW = ctx.measureText(studentName).width;
+    ctx.strokeStyle = '#c9a84c';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - nameW / 2, 395);
+    ctx.lineTo(W / 2 + nameW / 2, 395);
+    ctx.stroke();
+
+    // Has successfully completed
+    ctx.fillStyle = '#555';
+    ctx.font = '17px Georgia, serif';
+    ctx.fillText('has successfully completed', W / 2, 445);
+
+    // Course title
+    ctx.fillStyle = '#6d28d9';
+    ctx.font = 'bold 34px Georgia, serif';
+    ctx.fillText(course.title, W / 2, 505);
+
+    drawDivider(540);
+
+    // Date
+    const completedDate = new Date().toLocaleDateString('en-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = '#777';
+    ctx.font = '15px Georgia, serif';
+    ctx.fillText(`Awarded on ${completedDate}`, W / 2, 578);
+
+    // Signature lines
+    const sigY = 680;
+    [[280, 'Program Director', 'Harmony Lifestyle Academy'], [920, 'Date of Issue', completedDate]].forEach(([cx, label1, label2]) => {
+        const x = Number(cx);
+        ctx.strokeStyle = '#aaa';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x - 130, sigY); ctx.lineTo(x + 130, sigY); ctx.stroke();
+        ctx.fillStyle = '#555';
+        ctx.font = 'bold 13px Georgia, serif';
+        ctx.fillText(String(label1), x, sigY + 24);
+        ctx.fillStyle = '#888';
+        ctx.font = '12px Georgia, serif';
+        ctx.fillText(String(label2), x, sigY + 42);
+    });
+
+    // Seal circle
+    ctx.strokeStyle = '#c9a84c';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(W / 2, sigY - 5, 52, 0, Math.PI * 2); ctx.stroke();
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(W / 2, sigY - 5, 44, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#c9a84c';
+    ctx.font = 'bold 11px Georgia, serif';
+    ctx.fillText('✦ CERTIFIED ✦', W / 2, sigY - 10);
+    ctx.font = '10px Georgia, serif';
+    ctx.fillText('HLA', W / 2, sigY + 8);
+
+    // Certificate ID
+    ctx.fillStyle = '#bbb';
+    ctx.font = '11px monospace';
+    ctx.fillText(`Certificate ID: HLA-${Date.now().toString(36).toUpperCase()}`, W / 2, H - 50);
+
+    // Trigger download
+    const link = document.createElement('a');
+    link.download = `${course.title.replace(/\s+/g, '_')}_Certificate.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+};
+
+const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, userProfile, onPlayCourse }) => {
     const { profile } = useGamification();
     const completedCourses = courses.filter(c => c.progress === 100);
     const inProgressCourses = courses.filter(c => c.progress < 100 && c.progress > 0);
@@ -92,7 +229,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, onPlayCour
                                                 <p className="text-xs text-[var(--muted)]">Completed on {new Date().toLocaleDateString()}</p>
                                             </div>
                                         </div>
-                                        <button className="text-xs font-bold text-[var(--primary)] hover:underline">Download</button>
+                                        <button onClick={() => downloadCertificate(course, userProfile.name)} className="text-xs font-bold text-[var(--primary)] hover:underline flex items-center gap-1"><DownloadIcon className="h-3.5 w-3.5" />Download</button>
                                     </div>
                                 ))}
                             </div>

@@ -16,7 +16,7 @@ export const storage = {
         try {
             return JSON.parse(deobfuscate(item));
         } catch (e) {
-            console.error("Storage decryption error:", e);
+            console.error("Storage read error (corrupted or unreadable data):", e);
             return null;
         }
     },

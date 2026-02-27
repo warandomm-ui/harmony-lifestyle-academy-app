@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { SparklesIcon, BookOpenIcon, PlayIcon, CheckCircleIcon, ChevronDownIcon } from '../Icons';
+import { useToast } from '../../../contexts/ToastContext';
 
 interface Module {
     id: string;
@@ -188,6 +189,7 @@ const THE_PATH_MODULES: Module[] = [
 
 const ThePathPage: React.FC = () => {
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+    const { addToast } = useToast();
 
     return (
         <div className="space-y-8 animate-fade-in pb-10">
@@ -203,7 +205,13 @@ const ThePathPage: React.FC = () => {
                         Based on the book, broken down into 7 transformative pillars.
                     </p>
                     <div className="flex items-center gap-4">
-                        <button className="bg-white text-indigo-900 font-bold py-3 px-8 rounded-full hover:bg-indigo-50 transition flex items-center gap-2 shadow-lg">
+                        <button
+                            onClick={() => {
+                                setActiveModuleId(THE_PATH_MODULES[0].id);
+                                document.getElementById('path-modules')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="bg-white text-indigo-900 font-bold py-3 px-8 rounded-full hover:bg-indigo-50 transition flex items-center gap-2 shadow-lg"
+                        >
                             <PlayIcon className="h-5 w-5" />
                             Start Journey
                         </button>
@@ -215,7 +223,7 @@ const ThePathPage: React.FC = () => {
             </section>
 
             {/* Module Grid */}
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <section id="path-modules" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {THE_PATH_MODULES.map((module) => (
                     <div 
                         key={module.id}
@@ -259,7 +267,10 @@ const ThePathPage: React.FC = () => {
                                     </div>
                                 ))}
                                 <div className="p-4 text-center">
-                                    <button className="text-sm font-bold text-[var(--primary)] hover:underline flex items-center justify-center gap-1">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); addToast('Full module guide coming soon!', 'info'); }}
+                                        className="text-sm font-bold text-[var(--primary)] hover:underline flex items-center justify-center gap-1"
+                                    >
                                         <BookOpenIcon className="h-4 w-4" />
                                         Open Module Details
                                     </button>

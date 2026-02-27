@@ -1,6 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, CheckCircleIcon, PlayIcon, DocumentTextIcon, MicrophoneIcon, DownloadIcon, ChevronDownIcon, SparklesIcon, SpinnerIcon } from '../Icons';
 import type { Course, CourseLesson, CourseModule } from '../../../types';
+
+interface LessonBrief {
+    title: string;
+    duration: string;
+    objective: string;
+    keyPoints: string[];
+    script: string;
+    visualNotes: string;
+}
+
+const LessonBriefCard: React.FC<{ brief: LessonBrief }> = ({ brief }) => (
+    <div className="w-full h-full overflow-y-auto bg-gradient-to-br from-[var(--secondary)] to-[var(--background)] p-6 rounded-xl text-left">
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <span className="px-2 py-1 bg-[var(--primary)] text-white text-xs font-bold rounded-full flex items-center gap-1">
+                <SparklesIcon className="h-3 w-3" /> AI LESSON BRIEF
+            </span>
+            <span className="text-xs text-[var(--muted)] font-medium">{brief.duration}</span>
+        </div>
+        <h3 className="text-xl font-bold text-[var(--foreground)] mb-1">{brief.title}</h3>
+        <p className="text-sm text-[var(--muted)] italic mb-5">🎯 {brief.objective}</p>
+
+        <div className="mb-5">
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-2">Key Points</p>
+            <ul className="space-y-2">
+                {brief.keyPoints?.map((point, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-[var(--foreground)]">
+                        <span className="text-[var(--primary)] font-bold mt-0.5 flex-shrink-0">•</span>
+                        {point}
+                    </li>
+                ))}
+            </ul>
+        </div>
+
+        <div className="mb-5">
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-2">Narration Script</p>
+            <p className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap">{brief.script}</p>
+        </div>
+
+        {brief.visualNotes && (
+            <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+                <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-1">🎬 Visual Notes</p>
+                <p className="text-xs text-[var(--muted)] italic">{brief.visualNotes}</p>
+            </div>
+        )}
+    </div>
+);
 import { useToast } from '../../../contexts/ToastContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { supabase } from '../../../services/supabaseClient';
@@ -97,14 +143,14 @@ const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onExit }) => {
         if (!currentLesson || !currentLesson.id) return;
 
         setGeneratingLessonId(currentLesson.id);
-        addToast("Dreaming up scenes with Veo...", 'info');
+        addToast("Generating AI lesson brief...", 'info');
 
         try {
             const url = await generatePlaceholderVideo(`${currentLesson.title}: ${currentLesson.description}`);
             setDynamicVideoUrls(prev => ({...prev, [currentLesson.id!]: url}));
-            addToast("Video generated successfully!", 'success');
+            addToast("Lesson brief ready!", 'success');
         } catch (error) {
-            addToast("Failed to generate video.", 'error');
+            addToast("Failed to generate lesson brief.", 'error');
         } finally {
             setGeneratingLessonId(null);
         }
@@ -114,30 +160,46 @@ const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onExit }) => {
         if (!currentLesson?.content) return <div className="p-10 text-center text-[var(--muted)]">No content available.</div>;
 
         switch (currentLesson.content.type) {
-            case 'video':
+            case 'video': {
                 const videoUrl = dynamicVideoUrls[currentLesson.id!] || currentLesson.content.url;
                 const isGenerating = currentLesson.id === generatingLessonId;
 
+                let briefData: LessonBrief | null = null;
+                if (videoUrl) {
+                    try { briefData = JSON.parse(videoUrl); } catch { briefData = null; }
+                }
+
                 return (
-                    <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg relative group">
+                    <div className="aspect-video bg-[var(--secondary)] rounded-xl overflow-hidden shadow-lg relative group">
                         {isGenerating ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white z-10">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white z-10">
                                 <SpinnerIcon className="h-12 w-12 mb-4 text-[var(--primary)]" />
-                                <p className="font-bold text-lg animate-pulse">Creating with Veo...</p>
+                                <p className="font-bold text-lg animate-pulse">Generating lesson brief...</p>
                             </div>
+                        ) : briefData ? (
+                            <LessonBriefCard brief={briefData} />
                         ) : (
                             <video key={videoUrl} src={videoUrl} controls className="w-full h-full" />
                         )}
-                        {!isGenerating && (
+                        {!isGenerating && !briefData && (
                             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={handleGenerateVideo} className="bg-black/60 hover:bg-[var(--primary)] backdrop-blur-md text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 border border-white/10">
                                     <SparklesIcon className="h-4 w-4" />
-                                    AI Video
+                                    AI Brief
+                                </button>
+                            </div>
+                        )}
+                        {!isGenerating && briefData && (
+                            <div className="absolute top-4 right-4">
+                                <button onClick={handleGenerateVideo} className="bg-[var(--primary)]/80 hover:bg-[var(--primary)] backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+                                    <SparklesIcon className="h-3 w-3" />
+                                    Regenerate
                                 </button>
                             </div>
                         )}
                     </div>
                 );
+            }
             default:
                 return <div className="p-10 text-center">Lesson type "{currentLesson.content.type}" ready to view.</div>;
         }

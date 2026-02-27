@@ -67,7 +67,7 @@ const TodoListSection: React.FC = () => {
       
       // 1. Play chime
       if (audioRef.current) {
-          audioRef.current.play().catch(e => console.log("Audio play blocked:", e));
+          audioRef.current.play().catch(() => { /* audio autoplay blocked by browser */ });
       }
 
       // 2. Speak message with TTS

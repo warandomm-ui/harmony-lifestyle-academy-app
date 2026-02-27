@@ -81,9 +81,9 @@ const CourseCreatorModal: React.FC<CourseCreatorModalProps> = ({ onClose, onCour
       case 'idle':
       default:
         return (
-          <form onSubmit={handleSubmit} className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center">Create a New Course</h2>
-            <p className="text-center text-gray-500 dark:text-gray-400 mt-2 mb-8">What do you want to learn today? Tell Harmony AI.</p>
+          <form onSubmit={handleSubmit} className="p-4 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 text-center">Create a New Course</h2>
+            <p className="text-center text-gray-500 dark:text-gray-400 mt-2 mb-6 sm:mb-8 text-sm sm:text-base">What do you want to learn today? Tell Harmony AI.</p>
             
             <div className="space-y-6">
                 <div>
@@ -134,10 +134,10 @@ const CourseCreatorModal: React.FC<CourseCreatorModalProps> = ({ onClose, onCour
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-xl lg:max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex-shrink-0 flex justify-end p-2">
-            <button onClick={onClose} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button onClick={onClose} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
                 <XIcon className="h-5 w-5" />
             </button>
         </div>
@@ -196,19 +196,19 @@ const SuccessState: React.FC<{ course: CourseOutline; onSave: () => void; onCrea
         
         try {
             const prompt = `${lesson.title}: ${lesson.description}`;
-            const videoUrl = await generatePlaceholderVideo(prompt); 
+            const videoUrl = await generatePlaceholderVideo(prompt);
             setVideoStatuses(prev => ({ ...prev, [key]: { status: 'success', url: videoUrl } }));
         } catch (error: any) {
-            console.error("Video generation failed:", error);
-            let errorMessage = "Video generation failed. Please ensure your Gemini API key is valid and try again.";
+            console.error("Lesson brief generation failed:", error);
+            let errorMessage = "Lesson brief generation failed. Please ensure your Gemini API key is valid and try again.";
             setVideoStatuses(prev => ({ ...prev, [key]: { status: 'error', error: errorMessage } }));
         }
     };
 
     return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
         <div className="text-center mb-6">
-            <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">{course.title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800 dark:text-gray-100">{course.title}</h2>
             <div className="flex justify-center items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                 <span className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">{course.difficulty}</span>
                 <span>{course.duration}</span>
@@ -237,27 +237,47 @@ const SuccessState: React.FC<{ course: CourseOutline; onSave: () => void; onCrea
                                 {lesson.type === 'Video' && (
                                     <div className="mt-2 pl-8">
                                         {videoStatus.status === 'idle' && (
-                                            <button 
+                                            <button
                                                 onClick={() => handleGenerateVideo(index, lessonIndex, lesson)}
                                                 className="bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 text-xs font-bold py-1.5 px-3 rounded-full hover:bg-purple-200 dark:hover:bg-purple-500/30 transition flex items-center gap-1.5"
                                             >
-                                                <PlayIcon className="h-4 w-4" />
-                                                Generate Video Placeholder
+                                                <SparklesIcon className="h-4 w-4" />
+                                                Generate AI Lesson Brief
                                             </button>
                                         )}
                                         {videoStatus.status === 'generating' && (
                                             <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                                 <SpinnerIcon className="h-4 w-4" />
-                                                <span>Generating video... this may take a few minutes.</span>
+                                                <span>Generating lesson brief...</span>
                                             </div>
                                         )}
-                                        {videoStatus.status === 'success' && videoStatus.url && (
-                                            <video src={videoStatus.url} controls className="w-full max-w-sm rounded-md mt-2 aspect-video" />
-                                        )}
+                                        {videoStatus.status === 'success' && videoStatus.url && (() => {
+                                            let brief: any = null;
+                                            try { brief = JSON.parse(videoStatus.url!); } catch { brief = null; }
+                                            return brief ? (
+                                                <div className="mt-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-sm">
+                                                    <p className="font-bold text-gray-800 dark:text-gray-100 flex items-center gap-1 mb-1">
+                                                        <SparklesIcon className="h-4 w-4 text-purple-500" />
+                                                        AI Lesson Brief
+                                                        <span className="ml-auto text-xs font-normal text-gray-500">{brief.duration}</span>
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 italic mb-2">🎯 {brief.objective}</p>
+                                                    <ul className="space-y-1">
+                                                        {brief.keyPoints?.map((point: string, i: number) => (
+                                                            <li key={i} className="text-xs text-gray-700 dark:text-gray-300 flex gap-1.5">
+                                                                <span className="text-purple-500 flex-shrink-0">•</span>{point}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ) : (
+                                                <video src={videoStatus.url} controls className="w-full max-w-full rounded-md mt-2 aspect-video" />
+                                            );
+                                        })()}
                                         {videoStatus.status === 'error' && (
                                             <div className="text-xs text-red-600 dark:text-red-400">
                                                 <p className="font-semibold mb-1">{videoStatus.error}</p>
-                                                 <button 
+                                                 <button
                                                     onClick={() => handleGenerateVideo(index, lessonIndex, lesson)}
                                                     className="font-bold underline"
                                                 >

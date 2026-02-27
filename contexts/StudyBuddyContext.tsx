@@ -39,15 +39,18 @@ export const StudyBuddyProvider: React.FC<{ children: ReactNode }> = ({ children
       let modelMessage: StudyBuddyMessage;
       
       if (mode === 'quiz') {
+        let quiz: { question: string; options: string[]; correctAnswer: string } | undefined;
+        try {
+          const parsed = JSON.parse(response);
+          quiz = { question: parsed.question, options: parsed.options, correctAnswer: parsed.correctAnswer };
+        } catch {
+          // response is plain text, not JSON
+        }
         modelMessage = {
           id: `${Date.now()}-model`,
           role: 'model',
-          text: response.question,
-          quiz: {
-            question: response.question,
-            options: response.options,
-            correctAnswer: response.correctAnswer,
-          },
+          text: quiz?.question ?? response,
+          quiz,
         };
       } else {
          modelMessage = {

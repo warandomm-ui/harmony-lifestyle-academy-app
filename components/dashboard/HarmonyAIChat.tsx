@@ -51,7 +51,6 @@ const HarmonyAIChat: React.FC = () => {
     }, [transcripts]);
     
     const stopConversation = useCallback(() => {
-        console.log("Stopping conversation...");
         setIsRecording(false);
         setIsConnecting(false);
         setStatus('Idle. Press mic to start.');
@@ -113,7 +112,7 @@ const HarmonyAIChat: React.FC = () => {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             audioRefs.current.mediaStream = stream;
 
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+            const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
             
             // Initialize audio contexts
             audioRefs.current.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -128,7 +127,6 @@ const HarmonyAIChat: React.FC = () => {
                 model: 'gemini-2.5-flash-native-audio-preview-09-2025',
                 callbacks: {
                     onopen: () => {
-                        console.log('Session opened.');
                         setIsConnecting(false);
                         setStatus('Listening... Talk now!');
                         const source = audioRefs.current.inputAudioContext!.createMediaStreamSource(stream);
@@ -201,7 +199,7 @@ const HarmonyAIChat: React.FC = () => {
                             currentOutputTranscription = '';
                         }
                         
-                        const base64EncodedAudioString = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
+                        const base64EncodedAudioString = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
                         if (base64EncodedAudioString) {
                             const outputCtx = audioRefs.current.outputAudioContext;
                             if (outputCtx) {
@@ -232,7 +230,6 @@ const HarmonyAIChat: React.FC = () => {
                         stopConversation();
                     },
                     onclose: () => {
-                        console.log('Session closed.');
                         stopConversation();
                     },
                 },
@@ -330,7 +327,7 @@ const HarmonyAIChat: React.FC = () => {
                                             {t.groundingLinks.map((link, linkIndex) => (
                                                 <li key={linkIndex} className="truncate">
                                                     <a href={link.uri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline dark:text-blue-400">
-                                                        {link.title || new URL(link.uri).hostname}
+                                                        {link.title || (() => { try { return new URL(link.uri).hostname; } catch { return link.uri; } })()}
                                                     </a>
                                                 </li>
                                             ))}

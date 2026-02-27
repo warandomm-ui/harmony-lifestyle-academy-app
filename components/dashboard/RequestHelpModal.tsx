@@ -19,24 +19,23 @@ const RequestHelpModal: React.FC<RequestHelpModalProps> = ({ onClose }) => {
             return;
         }
         // Simulate submission
-        console.log({ amount, reason });
         addToast('Your confidential request has been submitted. Our team will review it shortly.', 'success');
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg max-h-[90vh] flex flex-col">
                 <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-                    <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-                        <LifebuoyIcon className="h-6 w-6 text-orange-500" />
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
+                        <LifebuoyIcon className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500" />
                         Request Emergency Support
                     </h2>
-                    <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+                    <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <XIcon className="h-5 w-5" />
                     </button>
                 </header>
-                <div className="overflow-y-auto p-6">
+                <div className="overflow-y-auto p-4 sm:p-6">
                     <div className="bg-orange-500/10 text-orange-800 dark:text-orange-200 p-4 rounded-lg border border-orange-500/20 mb-6">
                         <p className="font-bold">Confidential & For Emergencies Only</p>
                         <p className="text-sm mt-1">
@@ -80,9 +79,9 @@ const RequestHelpModal: React.FC<RequestHelpModalProps> = ({ onClose }) => {
                                 I understand this fund is for emergencies and my request will be reviewed confidentially.
                             </label>
                         </div>
-                        <div className="pt-4 flex justify-end gap-3">
-                            <button type="button" onClick={onClose} className="px-6 py-2 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition">Cancel</button>
-                            <button type="submit" disabled={!agreed || !amount || !reason} className="bg-orange-600 text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition disabled:bg-gray-400">Submit Request</button>
+                        <div className="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                            <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-full font-bold text-[var(--foreground)] hover:bg-[var(--secondary)] transition min-h-[44px]">Cancel</button>
+                            <button type="submit" disabled={!agreed || !amount || !reason} className="bg-orange-600 text-white font-bold py-2.5 px-6 rounded-full hover:opacity-90 transition disabled:bg-gray-400 min-h-[44px]">Submit Request</button>
                         </div>
                     </form>
                 </div>

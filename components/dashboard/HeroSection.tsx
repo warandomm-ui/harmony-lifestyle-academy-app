@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { AnalysisResult, UserProfile } from '../../types';
 import DailyQuote from './shared/DailyQuote';
 
@@ -8,30 +8,68 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ userProfile, userResults }) => {
-    // In a real app, this would be fetched or come from user profile
-    const userName = userProfile.name || "User"; 
-
-    // Mock weather data. In a real app, you'd use the geolocation to fetch this.
-    const [weather, setWeather] = useState("☀️ 32°C, Sunny");
+    const userName = userProfile.name || "User";
+    const weather = "☀️ 32°C, Sunny";
 
     const today = new Date();
     const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = today.toLocaleDateString('en-US', dateOptions);
 
-    return (
-        <section className="mb-8 animate-fade-in">
-            <h1 className="text-3xl font-bold text-[var(--foreground)]">What's the vibe, {userName}? ✨</h1>
-            <p className="text-lg text-[var(--muted)] mt-1">
-                You're giving <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">{userResults.personalityType}</span> energy — let's make today iconic!
-            </p>
+    // First-name greeting
+    const firstName = userName.split(' ')[0];
 
-            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[var(--muted-foreground)]">
-                <span>{formattedDate}</span>
-                <span>{weather}</span>
-                <span className="italic">"Trust the process. Your journey is the aesthetic."</span>
+    return (
+        <section className="animate-fade-in mb-6">
+            {/* Top gold accent line */}
+            <div className="hla-gold-divider mb-8" />
+
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <div>
+                    <p
+                        className="text-xs uppercase tracking-[0.3em] mb-2 font-light"
+                        style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
+                    >
+                        Welcome back
+                    </p>
+                    <h1
+                        className="text-4xl md:text-5xl font-bold leading-tight"
+                        style={{
+                            fontFamily: "'Playfair Display', Georgia, serif",
+                            fontStyle: 'italic',
+                            background: 'linear-gradient(135deg, #c9a84c 0%, #e8c97a 40%, #f0d990 60%, #c9a84c 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                        }}
+                    >
+                        Good day, {firstName}
+                    </h1>
+                    <p
+                        className="mt-2 text-lg italic"
+                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: 'rgba(201,168,76,0.8)' }}
+                    >
+                        {userResults.personalityType} &mdash; your journey continues today
+                    </p>
+                </div>
+
+                {/* Date + weather pill */}
+                <div
+                    className="flex items-center gap-3 text-sm px-4 py-2 rounded-full self-start md:self-auto"
+                    style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
+                >
+                    <span>{formattedDate}</span>
+                    <span style={{ color: 'rgba(201,168,76,0.4)' }}>·</span>
+                    <span>{weather}</span>
+                </div>
             </div>
 
-            <DailyQuote />
+            {/* Daily Quote */}
+            <div className="mt-6">
+                <DailyQuote />
+            </div>
+
+            {/* Bottom gold accent line */}
+            <div className="hla-gold-divider mt-8" />
         </section>
     );
 };

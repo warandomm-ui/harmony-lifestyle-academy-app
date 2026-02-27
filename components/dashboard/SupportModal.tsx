@@ -8,14 +8,14 @@ interface SupportModalProps {
 
 const SupportModal: React.FC<SupportModalProps> = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-      <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+      <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg max-h-[90vh] flex flex-col">
         <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-          <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-            <LifebuoyIcon className="h-6 w-6 text-red-500" />
+          <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
+            <LifebuoyIcon className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
             Need to Talk? Help is Available
           </h2>
-          <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+          <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
             <XIcon className="h-5 w-5" />
           </button>
         </header>
@@ -56,7 +56,7 @@ const SupportModal: React.FC<SupportModalProps> = ({ onClose }) => {
         <footer className="p-4 border-t border-[var(--border)] flex-shrink-0 flex justify-end">
             <button
                 onClick={onClose}
-                className="bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition"
+                className="bg-[var(--primary)] text-white font-bold py-2.5 px-6 rounded-full hover:opacity-90 transition min-h-[44px]"
             >
                 Close
             </button>

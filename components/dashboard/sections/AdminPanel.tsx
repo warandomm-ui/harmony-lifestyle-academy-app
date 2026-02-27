@@ -36,10 +36,10 @@ const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: string; 
     </div>
 );
 
-const AdminDashboard: React.FC = () => (
+const AdminDashboard: React.FC<{ setCurrentView: (view: DashboardView) => void }> = ({ setCurrentView }) => (
     <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">Admin Dashboard</h1>
-        
+
         {/* App Analytics Section */}
         <section className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -58,10 +58,10 @@ const AdminDashboard: React.FC = () => (
                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Quick Links</h3>
                     <ul className="space-y-2">
-                        <li><a href="#" className="font-semibold text-green-600 hover:underline">Manage Members</a></li>
-                        <li><a href="#" className="font-semibold text-green-600 hover:underline">View Income Reports</a></li>
-                        <li><a href="#" className="font-semibold text-green-600 hover:underline">Send Invites</a></li>
-                        <li><a href="#" className="font-semibold text-green-600 hover:underline">Check Moderation Queue</a></li>
+                        <li><button onClick={() => setCurrentView('admin-affiliates')} className="font-semibold text-green-600 hover:underline text-left">Manage Members</button></li>
+                        <li><button onClick={() => setCurrentView('admin-revenue')} className="font-semibold text-green-600 hover:underline text-left">View Income Reports</button></li>
+                        <li><button onClick={() => setCurrentView('admin-coupons')} className="font-semibold text-green-600 hover:underline text-left">Send Invites</button></li>
+                        <li><button onClick={() => setCurrentView('admin-rewards')} className="font-semibold text-green-600 hover:underline text-left">Check Moderation Queue</button></li>
                     </ul>
                 </div>
             </div>
@@ -91,7 +91,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ currentView, setCurrentView }) 
                 return <AdminIntegrationsPage />;
             case 'admin':
             default:
-                return <AdminDashboard />;
+                return <AdminDashboard setCurrentView={setCurrentView} />;
         }
     };
     

@@ -63,6 +63,7 @@ interface MainDashboardProps {
 
 const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults, selectedSkills, userStatus, lifeVision, onProfileUpdate }) => {
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   const { addToast } = useToast();
   
@@ -134,6 +135,19 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
       setIsCourseCreatorOpen(false);
   };
   
+  const handleSavePaymentMethod = (data: Omit<PaymentMethod, 'id'>) => {
+    const newMethod: PaymentMethod = { id: `pm_${Date.now()}`, ...data };
+    setPaymentMethods(prev => [...prev, newMethod]);
+    setIsPaymentModalOpen(false);
+    addToast(`${data.cardType} card ending in ${data.last4} added.`, 'success');
+  };
+
+  const handleSelectPlan = (plan: SubscriptionPlan) => {
+    setCurrentPlan(plan);
+    setIsPlanModalOpen(false);
+    addToast(`Switched to ${plan.name} plan!`, 'success');
+  };
+
   const handlePostAnonymously = (content: string) => {
     const newPost: AnonymousPost = {
       id: `anon_${Date.now()}`,
@@ -160,9 +174,9 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
     }
 
     const FullPageWrapper: React.FC<{ children: React.ReactNode, title: string }> = ({ children, title }) => (
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-[var(--background)]">
+        <main className="flex-1 p-3 sm:p-5 md:p-8 overflow-y-auto bg-[var(--background)] min-w-0">
             <div className="max-w-7xl mx-auto">
-                 {title && <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">{title}</h1>}
+                {title && <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[var(--foreground)] mb-5 sm:mb-8">{title}</h1>}
                 {children}
             </div>
         </main>
@@ -190,7 +204,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
       case 'the-path': // Route for "The Path"
         return <FullPageWrapper title=""><ThePathPage /></FullPageWrapper>;
       case 'student-dashboard':
-        return <FullPageWrapper title="My Learning Dashboard"><StudentDashboard courses={activeCourses} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
+        return <FullPageWrapper title="My Learning Dashboard"><StudentDashboard courses={activeCourses} userProfile={userProfile} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
       
       // Dimensions
       case 'physical':
@@ -243,17 +257,25 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
   };
 
   return (
-    <div className="flex h-screen bg-[var(--card)] text-[var(--foreground)]">
+    <div className="hla-dashboard flex h-screen bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
       {currentView !== 'course-player' && (
         <SidebarNav
             currentView={currentView}
             setCurrentView={setCurrentView}
             onOpenSupport={() => setIsSupportModalOpen(true)}
+            isMobileOpen={isMobileMenuOpen}
+            onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       )}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        {currentView !== 'course-player' && <DesktopMenuBar />}
-        {currentView !== 'course-player' && <HeaderBar userProfile={userProfile} cartItemCount={cart.length} />}
+      <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
+        {currentView !== 'course-player' && <DesktopMenuBar setCurrentView={setCurrentView} onOpenSupport={() => setIsSupportModalOpen(true)} />}
+        {currentView !== 'course-player' && (
+          <HeaderBar
+            userProfile={userProfile}
+            cartItemCount={cart.length}
+            onMobileMenuToggle={() => setIsMobileMenuOpen(prev => !prev)}
+          />
+        )}
         {renderContent()}
         {currentView !== 'course-player' && <HarmonyAIChat />}
       </div>
@@ -263,6 +285,20 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
       {isCourseCreatorOpen && <CourseCreatorModal onClose={() => setIsCourseCreatorOpen(false)} onCourseCreated={handleCourseCreated} />}
       {isRequestHelpModalOpen && <RequestHelpModal onClose={() => setIsRequestHelpModalOpen(false)} />}
       {isDonateModalOpen && <DonateModal onClose={() => setIsDonateModalOpen(false)} />}
+      {isPaymentModalOpen && (
+          <PaymentModal
+            onClose={() => setIsPaymentModalOpen(false)}
+            onSave={handleSavePaymentMethod}
+          />
+      )}
+      {isPlanModalOpen && (
+          <PlanSelectionModal
+            currentPlanId={currentPlan.id}
+            plans={SUBSCRIPTION_PLANS}
+            onClose={() => setIsPlanModalOpen(false)}
+            onSelectPlan={handleSelectPlan}
+          />
+      )}
       {isCheckoutOpen && checkoutProduct && (
           <CheckoutModal 
             product={checkoutProduct} 

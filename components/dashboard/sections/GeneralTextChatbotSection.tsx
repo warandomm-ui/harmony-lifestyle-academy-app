@@ -25,14 +25,13 @@ const GeneralTextChatbotSection: React.FC = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
         chatRef.current = ai.chats.create({
           model: 'gemini-2.5-flash',
           config: {
             systemInstruction: 'You are Harmony AI, a friendly and helpful guide for Malaysian youth. Keep your answers concise, encouraging, and easy to understand.',
           },
         });
-        console.log('Gemini text chat session initialized.');
       } catch (error) {
         console.error('Error initializing Gemini text chat:', error);
         addToast('Failed to initialize chat. Please check your API key.', 'error');

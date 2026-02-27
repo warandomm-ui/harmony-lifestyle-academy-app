@@ -22,7 +22,7 @@ const CommunitySpacePage: React.FC = () => {
                     <p className="text-purple-100 text-sm mt-1">Spend 1 hour screen-free today and journal about it.</p>
                 </div>
             </div>
-            <button 
+            <button
                 onClick={() => addToast('Challenge accepted! Good luck!', 'success')}
                 className="bg-white text-purple-600 font-bold py-2 px-6 rounded-full hover:bg-purple-50 transition-transform transform hover:scale-105 whitespace-nowrap"
             >
@@ -34,9 +34,9 @@ const CommunitySpacePage: React.FC = () => {
     // --- Feed Tab ---
     const FeedTab = () => {
         const [posts, setPosts] = useState([
-            { id: 1, user: 'Sarah K.', avatar: '👩‍🎨', time: '2h ago', content: 'Just finished my first Python project thanks to the Harmony course! It\'s a simple calculator but I\'m so proud. 🐍💻', likes: 24, comments: 5 },
-            { id: 2, user: 'Amirul H.', avatar: '🏃‍♂️', time: '5h ago', content: 'Morning run complete! 5km in 30 mins. Who else is training for the community marathon?', likes: 45, comments: 12 },
-            { id: 3, user: 'Mei Ling', avatar: '📚', time: '1d ago', content: 'Reviewing for SPM trials. The study techniques module really helped me organize my notes.', likes: 60, comments: 8 },
+            { id: 1, user: 'Sarah K.', avatar: '👩‍🎨', time: '2h ago', content: 'Just finished my first Python project thanks to the Harmony course! It\'s a simple calculator but I\'m so proud. 🐍💻', likes: 24, comments: 5, liked: false },
+            { id: 2, user: 'Amirul H.', avatar: '🏃‍♂️', time: '5h ago', content: 'Morning run complete! 5km in 30 mins. Who else is training for the community marathon?', likes: 45, comments: 12, liked: false },
+            { id: 3, user: 'Mei Ling', avatar: '📚', time: '1d ago', content: 'Reviewing for SPM trials. The study techniques module really helped me organize my notes.', likes: 60, comments: 8, liked: false },
         ]);
         const [newPost, setNewPost] = useState('');
 
@@ -49,11 +49,27 @@ const CommunitySpacePage: React.FC = () => {
                 time: 'Just now',
                 content: newPost,
                 likes: 0,
-                comments: 0
+                comments: 0,
+                liked: false,
             };
             setPosts([post, ...posts]);
             setNewPost('');
             addToast('Post shared to community!', 'success');
+        };
+
+        const handleLike = (id: number) => {
+            setPosts(prev => prev.map(p =>
+                p.id === id
+                    ? { ...p, likes: p.liked ? p.likes - 1 : p.likes + 1, liked: !p.liked }
+                    : p
+            ));
+        };
+
+        const handleComment = (id: number) => {
+            setPosts(prev => prev.map(p =>
+                p.id === id ? { ...p, comments: p.comments + 1 } : p
+            ));
+            addToast('Comment posted!', 'success');
         };
 
         return (
@@ -71,7 +87,7 @@ const CommunitySpacePage: React.FC = () => {
                                 rows={2}
                             />
                             <div className="flex justify-end mt-2">
-                                <button 
+                                <button
                                     onClick={handlePost}
                                     disabled={!newPost.trim()}
                                     className="bg-[var(--primary)] text-white px-4 py-1.5 rounded-full text-sm font-bold hover:opacity-90 disabled:opacity-50 transition"
@@ -96,10 +112,16 @@ const CommunitySpacePage: React.FC = () => {
                             </div>
                             <p className="text-[var(--foreground)] mb-4 leading-relaxed">{post.content}</p>
                             <div className="flex items-center gap-6 text-sm text-[var(--muted)]">
-                                <button className="flex items-center gap-2 hover:text-red-500 transition-colors">
+                                <button
+                                    onClick={() => handleLike(post.id)}
+                                    className={`flex items-center gap-2 transition-colors ${post.liked ? 'text-red-500' : 'hover:text-red-500'}`}
+                                >
                                     <HeartIcon className="h-5 w-5" /> {post.likes}
                                 </button>
-                                <button className="flex items-center gap-2 hover:text-blue-500 transition-colors">
+                                <button
+                                    onClick={() => handleComment(post.id)}
+                                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                                >
                                     <ChatAlt2Icon className="h-5 w-5" /> {post.comments}
                                 </button>
                             </div>
@@ -112,28 +134,87 @@ const CommunitySpacePage: React.FC = () => {
 
     // --- Q&A Tab ---
     const QaTab = () => {
-        const questions = [
+        const [questions, setQuestions] = useState([
             { id: 1, tag: 'Parent Ask', question: "How can I motivate my teen to balance gaming and study?", answers: 12, status: 'Hot' },
             { id: 2, tag: 'Teen Ask', question: "My parents don't understand that esports is a real career path. Help?", answers: 8, status: 'New' },
             { id: 3, tag: 'General', question: "What are good universities for Graphic Design in KL?", answers: 24, status: 'Solved' },
-        ];
+        ]);
+        const [showForm, setShowForm] = useState(false);
+        const [newQuestion, setNewQuestion] = useState('');
+        const [selectedTag, setSelectedTag] = useState<'Teen Ask' | 'Parent Ask' | 'General'>('Teen Ask');
+
+        const handleSubmitQuestion = () => {
+            if (!newQuestion.trim()) return;
+            setQuestions(prev => [{
+                id: Date.now(),
+                tag: selectedTag,
+                question: newQuestion,
+                answers: 0,
+                status: 'New',
+            }, ...prev]);
+            setNewQuestion('');
+            setShowForm(false);
+            addToast('Your question has been posted!', 'success');
+        };
 
         return (
             <div className="space-y-6 animate-fade-in">
                 <div className="flex justify-between items-center">
                     <h3 className="text-lg font-bold text-[var(--foreground)]">Recent Discussions</h3>
-                    <button className="bg-[var(--primary)]/10 text-[var(--primary)] px-4 py-2 rounded-full text-sm font-bold hover:bg-[var(--primary)]/20 transition">
+                    <button
+                        onClick={() => setShowForm(v => !v)}
+                        className="bg-[var(--primary)]/10 text-[var(--primary)] px-4 py-2 rounded-full text-sm font-bold hover:bg-[var(--primary)]/20 transition flex items-center gap-1"
+                    >
+                        <PlusIcon className="h-4 w-4" />
                         Ask a Question
                     </button>
                 </div>
+
+                {showForm && (
+                    <div className="bg-[var(--card)] border border-[var(--primary)]/30 rounded-2xl p-5 animate-fade-in">
+                        <h4 className="font-bold text-[var(--foreground)] mb-3">Post a Question</h4>
+                        <div className="flex gap-2 mb-3">
+                            {(['Teen Ask', 'Parent Ask', 'General'] as const).map(tag => (
+                                <button
+                                    key={tag}
+                                    onClick={() => setSelectedTag(tag)}
+                                    className={`px-3 py-1 rounded-full text-xs font-bold transition ${
+                                        selectedTag === tag
+                                            ? 'bg-[var(--primary)] text-white'
+                                            : 'bg-[var(--secondary)]/50 text-[var(--muted)] hover:bg-[var(--secondary)]'
+                                    }`}
+                                >
+                                    {tag}
+                                </button>
+                            ))}
+                        </div>
+                        <textarea
+                            value={newQuestion}
+                            onChange={e => setNewQuestion(e.target.value)}
+                            placeholder="What's on your mind?"
+                            rows={3}
+                            className="w-full px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] placeholder-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 resize-none text-sm"
+                        />
+                        <div className="flex justify-end gap-2 mt-3">
+                            <button onClick={() => setShowForm(false)} className="px-4 py-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition">Cancel</button>
+                            <button
+                                onClick={handleSubmitQuestion}
+                                disabled={!newQuestion.trim()}
+                                className="px-4 py-1.5 bg-[var(--primary)] text-white rounded-full text-sm font-bold hover:opacity-90 disabled:opacity-50 transition"
+                            >
+                                Post
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="space-y-4">
                     {questions.map(q => (
                         <div key={q.id} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--border)] cursor-pointer hover:border-[var(--primary)] transition-colors">
                             <div className="flex justify-between items-start mb-2">
                                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                    q.tag === 'Parent Ask' ? 'bg-orange-100 text-orange-700' : 
-                                    q.tag === 'Teen Ask' ? 'bg-purple-100 text-purple-700' : 
+                                    q.tag === 'Parent Ask' ? 'bg-orange-100 text-orange-700' :
+                                    q.tag === 'Teen Ask' ? 'bg-purple-100 text-purple-700' :
                                     'bg-gray-100 text-gray-700'
                                 }`}>
                                     {q.tag}
@@ -198,8 +279,8 @@ const CommunitySpacePage: React.FC = () => {
                         key={tab}
                         onClick={() => setActiveTab(tab as Tab)}
                         className={`pb-3 text-sm font-bold transition-colors relative ${
-                            activeTab === tab 
-                            ? 'text-[var(--primary)]' 
+                            activeTab === tab
+                            ? 'text-[var(--primary)]'
                             : 'text-[var(--muted)] hover:text-[var(--foreground)]'
                         }`}
                     >

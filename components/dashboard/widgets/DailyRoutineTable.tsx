@@ -516,24 +516,44 @@ const DailyRoutineTable: React.FC = () => {
     return c[dim] || '';
   };
 
+  // Gold-themed helpers
+  const isSolat = (cat: string) => cat === 'solat';
+
   return (
-    <div className="bg-gray-900/60 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6">
+    <div
+      className="rounded-2xl p-4 sm:p-6"
+      style={{
+        background: 'linear-gradient(135deg, #0d1b2a 0%, #0a0f1a 100%)',
+        border: '1px solid rgba(201,168,76,0.22)',
+        boxShadow: '0 0 40px rgba(201,168,76,0.04)',
+      }}
+    >
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h2 className="text-xl font-black text-white flex items-center gap-2">
-            🕌 Rutin Harian Nabi ﷺ
-            <span className="text-[10px] font-medium bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
+          <h2
+            className="text-xl font-bold flex items-center gap-2 flex-wrap"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#f5f0e8' }}
+          >
+            <span style={{ color: '#c9a84c' }}>✦</span>
+            Rutin Harian Nabi ﷺ
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+              style={{ background: 'rgba(201,168,76,0.12)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)', fontFamily: "'DM Sans', sans-serif" }}
+            >
               Sunnah + Sains + 5 Dimensi
             </span>
           </h2>
-          <p className="text-xs text-white/40 mt-1">
+          <p className="text-xs mt-1" style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}>
             🕊️Ruh 🧠Aql ❤️Qalb ⚔️Nafs 💪Jasad — setiap rutin level up semua dimensi kamu
           </p>
         </div>
         <button
           onClick={resetToDefault}
-          className="text-xs bg-white/5 hover:bg-white/10 text-white/60 px-3 py-1.5 rounded-lg transition-colors"
+          className="text-xs px-3 py-1.5 rounded-lg transition-all whitespace-nowrap"
+          style={{ background: 'rgba(201,168,76,0.06)', color: '#8a8a9a', border: '1px solid rgba(201,168,76,0.15)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#c9a84c'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#8a8a9a'; }}
         >
           🔄 Reset Sunnah
         </button>
@@ -541,31 +561,38 @@ const DailyRoutineTable: React.FC = () => {
 
       {/* Progress */}
       <div className="mb-4 space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-white/60">
-            Hari ini: <span className="text-white font-bold">{completedCount}/{totalCount}</span>
+        <div className="flex items-center justify-between text-xs" style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}>
+          <span>
+            Hari ini:{' '}
+            <span className="font-bold" style={{ color: '#f5f0e8' }}>{completedCount}/{totalCount}</span>
           </span>
-          <span className="text-white/60">
-            Solat: <span className="text-emerald-400 font-bold">{prayersDone}/{totalPrayers}</span>
+          <span>
+            Solat:{' '}
+            <span className="font-bold" style={{ color: '#c9a84c' }}>{prayersDone}/{totalPrayers}</span>
           </span>
-          <span className={`font-black ${progress === 100 ? 'text-yellow-400' : 'text-white'}`}>
+          <span className="font-black" style={{ color: progress === 100 ? '#e8c97a' : '#f5f0e8' }}>
             {progress}%
           </span>
         </div>
-        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(201,168,76,0.1)' }}>
           <div
-            className={`h-full rounded-full transition-all duration-500 ${
-              progress === 100
-                ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
-                : 'bg-gradient-to-r from-emerald-500 to-cyan-500'
-            }`}
-            style={{ width: `${progress}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${progress}%`,
+              background: progress === 100
+                ? 'linear-gradient(90deg, #c9a84c, #e8c97a, #c9a84c)'
+                : 'linear-gradient(90deg, #c9a84c, #e8c97a)',
+              boxShadow: '0 0 8px rgba(201,168,76,0.4)',
+            }}
           />
         </div>
         {progress === 100 && (
-          <div className="text-center py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
-            <span className="text-yellow-400 font-black text-sm">
-              🏆 MasyaAllah! Semua siap! Ruh, Aql, Qalb, Nafs & Jasad kamu naik hari ini! 🏆
+          <div
+            className="text-center py-2 rounded-xl"
+            style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.3)' }}
+          >
+            <span className="font-black text-sm" style={{ color: '#e8c97a' }}>
+              ✦ MasyaAllah! Semua siap! Ruh, Aql, Qalb, Nafs & Jasad kamu naik hari ini! ✦
             </span>
           </div>
         )}
@@ -575,33 +602,48 @@ const DailyRoutineTable: React.FC = () => {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left text-xs text-white/40 py-2 px-2 w-8">✓</th>
-              <th className="text-left text-xs text-white/40 py-2 px-2 w-20">Masa</th>
-              <th className="text-left text-xs text-white/40 py-2 px-2">Rutin</th>
-              <th className="text-left text-xs text-white/40 py-2 px-2 w-20 hidden sm:table-cell">Jenis</th>
-              <th className="text-right text-xs text-white/40 py-2 px-2 w-24">Info</th>
+            <tr style={{ borderBottom: '1px solid rgba(201,168,76,0.2)' }}>
+              <th className="text-left text-xs py-2 px-2 w-8" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>✓</th>
+              <th className="text-left text-xs py-2 px-2 w-20" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Masa</th>
+              <th className="text-left text-xs py-2 px-2" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Rutin</th>
+              <th className="text-left text-xs py-2 px-2 w-20 hidden sm:table-cell" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Jenis</th>
+              <th className="text-right text-xs py-2 px-2 w-24" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Info</th>
             </tr>
           </thead>
           <tbody>
             {routine.map((task) => (
               <React.Fragment key={task.id}>
                 <tr
-                  className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-                    log[task.id] ? 'opacity-60' : ''
-                  }`}
+                  className="transition-all duration-150"
+                  style={{
+                    borderBottom: '1px solid rgba(201,168,76,0.06)',
+                    background: isSolat(task.category)
+                      ? 'rgba(201,168,76,0.04)'
+                      : 'transparent',
+                    opacity: log[task.id] ? 0.55 : 1,
+                    borderLeft: isSolat(task.category) ? '2px solid rgba(201,168,76,0.35)' : '2px solid transparent',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.07)'; }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = isSolat(task.category)
+                      ? 'rgba(201,168,76,0.04)'
+                      : 'transparent';
+                  }}
                 >
                   {/* Checkbox */}
                   <td className="py-2.5 px-2">
                     <button
                       onClick={() => toggleTask(task.id)}
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                        log[task.id]
-                          ? 'bg-emerald-500 border-emerald-500 text-white'
-                          : 'border-white/20 hover:border-emerald-500/50'
-                      }`}
+                      className="w-5 h-5 rounded-md flex items-center justify-center transition-all"
+                      style={log[task.id] ? {
+                        background: 'linear-gradient(135deg, #c9a84c, #e8c97a)',
+                        border: '2px solid #c9a84c',
+                        color: '#0a0a0f',
+                      } : {
+                        border: '2px solid rgba(201,168,76,0.3)',
+                      }}
                     >
-                      {log[task.id] && <span className="text-xs">✓</span>}
+                      {log[task.id] && <span className="text-xs font-black">✓</span>}
                     </button>
                   </td>
 
@@ -611,13 +653,13 @@ const DailyRoutineTable: React.FC = () => {
                       <input
                         value={editTime}
                         onChange={(e) => setEditTime(e.target.value)}
-                        className="w-20 bg-white/10 text-white text-xs px-2 py-1 rounded"
+                        className="w-20 text-xs px-2 py-1 rounded"
+                        style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.3)', color: '#f5f0e8' }}
                       />
                     ) : (
                       <span
-                        className={`text-xs font-mono ${
-                          log[task.id] ? 'text-white/40 line-through' : 'text-white/70'
-                        }`}
+                        className="text-xs font-mono"
+                        style={{ color: log[task.id] ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.7)', textDecoration: log[task.id] ? 'line-through' : 'none' }}
                       >
                         {task.time}
                       </span>
@@ -631,20 +673,20 @@ const DailyRoutineTable: React.FC = () => {
                         <input
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          className="flex-1 bg-white/10 text-white text-sm px-2 py-1 rounded"
+                          className="flex-1 text-sm px-2 py-1 rounded"
+                          style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.3)', color: '#f5f0e8' }}
                         />
-                        <button onClick={() => saveEdit(task.id)} className="text-emerald-400 text-xs">
-                          💾
-                        </button>
-                        <button onClick={() => setEditingTask(null)} className="text-red-400 text-xs">
-                          ✖
-                        </button>
+                        <button onClick={() => saveEdit(task.id)} className="text-xs" style={{ color: '#c9a84c' }}>💾</button>
+                        <button onClick={() => setEditingTask(null)} className="text-xs text-red-400">✖</button>
                       </div>
                     ) : (
                       <span
-                        className={`text-sm font-semibold ${
-                          log[task.id] ? 'text-white/40 line-through' : 'text-white'
-                        }`}
+                        className="text-sm font-semibold"
+                        style={{
+                          color: log[task.id] ? 'rgba(245,240,232,0.35)' : '#f5f0e8',
+                          textDecoration: log[task.id] ? 'line-through' : 'none',
+                          fontFamily: "'DM Sans', sans-serif",
+                        }}
                       >
                         {task.task}
                       </span>
@@ -663,11 +705,14 @@ const DailyRoutineTable: React.FC = () => {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
-                        className={`text-xs px-2 py-1 rounded-lg transition-colors ${
-                          expandedTask === task.id
-                            ? 'bg-purple-500/20 text-purple-300'
-                            : 'bg-white/5 text-white/40 hover:text-white/70'
-                        }`}
+                        className="text-xs px-2 py-1 rounded-lg transition-colors"
+                        style={expandedTask === task.id ? {
+                          background: 'rgba(201,168,76,0.15)',
+                          color: '#c9a84c',
+                        } : {
+                          background: 'rgba(201,168,76,0.05)',
+                          color: '#8a8a9a',
+                        }}
                       >
                         {expandedTask === task.id ? '🔽' : '📖'}
                       </button>
@@ -675,13 +720,15 @@ const DailyRoutineTable: React.FC = () => {
                         <>
                           <button
                             onClick={() => startEdit(task)}
-                            className="text-xs bg-white/5 text-white/40 hover:text-white/70 px-1.5 py-1 rounded-lg"
+                            className="text-xs px-1.5 py-1 rounded-lg"
+                            style={{ background: 'rgba(201,168,76,0.05)', color: '#8a8a9a' }}
                           >
                             ✏️
                           </button>
                           <button
                             onClick={() => deleteTask(task.id)}
-                            className="text-xs bg-white/5 text-red-400/60 hover:text-red-400 px-1.5 py-1 rounded-lg"
+                            className="text-xs px-1.5 py-1 rounded-lg"
+                            style={{ background: 'rgba(239,68,68,0.06)', color: 'rgba(252,165,165,0.6)' }}
                           >
                             🗑️
                           </button>
@@ -697,20 +744,18 @@ const DailyRoutineTable: React.FC = () => {
                     <td colSpan={5} className="px-2 py-3">
                       <div className="space-y-3">
                         {/* Tabs */}
-                        <div className="flex gap-1 bg-white/5 rounded-xl p-1">
+                        <div className="flex gap-1 rounded-xl p-1" style={{ background: 'rgba(201,168,76,0.06)' }}>
                           {(['dimensions', 'sunnah', 'science'] as const).map((tab) => (
                             <button
                               key={tab}
                               onClick={() => setActiveTab(tab)}
-                              className={`flex-1 text-xs py-1.5 rounded-lg font-bold transition-colors ${
-                                activeTab === tab
-                                  ? tab === 'dimensions'
-                                    ? 'bg-purple-500/20 text-purple-300'
-                                    : tab === 'sunnah'
-                                    ? 'bg-amber-500/20 text-amber-300'
-                                    : 'bg-cyan-500/20 text-cyan-300'
-                                  : 'text-white/40 hover:text-white/60'
-                              }`}
+                              className="flex-1 text-xs py-1.5 rounded-lg font-bold transition-colors"
+                              style={activeTab === tab ? {
+                                background: 'rgba(201,168,76,0.2)',
+                                color: '#e8c97a',
+                              } : {
+                                color: '#8a8a9a',
+                              }}
                             >
                               {tab === 'dimensions'
                                 ? '🕊️🧠❤️⚔️💪 5 Dimensi'
@@ -785,25 +830,28 @@ const DailyRoutineTable: React.FC = () => {
       </div>
 
       {/* Add Task */}
-      <div className="mt-4 border-t border-white/10 pt-4">
+      <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
         {showAddForm ? (
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <input
               value={newTime}
               onChange={(e) => setNewTime(e.target.value)}
               placeholder="Masa (cth: 3:00 PM)"
-              className="w-full sm:w-28 bg-white/5 border border-white/10 text-white text-xs px-3 py-2 rounded-lg"
+              className="w-full sm:w-28 text-xs px-3 py-2 rounded-lg"
+              style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', color: '#f5f0e8' }}
             />
             <input
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Nama rutin..."
-              className="flex-1 w-full bg-white/5 border border-white/10 text-white text-xs px-3 py-2 rounded-lg"
+              className="flex-1 w-full text-xs px-3 py-2 rounded-lg"
+              style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', color: '#f5f0e8' }}
             />
             <select
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value as RoutineTask['category'])}
-              className="w-full sm:w-32 bg-white/5 border border-white/10 text-white text-xs px-3 py-2 rounded-lg"
+              className="w-full sm:w-32 text-xs px-3 py-2 rounded-lg"
+              style={{ background: '#0d1b2a', border: '1px solid rgba(201,168,76,0.2)', color: '#f5f0e8' }}
             >
               {Object.entries(CATEGORY_CONFIG).map(([k, v]) => (
                 <option key={k} value={k}>
@@ -814,13 +862,15 @@ const DailyRoutineTable: React.FC = () => {
             <div className="flex gap-1">
               <button
                 onClick={addTask}
-                className="bg-emerald-500/20 text-emerald-400 text-xs px-3 py-2 rounded-lg hover:bg-emerald-500/30"
+                className="text-xs px-3 py-2 rounded-lg transition-all"
+                style={{ background: 'rgba(201,168,76,0.15)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)' }}
               >
                 ✅ Tambah
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="bg-white/5 text-white/40 text-xs px-3 py-2 rounded-lg"
+                className="text-xs px-3 py-2 rounded-lg"
+                style={{ background: 'rgba(201,168,76,0.05)', color: '#8a8a9a' }}
               >
                 ✖
               </button>
@@ -829,9 +879,18 @@ const DailyRoutineTable: React.FC = () => {
         ) : (
           <button
             onClick={() => setShowAddForm(true)}
-            className="w-full text-center text-xs text-white/30 hover:text-white/60 py-2 border border-dashed border-white/10 hover:border-white/20 rounded-xl transition-colors"
+            className="w-full text-center text-xs py-2 rounded-xl transition-all"
+            style={{ color: 'rgba(201,168,76,0.5)', border: '1px dashed rgba(201,168,76,0.2)' }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.color = '#c9a84c';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.4)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.color = 'rgba(201,168,76,0.5)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.2)';
+            }}
           >
-            ➕ Tambah Rutin Sendiri
+            ✦ Tambah Rutin Sendiri
           </button>
         )}
       </div>

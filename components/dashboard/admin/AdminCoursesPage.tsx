@@ -115,32 +115,32 @@ const AdminCoursesPage: React.FC = () => {
 
             {/* Create Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Create New Course</h2>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-4 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-4">Create New Course</h2>
                         <form onSubmit={handleCreateCourse}>
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course Title</label>
-                                <input 
-                                    type="text" 
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none"
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none"
                                     placeholder="e.g. Advanced Mathematics"
                                     value={newCourseTitle}
                                     onChange={(e) => setNewCourseTitle(e.target.value)}
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex justify-end gap-3 mt-6">
-                                <button 
-                                    type="button" 
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-6">
+                                <button
+                                    type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                    className="px-4 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition min-h-[44px]"
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     type="submit"
-                                    className="px-4 py-2 rounded-lg bg-purple-600 text-white font-bold hover:bg-purple-700 transition"
+                                    className="px-4 py-2.5 rounded-lg bg-purple-600 text-white font-bold hover:bg-purple-700 transition min-h-[44px]"
                                 >
                                     Create
                                 </button>

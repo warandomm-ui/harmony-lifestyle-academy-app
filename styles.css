@@ -1,6 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Prevent horizontal overflow on all screen sizes ── */
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── Mobile: enforce minimum touch target sizes ── */
+@media (max-width: 768px) {
+  button, [role="button"], a, summary {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  input, textarea, select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 44px;
+  }
+  /* Tighten bento-card padding on mobile */
+  .bento-card {
+    padding: 1rem;
+  }
+}
+
+/* ── Safe-area padding for notched phones ── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
 
 :root {
   --background: #ffffff;
@@ -40,11 +71,95 @@ body {
   padding: 1.5rem;
 }
 
+/* ── Animations ── */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-fast {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
   animation: fade-in 0.5s ease-out;
+}
+
+.animate-fade-in-fast {
+  animation: fade-in-fast 0.2s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+/* ── Harmony Luxury Academy — Dark Gold Dashboard Theme ── */
+.hla-dashboard {
+  --background: #0a0a0f;
+  --foreground: #f5f0e8;
+  --card: #0d1b2a;
+  --border: rgba(201, 168, 76, 0.18);
+  --primary: #c9a84c;
+  --primary-foreground: #0a0a0f;
+  --secondary: rgba(201, 168, 76, 0.07);
+  --muted: #8a8a9a;
+  --muted-foreground: #8a8a9a;
+  --accent: #e8c97a;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.hla-dashboard .bento-card {
+  background: linear-gradient(135deg, #0d1b2a 0%, #0a0f1a 100%);
+  border-color: rgba(201, 168, 76, 0.15);
+}
+
+.hla-dashboard header {
+  background: rgba(7, 11, 18, 0.96) !important;
+  border-bottom-color: rgba(201, 168, 76, 0.15) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.hla-dashboard nav {
+  background: #070b12 !important;
+  border-right-color: rgba(201, 168, 76, 0.12) !important;
+}
+
+/* Gold text gradient */
+.hla-gold-text {
+  background: linear-gradient(135deg, #c9a84c 0%, #e8c97a 50%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Horizontal gold divider */
+.hla-gold-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201, 168, 76, 0.4), transparent);
+  margin: 0.5rem 0;
+}
+
+/* Playfair Display heading utility */
+.font-playfair {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ── Hide scrollbar while keeping scroll functionality ── */
+.no-scrollbar {
+  -ms-overflow-style: none;   /* IE / Edge */
+  scrollbar-width: none;      /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;              /* Chrome / Safari / Opera */
 }

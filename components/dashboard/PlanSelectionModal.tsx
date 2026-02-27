@@ -11,16 +11,16 @@ interface PlanSelectionModalProps {
 
 const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({ currentPlanId, plans, onClose, onSelectPlan }) => {
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-      <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+      <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-2xl lg:max-w-4xl max-h-[90vh] flex flex-col">
         <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-          <h2 className="text-xl font-bold text-[var(--foreground)]">Choose Your Plan</h2>
-          <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+          <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)]">Choose Your Plan</h2>
+          <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
             <XIcon className="h-5 w-5" />
           </button>
         </header>
-        <div className="overflow-y-auto p-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {plans.map(plan => (
               <div
                 key={plan.id}

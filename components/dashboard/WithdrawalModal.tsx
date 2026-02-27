@@ -37,14 +37,14 @@ const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ onClose, balance }) =
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
-            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col border border-[var(--border)]">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in-fast">
+            <div className="bg-[var(--card)] rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md max-h-[90vh] flex flex-col border border-[var(--border)]">
                 <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0">
-                    <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-                        <CashIcon className="h-6 w-6 text-green-500" />
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
+                        <CashIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />
                         Request Payout
                     </h2>
-                    <button onClick={onClose} className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)]">
+                    <button onClick={onClose} className="p-2 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <XIcon className="h-5 w-5" />
                     </button>
                 </header>
@@ -100,9 +100,9 @@ const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ onClose, balance }) =
                             <strong>Note:</strong> To ensure security, all withdrawals are manually reviewed. Processing typically takes 1-2 business days.
                         </div>
 
-                        <div className="pt-2 flex justify-end gap-3">
-                            <button type="button" onClick={onClose} className="px-6 py-2 rounded-full font-bold text-[var(--muted)] hover:bg-[var(--secondary)] transition">Cancel</button>
-                            <button type="submit" className="bg-green-600 text-white font-bold py-2 px-6 rounded-full hover:bg-green-700 transition">Submit Request</button>
+                        <div className="pt-2 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                            <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-full font-bold text-[var(--muted)] hover:bg-[var(--secondary)] transition min-h-[44px]">Cancel</button>
+                            <button type="submit" className="bg-green-600 text-white font-bold py-2.5 px-6 rounded-full hover:bg-green-700 transition min-h-[44px]">Submit Request</button>
                         </div>
                     </form>
                 </div>

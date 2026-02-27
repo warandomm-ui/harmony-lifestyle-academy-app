@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import type { AnalysisResult, CourseDifficulty, CourseOutline, Goal, SkillSuggestion, SurveyAnswers, AdminAssistanceResult, GroundedCareerDetail, StudentDataItem, StudyMode, StudyBuddyMessage, Emotion, WeeklyEmotionReview } from '../types';
 import { DEFAULT_ANALYSIS_RESULT } from '../constants';
 
@@ -9,7 +9,13 @@ const escapePrompt = (content: string, tag: string = "user_content") => {
 
 const SIMPLE_EXPLANATION_INSTRUCTION = "Keep your explanations very simple, like you are talking to a 5th grader (10-11 years old). Use easy words and helpful examples.";
 
-const getAI = () => new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
+const getAI = () => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+  if (!apiKey) {
+    console.error('[Gemini] Missing VITE_GEMINI_API_KEY. AI features will not work.');
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 // Helper: retry a function up to N times with delay
 const retry = async <T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promise<T> => {
@@ -141,7 +147,14 @@ export const generateCourseOutline = async (topic: string, difficulty: CourseDif
 };
 
 export const generatePlaceholderVideo = async (prompt: string): Promise<string> => {
-    return "";
+    const ai = getAI();
+    const response = await retry(() => ai.models.generateContent({
+        model: 'gemini-2.5-flash-lite',
+        contents: `You are an educational content creator. Create a lesson brief for a short educational video about: "${prompt}". Return ONLY a valid JSON object with exactly these keys: "title" (string), "duration" (string like "3 min"), "objective" (one-sentence learning goal), "keyPoints" (array of 3-4 strings), "script" (2-3 paragraph narration), "visualNotes" (string describing visuals/animations).`,
+        config: { responseMimeType: 'application/json' },
+    }));
+    if (!response.text) throw new Error('No content generated');
+    return response.text;
 };
 
 export const getAdminAssistance = async (prompt: string, studentData?: StudentDataItem[]): Promise<AdminAssistanceResult> => {
@@ -226,9 +239,28 @@ export const askAIAboutNote = async (noteContent: string, userQuery: string, his
 };
 
 export const generatePodcastAudio = async (noteContent: string): Promise<string> => {
-    try {
-        const ai = getAI();
-        const response = await retry(() => ai.models.generateContent({ model: "gemini-2.5-flash-lite", contents: [{ parts: [{ text: `Podcast script: ${noteContent}` }] }] }));
-        return response.text || "";
-    } catch (error) { return ""; }
+    const ai = getAI();
+
+    // Step 1: Generate a concise, naturally-spoken narration script
+    const scriptRes = await retry(() => ai.models.generateContent({
+        model: 'gemini-2.5-flash-lite',
+        contents: `Write a short, engaging podcast-style narration (80–120 words) summarising these notes. Write it as a single narrator speaking naturally, as if recording an audio overview. Do not include any markdown, headers, or speaker labels — just the spoken text.\n\nNotes:\n${noteContent.slice(0, 2000)}`,
+    }));
+    const script = scriptRes.text?.trim() || noteContent.slice(0, 300);
+
+    // Step 2: Convert script to audio using Gemini TTS
+    const ttsRes = await retry(() => ai.models.generateContent({
+        model: 'gemini-2.5-flash-preview-tts',
+        contents: [{ parts: [{ text: script }] }],
+        config: {
+            responseModalities: [Modality.AUDIO],
+            speechConfig: {
+                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Aoede' } },
+            },
+        } as any,
+    }));
+
+    const audioData = ttsRes.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!audioData) throw new Error('No audio data returned from TTS model');
+    return audioData;
 };

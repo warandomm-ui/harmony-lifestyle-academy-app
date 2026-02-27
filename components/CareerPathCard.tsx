@@ -39,7 +39,7 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
       };
       fetchGroundedInfo();
     }
-  }, [isExpanded, career.name, personalityType, groundedDetails, isGroundedLoading]);
+  }, [isExpanded, career.name, personalityType, groundedDetails]); // isGroundedLoading intentionally excluded to prevent re-fetch loop
 
   const toggleExpand = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -111,7 +111,7 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
                             {groundedDetails.groundingLinks.map((link, linkIndex) => (
                                 <li key={linkIndex} className="truncate">
                                     <a href={link.uri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline dark:text-blue-400">
-                                        {link.title || new URL(link.uri).hostname}
+                                        {link.title || (() => { try { return new URL(link.uri).hostname; } catch { return link.uri; } })()}
                                     </a>
                                 </li>
                             ))}
