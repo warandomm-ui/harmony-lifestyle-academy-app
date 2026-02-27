@@ -64,7 +64,7 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
 
         {/* Daily Routine */}
         <SectionHeading>Daily Schedule</SectionHeading>
-        <DailyRoutineTable />
+        <DailyRoutineTable religion={userProfile.religion} />
 
         {/* Wellness Grid */}
         <SectionHeading>Wellness Trackers</SectionHeading>

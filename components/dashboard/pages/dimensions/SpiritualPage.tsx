@@ -264,11 +264,243 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
     );
 };
 
-// --- Main Page ---
+// ─────────────────────────────────────────────────────────────────────────────
+// UNIVERSAL MINDFULNESS CONTENT (non-Muslim)
+// ─────────────────────────────────────────────────────────────────────────────
 
-const SpiritualPage: React.FC = () => {
+interface MindfulnessPathway {
+  id: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  color: string;
+  practices: { title: string; duration: string; desc: string; benefit: string }[];
+}
+
+const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
+  {
+    id: 'presence',
+    icon: '🧘',
+    title: 'Presence',
+    subtitle: 'The Art of Being Here',
+    description: '"The present moment is the only moment available to us, and it is the door to all moments." — Thich Nhat Hanh',
+    color: 'from-teal-900 to-teal-700',
+    practices: [
+      { title: 'Body Scan Meditation', duration: '10 min', desc: 'Slowly move awareness through each part of your body from feet to crown, releasing tension as you go.', benefit: 'Reduces cortisol by 20%, activates parasympathetic nervous system (Harvard, 2018)' },
+      { title: 'Mindful Breathing', duration: '5 min', desc: '4-7-8 breathing: inhale 4 counts, hold 7, exhale 8. Repeat 4 cycles to instantly calm the nervous system.', benefit: 'Lowers heart rate, reduces anxiety within 60 seconds (Journal of Clinical Psychology, 2020)' },
+      { title: 'Sensory Grounding', duration: '3 min', desc: 'Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. Full presence now.', benefit: 'Interrupts rumination and brings the mind back to the present moment immediately' },
+      { title: 'Walking Meditation', duration: '15 min', desc: 'Walk slowly, feeling each footstep. Notice the breath, surroundings, and sensations with full attention.', benefit: 'Increases grey matter in attention regions (NeuroImage, 2015). Stanford: boosts creativity 81%' },
+    ],
+  },
+  {
+    id: 'gratitude',
+    icon: '🌸',
+    title: 'Gratitude',
+    subtitle: 'Abundance as a Practice',
+    description: '"Gratitude turns what we have into enough." — Melody Beattie',
+    color: 'from-rose-900 to-rose-700',
+    practices: [
+      { title: 'Morning Gratitude Journal', duration: '5 min', desc: 'Write 3 specific things you are grateful for each morning. Be specific — not "family" but "my sister calling me yesterday."', benefit: '8 weeks of daily gratitude journaling increases life satisfaction and reduces depression (J American College Health, 2022)' },
+      { title: 'Gratitude Letter', duration: '20 min', desc: 'Write a letter of appreciation to someone who has made a difference. You may or may not send it — the writing itself is the practice.', benefit: 'Gratitude letters increase happiness for up to a month after writing (Positive Psychology, Martin Seligman, 2005)' },
+      { title: 'Savouring Practice', duration: '5 min', desc: 'Identify one pleasurable moment today and consciously extend it. Replay it in your mind, share it with someone, take a photo — stretch the joy.', benefit: 'Savouring increases positive emotions and builds psychological resilience (Journal of Positive Psychology, 2019)' },
+      { title: 'Evening Review', duration: '10 min', desc: 'Before sleep, recall 3 moments that went well today. No matter how small. Ask: what allowed this to happen?', benefit: 'Reduces insomnia, improves sleep quality, and rewires the brain toward positive pattern recognition' },
+    ],
+  },
+  {
+    id: 'purpose',
+    icon: '🌟',
+    title: 'Purpose',
+    subtitle: 'Living Your Values',
+    description: '"He who has a why to live can bear almost any how." — Friedrich Nietzsche',
+    color: 'from-amber-900 to-amber-700',
+    practices: [
+      { title: 'Values Clarification', duration: '20 min', desc: 'List 10 values, then ruthlessly narrow to your top 3. Ask: if I could only live by three values, what would they be?', benefit: 'Clarity on values predicts life satisfaction more than wealth or status (Self-Determination Theory, Deci & Ryan)' },
+      { title: 'Ikigai Reflection', duration: '30 min', desc: 'Map your Ikigai: What do you love? What are you good at? What does the world need? What can you be paid for? Find the intersection.', benefit: 'Purpose reduces mortality risk by 15%, lowers heart disease risk, and extends healthy lifespan (JAMA Network Open, 2019)' },
+      { title: 'Legacy Letter', duration: '25 min', desc: 'Write a letter from your 80-year-old self to your current self. What do you want them to have done? What will you regret not doing?', benefit: 'Future-self reflection increases long-term goal alignment and reduces present-bias in decision making' },
+      { title: 'Daily Intention Setting', duration: '3 min', desc: 'Each morning, set one clear intention: "Today I intend to..." — not a task, but a way of being. How do you want to show up?', benefit: 'Intentional living increases engagement, meaning, and consistency across all domains of life' },
+    ],
+  },
+  {
+    id: 'resilience',
+    icon: '🌊',
+    title: 'Resilience',
+    subtitle: 'The Strength to Return',
+    description: '"The oak fought the wind and was broken, the willow bent when it must and survived." — Robert Jordan',
+    color: 'from-blue-900 to-blue-700',
+    practices: [
+      { title: 'Stoic Evening Review', duration: '10 min', desc: 'Marcus Aurelius did this nightly: What did I do well today? What could I have done better? What will I improve tomorrow?', benefit: 'Self-reflection reduces stress and depression. 8 weeks of journaling increased resilience by 23% (J Occupational Health, 2022)' },
+      { title: 'Negative Visualisation', duration: '10 min', desc: 'Imagine losing something you take for granted — your health, a relationship, your sight. Then return to the present with deep appreciation.', benefit: 'Stoic practice of memento mori and negative visualisation measurably increases present-moment gratitude and hedonic adaptation' },
+      { title: 'Emotional Labelling', duration: '5 min', desc: 'When difficult emotions arise, name them precisely: "I notice frustration" or "I am feeling fear." The act of labelling reduces intensity immediately.', benefit: 'Affect labelling reduces amygdala activation by 20% — naming the emotion literally calms the brain (Lieberman, UCLA, 2007)' },
+      { title: 'Post-Traumatic Growth Journal', duration: '15 min', desc: 'Write about a past difficulty. Ask: What did I learn? How did I grow? What strength did I discover? Reframe challenge as the training ground.', benefit: 'PTG journaling turns adversity into strength. Expressive writing reduces PTSD symptoms and improves immune function (Pennebaker, 1997)' },
+    ],
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UniversalMindfulnessPage component
+// ─────────────────────────────────────────────────────────────────────────────
+
+const UniversalMindfulnessPage: React.FC = () => {
+  const [activeId, setActiveId] = useState('presence');
+  const [expandedPractice, setExpandedPractice] = useState<number | null>(null);
+  const { addPoints } = useGamification();
+  const { addToast } = useToast();
+
+  const active = MINDFULNESS_PATHWAYS.find(p => p.id === activeId) || MINDFULNESS_PATHWAYS[0];
+
+  const handlePracticeComplete = (practiceTitle: string) => {
+    addPoints(25, `completing ${practiceTitle}`);
+    addToast(`Great work on "${practiceTitle}"! +25 points`, 'success');
+  };
+
+  return (
+    <div className="space-y-8 animate-fade-in pb-20">
+      {/* Hero */}
+      <div
+        className={`rounded-3xl text-center p-12 bg-gradient-to-br ${active.color} text-white relative overflow-hidden shadow-2xl`}
+        style={{ transition: 'all 0.7s ease' }}
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-8 left-8 text-9xl">✨</div>
+          <div className="absolute bottom-8 right-8 text-9xl">🌿</div>
+        </div>
+        <div className="relative z-10">
+          <div className="text-7xl mb-6 animate-bounce-slow">{active.icon}</div>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-2">
+            {active.title}
+          </h2>
+          <p className="text-white/60 font-bold uppercase tracking-widest text-xs mb-6">
+            {active.subtitle}
+          </p>
+          <p className="text-white/80 text-xl font-medium leading-relaxed italic max-w-2xl mx-auto">
+            {active.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Pathway Tabs */}
+      <div className="flex gap-3 overflow-x-auto py-2 no-scrollbar">
+        {MINDFULNESS_PATHWAYS.map(p => (
+          <button
+            key={p.id}
+            onClick={() => { setActiveId(p.id); setExpandedPractice(null); }}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-2 transition-all whitespace-nowrap ${
+              activeId === p.id
+                ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)] shadow-lg scale-105'
+                : 'bg-[var(--card)] border-transparent hover:border-[var(--primary)] text-[var(--foreground)]'
+            }`}
+          >
+            <span className="text-xl">{p.icon}</span>
+            <span className="font-bold text-sm uppercase tracking-wide">{p.title}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Practices Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {active.practices.map((practice, idx) => (
+          <div
+            key={idx}
+            className="rounded-2xl overflow-hidden cursor-pointer transition-all"
+            style={{
+              background: 'rgba(13,27,42,0.8)',
+              border: expandedPractice === idx ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(201,168,76,0.15)',
+              boxShadow: expandedPractice === idx ? '0 0 20px rgba(201,168,76,0.08)' : 'none',
+            }}
+            onClick={() => setExpandedPractice(expandedPractice === idx ? null : idx)}
+          >
+            {/* Card header */}
+            <div className="p-5 flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1.5">
+                  <span
+                    className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider"
+                    style={{ background: 'rgba(201,168,76,0.1)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)' }}
+                  >
+                    {practice.duration}
+                  </span>
+                </div>
+                <h3
+                  className="font-black text-lg"
+                  style={{ color: '#f5f0e8', fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  {practice.title}
+                </h3>
+              </div>
+              <span style={{ color: 'rgba(201,168,76,0.5)', fontSize: '1.2rem' }}>
+                {expandedPractice === idx ? '▲' : '▼'}
+              </span>
+            </div>
+
+            {/* Expanded content */}
+            {expandedPractice === idx && (
+              <div className="px-5 pb-5 space-y-4" onClick={e => e.stopPropagation()}>
+                <p className="text-sm leading-relaxed" style={{ color: '#c8c0b4' }}>
+                  {practice.desc}
+                </p>
+
+                <div
+                  className="rounded-xl p-4 flex items-start gap-3"
+                  style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.2)' }}
+                >
+                  <span className="text-2xl mt-0.5">🧬</span>
+                  <div>
+                    <p className="text-[10px] font-black text-cyan-400 uppercase tracking-wider mb-1.5">
+                      Science & Research
+                    </p>
+                    <p className="text-xs text-cyan-200/80 leading-relaxed">
+                      {practice.benefit}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handlePracticeComplete(practice.title)}
+                  className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                  style={{
+                    background: 'rgba(201,168,76,0.12)',
+                    border: '1px solid rgba(201,168,76,0.3)',
+                    color: '#c9a84c',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.2)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.12)'; }}
+                >
+                  ✦ Mark Practice Complete (+25 pts)
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main Page
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
+    const muslim = religion.trim().toLowerCase() === 'islam';
+
     const [activeCategoryId, setActiveCategoryId] = useState('ruh');
     const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
+
+    // Non-Muslim path
+    if (!muslim) {
+        return <UniversalMindfulnessPage />;
+    }
 
     const activeCategory = SPIRITUAL_PATHWAYS.find(c => c.id === activeCategoryId) || SPIRITUAL_PATHWAYS[0];
 
@@ -280,13 +512,13 @@ const SpiritualPage: React.FC = () => {
                     <div className="absolute top-10 left-10 text-9xl">✨</div>
                     <div className="absolute bottom-10 right-10 text-9xl">📖</div>
                 </div>
-                
+
                 <div className="relative z-10">
                     <div className="text-7xl mb-6 animate-bounce-slow">{activeCategory.icon}</div>
                     <h2 className="text-5xl font-black uppercase tracking-tighter">
                         {activeCategory.arabicTitle} <span className="font-light opacity-30">|</span> {activeCategory.title}
                     </h2>
-                    
+
                     <div className="mt-6 max-w-3xl mx-auto space-y-6">
                         <p className="text-indigo-100 text-xl font-medium leading-relaxed italic">
                             "{activeCategory.longDescription}"
@@ -322,9 +554,9 @@ const SpiritualPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {activeCategory.surahs.map((surah, idx) => (
                     <div key={`${surah.number}-${idx}`} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.03}s` }}>
-                        <SurahFolder 
-                            surah={surah} 
-                            onClick={() => setSelectedSurah(surah)} 
+                        <SurahFolder
+                            surah={surah}
+                            onClick={() => setSelectedSurah(surah)}
                         />
                     </div>
                 ))}
@@ -332,10 +564,10 @@ const SpiritualPage: React.FC = () => {
 
             {/* Academy Course Player Overlay */}
             {selectedSurah && (
-                <SurahPlayerOverlay 
-                    surah={selectedSurah} 
+                <SurahPlayerOverlay
+                    surah={selectedSurah}
                     category={activeCategory}
-                    onClose={() => setSelectedSurah(null)} 
+                    onClose={() => setSelectedSurah(null)}
                 />
             )}
 

@@ -218,7 +218,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
       case 'intellectual':
         return <FullPageWrapper title="Intellectual Wellness"><IntellectualPage /></FullPageWrapper>;
       case 'spiritual':
-        return <FullPageWrapper title="Spiritual Wellness"><SpiritualPage /></FullPageWrapper>;
+        return <FullPageWrapper title="Spiritual Wellness"><SpiritualPage religion={userProfile.religion} /></FullPageWrapper>;
       case 'environmental':
         return <FullPageWrapper title="Environmental Wellness"><EnvironmentalPage /></FullPageWrapper>;
       case 'vocational':

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { useToast } from '../../../contexts/ToastContext';
+import { isMuslim } from '../../../utils/religionUtils';
 
 // --- Types ---
 interface DimensionBenefit {
@@ -30,19 +31,257 @@ interface RoutineLog {
 const CATEGORY_CONFIG: Record<string, { emoji: string; label: string }> = {
   solat:  { emoji: '🕌', label: 'Solat' },
   ibadah: { emoji: '📿', label: 'Ibadah' },
-  health: { emoji: '💪', label: 'Kesihatan' },
-  study:  { emoji: '📚', label: 'Ilmu' },
-  life:   { emoji: '🌙', label: 'Kehidupan' },
-  social: { emoji: '👨‍👩‍👧‍👦', label: 'Sosial' },
+  health: { emoji: '💪', label: 'Health' },
+  study:  { emoji: '📚', label: 'Learning' },
+  life:   { emoji: '🌙', label: 'Lifestyle' },
+  social: { emoji: '👨‍👩‍👧‍👦', label: 'Social' },
 };
 
-const DIMENSION_CONFIG: Record<string, { emoji: string; label: string; desc: string }> = {
+const ISLAMIC_DIMENSION_CONFIG: Record<string, { emoji: string; label: string; desc: string }> = {
   ruh:   { emoji: '🕊️', label: 'Ruh',   desc: 'Kesedaran Spiritual' },
   aql:   { emoji: '🧠', label: 'Aql',   desc: 'Akal & Pemikiran' },
   qalb:  { emoji: '❤️', label: 'Qalb',  desc: 'Hati & Emosi' },
   nafs:  { emoji: '⚔️', label: 'Nafs',  desc: 'Disiplin Diri' },
   jasad: { emoji: '💪', label: 'Jasad', desc: 'Fizikal & Badan' },
 };
+
+const UNIVERSAL_DIMENSION_CONFIG: Record<string, { emoji: string; label: string; desc: string }> = {
+  ruh:   { emoji: '✨', label: 'Soul',  desc: 'Spirit & Purpose' },
+  aql:   { emoji: '🧠', label: 'Mind',  desc: 'Intellect & Clarity' },
+  qalb:  { emoji: '❤️', label: 'Heart', desc: 'Emotions & Connection' },
+  nafs:  { emoji: '⚔️', label: 'Self',  desc: 'Discipline & Character' },
+  jasad: { emoji: '💪', label: 'Body',  desc: 'Physical Wellbeing' },
+};
+
+// ========================================
+// UNIVERSAL PRODUCTIVE ROUTINE
+// ========================================
+const UNIVERSAL_ROUTINE: RoutineTask[] = [
+  {
+    id: 'morning-meditation',
+    time: '5:30 AM',
+    task: 'Morning Meditation (10 min)',
+    category: 'life',
+    sunnahNote: 'Ancient wisdom across every tradition recommends beginning the day in stillness. The Stoics, Buddhists, and Transcendentalists all shared this practice.',
+    scienceNote: '🔬 Harvard study: 8 weeks of mindfulness increases grey matter in self-awareness regions. Morning meditation reduces cortisol by up to 20% for the entire day.',
+    dimensions: {
+      ruh: 'Connecting with something greater — whether nature, the universe, or your deeper purpose',
+      aql: 'Meditation strengthens the prefrontal cortex — better decisions, clearer thinking all day',
+      qalb: 'Calms the emotional brain — sets a positive emotional baseline from the very start',
+      nafs: 'Sitting still for 10 minutes when your mind wants to scroll — the ultimate daily discipline',
+      jasad: 'Lowers cortisol, reduces blood pressure, activates the parasympathetic nervous system',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'gratitude',
+    time: '5:45 AM',
+    task: 'Gratitude Journaling (5 min)',
+    category: 'life',
+    sunnahNote: 'Marcus Aurelius began every morning by reflecting on what he was grateful for. This practice appears in Stoicism, Buddhism, Positive Psychology and every wisdom tradition.',
+    scienceNote: '🔬 2022 study (J American College Health, 132 students, 8 weeks): Gratitude journaling increased life satisfaction, resilience and reduced depression, anxiety and stress significantly.',
+    dimensions: {
+      ruh: 'Recognising the gifts in your life shifts your perspective from scarcity to abundance',
+      aql: 'Writing clarifies thoughts — journaling processes emotions and organises your mental models',
+      qalb: 'Gratitude rewires the brain for positivity — the most evidence-based antidepressant available',
+      nafs: 'Focusing on what you have over what you lack trains contentment and self-sufficiency',
+      jasad: 'Gratitude practice lowers inflammation markers and measurably improves immune function',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'exercise',
+    time: '6:00 AM',
+    task: 'Exercise / Movement (30 min)',
+    category: 'health',
+    sunnahNote: 'The ancient Greeks believed a sound mind requires a sound body. Every wisdom tradition recognises physical movement as essential to human flourishing.',
+    scienceNote: '🔬 Morning exercise raises BDNF (brain growth factor) — improves memory and learning (Biomolecules, 2021). 30 min/day reduces depression risk by 26% (Harvard, 2019).',
+    dimensions: {
+      ruh: 'Caring for your body is an act of gratitude for the gift of life',
+      aql: 'BDNF surge after exercise grows new neurons — physical movement literally makes you smarter',
+      qalb: 'Endorphins released during exercise create natural, lasting mood elevation',
+      nafs: 'Pushing through workout discomfort builds the mental resilience to handle all challenges',
+      jasad: 'Strong muscles, healthy heart, dense bones, better posture, higher sustained energy',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'breakfast',
+    time: '7:30 AM',
+    task: 'Healthy Breakfast',
+    category: 'health',
+    sunnahNote: 'Hippocrates: "Let food be thy medicine." Every culture emphasises a nourishing morning meal to fuel the body and mind for the day ahead.',
+    scienceNote: '🔬 The brain uses 20% of the body\'s energy — a proper breakfast provides stable glucose for 4-5 hours of peak focus. Skipping breakfast is linked to 20% lower cognitive performance.',
+    dimensions: {
+      ruh: 'Eating mindfully and appreciating where your food came from is itself a spiritual practice',
+      aql: 'Stable blood sugar = stable energy for the prefrontal cortex — the seat of rational thought',
+      qalb: 'Eating with intention creates a positive, nourishing relationship with food',
+      nafs: 'Eating until satisfied (not stuffed) — practising moderation and self-awareness at every meal',
+      jasad: 'Balanced nutrition fuels metabolism, supports immunity and maintains hormonal balance',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'deep-work',
+    time: '8:00 AM',
+    task: 'Deep Focus Study / Work (2-3 hrs)',
+    category: 'study',
+    sunnahNote: 'Every great philosopher, scientist and creator has uninterrupted morning deep work as their cornerstone habit. The Stoics called this simply "doing the work."',
+    scienceNote: '🔬 Cortisol peaks 8-11 AM — the brain is most alert for complex information processing. "Deep work" in the morning is 2-4x more productive than afternoon sessions (Cal Newport, MIT).',
+    dimensions: {
+      ruh: 'Mastery in your craft is a form of service — developing your gifts benefits the world',
+      aql: 'Morning is the golden hour for learning — cortisol peak = sharpest focus and retention',
+      qalb: 'Flow state during deep work brings profound fulfilment and a deep sense of purpose',
+      nafs: 'Resisting all distractions for 2-3 hours = the ultimate training of sustained self-discipline',
+      jasad: 'The brain is a muscle — deep work is its most demanding and rewarding daily workout',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'mindful-break',
+    time: '10:30 AM',
+    task: 'Mindful Break (5 min walk)',
+    category: 'health',
+    sunnahNote: 'Aristotle did his best thinking while walking. The Peripatetic school of philosophy was literally built around walking and thinking together.',
+    scienceNote: '🔬 Short walking breaks improve creative thinking by 81% (Stanford, 2014). Five-minute movement breaks every 90 minutes prevent cognitive fatigue and maintain sustained performance.',
+    dimensions: {
+      ruh: 'Nature walks naturally induce awe — a reminder of the vastness of existence beyond your screen',
+      aql: 'The Default Mode Network activates during walks — crucial for insight and creative breakthroughs',
+      qalb: 'Brief breaks prevent emotional burnout and restore mental equilibrium between focus sessions',
+      nafs: 'Strategic rest is not laziness — it is intelligent recovery for sustained peak performance',
+      jasad: 'Prevents repetitive strain, improves circulation, reduces eye fatigue from prolonged screen use',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'lunch',
+    time: '1:00 PM',
+    task: 'Mindful Lunch',
+    category: 'health',
+    sunnahNote: 'The Japanese "hara hachi bu" — eating until 80% full — comes from Okinawa, home to one of the world\'s longest-living populations. A universal wisdom on moderation.',
+    scienceNote: '🔬 Mindful eating increases satiety signals by 25% (Harvard Health). Eating without screens reduces overeating and significantly improves digestion and nutrient absorption.',
+    dimensions: {
+      ruh: 'Appreciating your meal as nourishment shifts eating from automatic to intentional and sacred',
+      aql: 'Moderate lunch prevents afternoon brain fog — overeating diverts blood from brain to digestion',
+      qalb: 'Sharing a meal with others boosts oxytocin, lowers cortisol and deepens social bonds',
+      nafs: 'Stopping at satisfied, not stuffed — a daily practice of restraint and genuine self-awareness',
+      jasad: 'Eating slowly and seated maximises nutrient absorption and supports healthy digestion',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'power-nap',
+    time: '2:00 PM',
+    task: 'Power Nap (20 min)',
+    category: 'health',
+    sunnahNote: 'Churchill, Einstein, Da Vinci and Tesla were all famous nappers. NASA, Google, Nike and the US Military all have official nap policies. Rest is a performance tool.',
+    scienceNote: '🔬 Meta-analysis 2022 (Sleep Medicine Reviews, 54 studies): 20-min nap improves vigilance +61%, procedural memory +49%, declarative memory +38%. Must be under 30 min to avoid grogginess.',
+    dimensions: {
+      ruh: 'Rest is not weakness — it is restoration. Honouring your body\'s rhythms is its own wisdom',
+      aql: 'Memory consolidation during nap — what you learnt this morning is being stored permanently',
+      qalb: 'Refreshed emotional state after nap — less reactive, more patient for the entire afternoon',
+      nafs: 'Exactly 20 minutes, then up — not 2 hours. Discipline in rest is as important as in work',
+      jasad: 'Heart rate drops, muscles recover, cortisol decreases — a complete physiological reset',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'skill-dev',
+    time: '3:00 PM',
+    task: 'Skill Development / Side Project',
+    category: 'study',
+    sunnahNote: 'Leonardo da Vinci, Benjamin Franklin and Marcus Aurelius all dedicated specific afternoon hours to practising their craft every single day without exception.',
+    scienceNote: '🔬 Deliberate practice 1 hour/day = expert in any field (Ericsson, 1993). Afternoon is ideal for creative and repetitive practice tasks — the brain is warmed up but not yet fatigued.',
+    dimensions: {
+      ruh: 'Developing a skill that serves others is a contribution to the world beyond yourself',
+      aql: 'Deliberate practice builds new neural pathways — the brain literally rewires to become more capable',
+      qalb: '"I can build something" — competence and mastery are among the deepest sources of self-worth',
+      nafs: 'Choosing skill-building over entertainment every day — discipline compounds into mastery over years',
+      jasad: 'Fine motor skills, hand-eye coordination, posture discipline all develop through regular craft practice',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'evening-walk',
+    time: '5:30 PM',
+    task: 'Evening Walk in Nature (20 min)',
+    category: 'health',
+    sunnahNote: 'Thoreau, Rousseau and Nietzsche all attributed their greatest ideas to walking in nature. Every major contemplative tradition prescribes time outdoors for mental clarity.',
+    scienceNote: '🔬 20 minutes in nature reduces cortisol by 21.3% and deactivates the stress response (Frontiers in Psychology, 2019). Regular nature exposure is linked to lower rates of anxiety and depression.',
+    dimensions: {
+      ruh: 'Nature inspires awe and perspective — the antidote to the narrow concerns of daily life',
+      aql: 'Walking in nature allows the mind to wander productively — solving problems without trying',
+      qalb: 'Natural settings restore emotional balance disrupted by urban and digital overstimulation',
+      nafs: 'Choosing a walk over scrolling — training your attention toward the real and the meaningful',
+      jasad: 'Sunlight, fresh air, movement — the most natural and effective medicine for human physiology',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'family-time',
+    time: '7:00 PM',
+    task: 'Family & Quality Time',
+    category: 'social',
+    sunnahNote: 'The Harvard Study of Adult Development (75+ years, 724 participants) found quality relationships are the single greatest predictor of happiness and longevity — above wealth, fame or IQ.',
+    scienceNote: '🔬 Harvard study: relationship satisfaction at 50 was the strongest predictor of health and happiness at 80. Loneliness is as damaging as smoking 15 cigarettes per day (Brigham Young, 2015).',
+    dimensions: {
+      ruh: 'Love and genuine connection are the deepest expressions of our shared humanity',
+      aql: 'Family conversations develop communication, empathy, perspective-taking and social intelligence',
+      qalb: 'Secure attachment and belonging are the bedrock of emotional health and long-term wellbeing',
+      nafs: 'Being fully present — phone away, ego down — is the hardest and most rewarding daily practice',
+      jasad: 'Oxytocin from connection lowers blood pressure, strengthens immunity and promotes deep sleep',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'evening-reflection',
+    time: '9:00 PM',
+    task: 'Evening Reflection (10 min)',
+    category: 'life',
+    sunnahNote: 'The Stoic "evening review" — asking "what did I do well? what could I improve?" — was practised nightly by Marcus Aurelius, Seneca and Epictetus without exception.',
+    scienceNote: '🔬 Meta-analysis 2020 (J Occupational Health, 9 RCTs): Self-reflection practices significantly reduce stress and depression. Eight weeks of journaling increased resilience by 23% (2022).',
+    dimensions: {
+      ruh: 'Reviewing your day with honest eyes — celebrating growth and acknowledging lessons learned',
+      aql: 'Metacognition — thinking about your thinking — is the highest level of intellectual development',
+      qalb: 'Releasing the day\'s emotions through reflection prevents them accumulating as chronic stress',
+      nafs: 'Holding yourself accountable without self-punishment — the path to genuine, lasting growth',
+      jasad: 'Brain dump before sleep clears working memory so the brain does not rehearse worries at night',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'reading',
+    time: '9:30 PM',
+    task: 'Reading (30 min)',
+    category: 'study',
+    sunnahNote: 'Bill Gates reads 50 books per year. Warren Buffett reads 500 pages per day. "Not all readers are leaders, but all leaders are readers." — Harry S. Truman.',
+    scienceNote: '🔬 Reading fiction increases empathy by 23% (Science, 2013). 30 minutes of reading before bed reduces stress by 68% — more effective than music or tea (University of Sussex, 2009).',
+    dimensions: {
+      ruh: 'Great books connect you to the greatest minds across centuries — expanding your inner world',
+      aql: 'Reading builds vocabulary, analytical thinking, and knowledge that compounds across a lifetime',
+      qalb: 'Stories develop emotional intelligence and empathy — you live a thousand lives through books',
+      nafs: 'Choosing a book over a screen — training attention, patience and depth over distraction',
+      jasad: 'Reduces cortisol, lowers heart rate, relaxes muscles — the ideal preparation for deep sleep',
+    },
+    isFixed: false,
+  },
+  {
+    id: 'sleep',
+    time: '10:00 PM',
+    task: 'Sleep (7-8 hours)',
+    category: 'life',
+    sunnahNote: 'Benjamin Franklin: "Early to bed and early to rise makes a man healthy, wealthy and wise." Sleep is the universal medicine — revered across every culture in human history.',
+    scienceNote: '🔬 Sleep is when the brain\'s glymphatic system flushes toxins including Alzheimer\'s proteins — only active during deep sleep (Science, 2013). Chronic sleep deprivation reduces IQ by 10-15 points.',
+    dimensions: {
+      ruh: 'Surrendering to sleep is trusting the process of restoration — letting go of control',
+      aql: 'Sleep consolidates all learning — without it, memories do not form and nothing is truly retained',
+      qalb: 'Emotional regulation depends entirely on sleep — the sleep-deprived are 60% more emotionally reactive',
+      nafs: 'Sleeping at 10 PM despite wanting to scroll — victory over the modern world\'s most powerful addiction',
+      jasad: 'HGH release, cellular repair, immune strengthening, cardiovascular restoration all happen during sleep',
+    },
+    isFixed: false,
+  },
+];
 
 // ========================================
 // DEFAULT PROPHETIC ROUTINE
@@ -357,10 +596,14 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
 // ──────────────────────────────────────
 // COMPONENT
 // ──────────────────────────────────────
-const DailyRoutineTable: React.FC = () => {
+const DailyRoutineTable: React.FC<{ religion?: string }> = ({ religion = '' }) => {
+  const muslim = isMuslim(religion);
+  const BASE_ROUTINE = muslim ? DEFAULT_ROUTINE : UNIVERSAL_ROUTINE;
+  const DIMENSION_CONFIG = muslim ? ISLAMIC_DIMENSION_CONFIG : UNIVERSAL_DIMENSION_CONFIG;
+
   const today = new Date().toISOString().split('T')[0];
-  const STORAGE_KEY = 'harmony_daily_routine_v2';
-  const LOG_KEY = `harmony_routine_log_${today}`;
+  const STORAGE_KEY = muslim ? 'harmony_daily_routine_v2' : 'harmony_daily_routine_universal';
+  const LOG_KEY = `harmony_routine_log_${muslim ? 'islamic' : 'universal'}_${today}`;
 
   const { addPoints } = useGamification();
   const { addToast } = useToast();
@@ -386,15 +629,15 @@ const DailyRoutineTable: React.FC = () => {
         if (parsed.length > 0 && parsed[0].dimensions) {
           setRoutine(parsed);
         } else {
-          setRoutine(DEFAULT_ROUTINE);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ROUTINE));
+          setRoutine(BASE_ROUTINE);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(BASE_ROUTINE));
         }
       } catch {
-        setRoutine(DEFAULT_ROUTINE);
+        setRoutine(BASE_ROUTINE);
       }
     } else {
-      setRoutine(DEFAULT_ROUTINE);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ROUTINE));
+      setRoutine(BASE_ROUTINE);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(BASE_ROUTINE));
     }
     const savedLog = localStorage.getItem(LOG_KEY);
     if (savedLog) {
@@ -449,14 +692,14 @@ const DailyRoutineTable: React.FC = () => {
       t.id === taskId ? { ...t, time: editTime, task: editName } : t
     ));
     setEditingTask(null);
-    addToast('Rutin dikemaskini ✅', 'success');
+    addToast(muslim ? 'Rutin dikemaskini ✅' : 'Routine updated ✅', 'success');
   };
 
   const deleteTask = (taskId: string) => {
     const task = routine.find(t => t.id === taskId);
     if (task?.isFixed) return;
     setRoutine(prev => prev.filter(t => t.id !== taskId));
-    addToast('Rutin dipadam', 'info');
+    addToast(muslim ? 'Rutin dipadam' : 'Routine deleted', 'info');
   };
 
   const addTask = () => {
@@ -466,14 +709,24 @@ const DailyRoutineTable: React.FC = () => {
       time: newTime,
       task: newTask,
       category: newCategory,
-      sunnahNote: 'Tambahan peribadi — niatkan kerana Allah',
-      scienceNote: 'Konsistensi amalan positif bina neural pathways baru dalam otak',
-      dimensions: {
+      sunnahNote: muslim
+        ? 'Tambahan peribadi — niatkan kerana Allah'
+        : 'Personal addition — set with clear intention and purpose',
+      scienceNote: muslim
+        ? 'Konsistensi amalan positif bina neural pathways baru dalam otak'
+        : 'Consistent positive habits build new neural pathways in the brain',
+      dimensions: muslim ? {
         ruh: 'Amalan baik diniatkan kerana Allah = ibadah',
         aql: 'Tabiat baru bina sambungan neuron baru',
         qalb: 'Komitmen pada routine = hati stabil',
         nafs: 'Tambah amalan = nafs makin terlatih',
         jasad: 'Rutin konsisten stabilkan circadian rhythm',
+      } : {
+        ruh: 'Intentional habits align your actions with your deeper purpose',
+        aql: 'New habits build new neural connections in the brain',
+        qalb: 'Commitment to routine creates emotional stability and confidence',
+        nafs: 'Every new discipline trains your capacity for self-mastery',
+        jasad: 'Consistent routines regulate your circadian rhythm and energy',
       },
       isFixed: false,
     };
@@ -481,15 +734,15 @@ const DailyRoutineTable: React.FC = () => {
     setNewTask('');
     setNewTime('');
     setShowAddForm(false);
-    addToast('Rutin baru ditambah ✅', 'success');
+    addToast(muslim ? 'Rutin baru ditambah ✅' : 'New routine added ✅', 'success');
   };
 
   const resetToDefault = () => {
-    setRoutine(DEFAULT_ROUTINE);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ROUTINE));
+    setRoutine(BASE_ROUTINE);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(BASE_ROUTINE));
     setLog({});
     localStorage.removeItem(LOG_KEY);
-    addToast('Rutin direset ke Sunnah default', 'info');
+    addToast(muslim ? 'Rutin direset ke Sunnah default' : 'Routine reset to defaults', 'info');
   };
 
   // Colors
@@ -536,16 +789,18 @@ const DailyRoutineTable: React.FC = () => {
             style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#f5f0e8' }}
           >
             <span style={{ color: '#c9a84c' }}>✦</span>
-            Rutin Harian Nabi ﷺ
+            {muslim ? 'Rutin Harian Nabi ﷺ' : 'Daily Routine'}
             <span
               className="text-[10px] font-medium px-2 py-0.5 rounded-full"
               style={{ background: 'rgba(201,168,76,0.12)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)', fontFamily: "'DM Sans', sans-serif" }}
             >
-              Sunnah + Sains + 5 Dimensi
+              {muslim ? 'Sunnah + Sains + 5 Dimensi' : 'Science + 5 Dimensions'}
             </span>
           </h2>
           <p className="text-xs mt-1" style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}>
-            🕊️Ruh 🧠Aql ❤️Qalb ⚔️Nafs 💪Jasad — setiap rutin level up semua dimensi kamu
+            {muslim
+              ? '🕊️Ruh 🧠Aql ❤️Qalb ⚔️Nafs 💪Jasad — setiap rutin level up semua dimensi kamu'
+              : '✨Soul 🧠Mind ❤️Heart ⚔️Self 💪Body — every routine levels up all your dimensions'}
           </p>
         </div>
         <button
@@ -555,7 +810,7 @@ const DailyRoutineTable: React.FC = () => {
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#c9a84c'; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#8a8a9a'; }}
         >
-          🔄 Reset Sunnah
+          {muslim ? '🔄 Reset Sunnah' : '🔄 Reset Defaults'}
         </button>
       </div>
 
@@ -563,13 +818,15 @@ const DailyRoutineTable: React.FC = () => {
       <div className="mb-4 space-y-2">
         <div className="flex items-center justify-between text-xs" style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}>
           <span>
-            Hari ini:{' '}
+            {muslim ? 'Hari ini' : 'Today'}:{' '}
             <span className="font-bold" style={{ color: '#f5f0e8' }}>{completedCount}/{totalCount}</span>
           </span>
-          <span>
-            Solat:{' '}
-            <span className="font-bold" style={{ color: '#c9a84c' }}>{prayersDone}/{totalPrayers}</span>
-          </span>
+          {muslim && (
+            <span>
+              Solat:{' '}
+              <span className="font-bold" style={{ color: '#c9a84c' }}>{prayersDone}/{totalPrayers}</span>
+            </span>
+          )}
           <span className="font-black" style={{ color: progress === 100 ? '#e8c97a' : '#f5f0e8' }}>
             {progress}%
           </span>
@@ -592,7 +849,9 @@ const DailyRoutineTable: React.FC = () => {
             style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.3)' }}
           >
             <span className="font-black text-sm" style={{ color: '#e8c97a' }}>
-              ✦ MasyaAllah! Semua siap! Ruh, Aql, Qalb, Nafs & Jasad kamu naik hari ini! ✦
+              {muslim
+                ? '✦ MasyaAllah! Semua siap! Ruh, Aql, Qalb, Nafs & Jasad kamu naik hari ini! ✦'
+                : '✦ Outstanding! All done! Soul, Mind, Heart, Self & Body levelled up today! ✦'}
             </span>
           </div>
         )}
@@ -604,9 +863,9 @@ const DailyRoutineTable: React.FC = () => {
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(201,168,76,0.2)' }}>
               <th className="text-left text-xs py-2 px-2 w-8" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>✓</th>
-              <th className="text-left text-xs py-2 px-2 w-20" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Masa</th>
-              <th className="text-left text-xs py-2 px-2" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Rutin</th>
-              <th className="text-left text-xs py-2 px-2 w-20 hidden sm:table-cell" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Jenis</th>
+              <th className="text-left text-xs py-2 px-2 w-20" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>{muslim ? 'Masa' : 'Time'}</th>
+              <th className="text-left text-xs py-2 px-2" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>{muslim ? 'Rutin' : 'Routine'}</th>
+              <th className="text-left text-xs py-2 px-2 w-20 hidden sm:table-cell" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>{muslim ? 'Jenis' : 'Type'}</th>
               <th className="text-right text-xs py-2 px-2 w-24" style={{ color: 'rgba(201,168,76,0.6)', fontFamily: "'DM Sans', sans-serif" }}>Info</th>
             </tr>
           </thead>
@@ -758,10 +1017,10 @@ const DailyRoutineTable: React.FC = () => {
                               }}
                             >
                               {tab === 'dimensions'
-                                ? '🕊️🧠❤️⚔️💪 5 Dimensi'
+                                ? (muslim ? '🕊️🧠❤️⚔️💪 5 Dimensi' : '✨🧠❤️⚔️💪 5 Dimensions')
                                 : tab === 'sunnah'
-                                ? '☀️ Sunnah Nabi'
-                                : '🧬 Bukti Sains'}
+                                ? (muslim ? '☀️ Sunnah Nabi' : '📜 Ancient Wisdom')
+                                : '🧬 Science'}
                             </button>
                           ))}
                         </div>
@@ -772,7 +1031,7 @@ const DailyRoutineTable: React.FC = () => {
                             <span className="text-2xl mt-0.5">☀️</span>
                             <div>
                               <p className="text-xs font-black text-amber-400 uppercase tracking-wider mb-1.5">
-                                Amalan Nabi ﷺ
+                                {muslim ? 'Amalan Nabi ﷺ' : 'Ancient Wisdom'}
                               </p>
                               <p className="text-sm text-amber-200/80 leading-relaxed">
                                 {task.sunnahNote}
@@ -787,7 +1046,7 @@ const DailyRoutineTable: React.FC = () => {
                             <span className="text-2xl mt-0.5">🧬</span>
                             <div>
                               <p className="text-xs font-black text-cyan-400 uppercase tracking-wider mb-1.5">
-                                Bukti Sains & Kajian
+                                {muslim ? 'Bukti Sains & Kajian' : 'Science & Research'}
                               </p>
                               <p className="text-sm text-cyan-200/80 leading-relaxed">
                                 {task.scienceNote}
@@ -836,14 +1095,14 @@ const DailyRoutineTable: React.FC = () => {
             <input
               value={newTime}
               onChange={(e) => setNewTime(e.target.value)}
-              placeholder="Masa (cth: 3:00 PM)"
+              placeholder={muslim ? 'Masa (cth: 3:00 PM)' : 'Time (e.g. 3:00 PM)'}
               className="w-full sm:w-28 text-xs px-3 py-2 rounded-lg"
               style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', color: '#f5f0e8' }}
             />
             <input
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Nama rutin..."
+              placeholder={muslim ? 'Nama rutin...' : 'Routine name...'}
               className="flex-1 w-full text-xs px-3 py-2 rounded-lg"
               style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', color: '#f5f0e8' }}
             />
@@ -865,7 +1124,7 @@ const DailyRoutineTable: React.FC = () => {
                 className="text-xs px-3 py-2 rounded-lg transition-all"
                 style={{ background: 'rgba(201,168,76,0.15)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)' }}
               >
-                ✅ Tambah
+                {muslim ? '✅ Tambah' : '✅ Add'}
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
@@ -890,7 +1149,7 @@ const DailyRoutineTable: React.FC = () => {
               (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.2)';
             }}
           >
-            ✦ Tambah Rutin Sendiri
+            {muslim ? '✦ Tambah Rutin Sendiri' : '✦ Add Custom Routine'}
           </button>
         )}
       </div>
