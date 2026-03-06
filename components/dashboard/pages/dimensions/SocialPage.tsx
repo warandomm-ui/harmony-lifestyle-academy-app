@@ -1,6 +1,7 @@
 import React from 'react';
 import DimensionCard from '../../shared/DimensionCard';
 import HabitTracker from '../../shared/HabitTracker';
+import AIContentGenerator from '../../shared/AIContentGenerator';
 import { UsersIcon } from '../../Icons';
 
 const HABITS = [
@@ -86,6 +87,12 @@ const SocialDimensionPage: React.FC = () => {
                     ))}
                 </div>
             </section>
+
+            <AIContentGenerator
+                moduleId="social"
+                moduleName="Social Wellness"
+                topics={socialTopics.map(t => ({ icon: t.icon, title: t.title }))}
+            />
         </div>
     );
 };

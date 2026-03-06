@@ -45,6 +45,7 @@ import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage'; // New Notebook Import
 
+import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
 import CheckoutModal from './CheckoutModal'; 
@@ -223,6 +224,8 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
         return <FullPageWrapper title="Environmental Wellness"><EnvironmentalPage /></FullPageWrapper>;
       case 'vocational':
         return <FullPageWrapper title="Vocational Wellness"><VocationalPage /></FullPageWrapper>;
+      case 'sunnah-module':
+        return <FullPageWrapper title=""><SunnahModulePage /></FullPageWrapper>;
 
       // Legacy Pages
       case 'wisdom':

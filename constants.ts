@@ -905,6 +905,12 @@ export const MOCK_BADGES: Badge[] = [
   { id: 'explorer-1', name: 'Explorer', description: 'Visited all main sections of the app.', icon: '🧭' },
   { id: 'mastery-1', name: 'Practitioner', description: 'Completed your first Practice Hub challenge.', icon: '💪' },
   { id: 'mentor-1', name: 'Mentor', description: 'Created your first mini-lesson for the community.', icon: '🧑‍🏫' },
+  { id: 'sunnah-first', name: 'First Step', description: 'Completed your first Sunnah practice.', icon: '🌱' },
+  { id: 'sunnah-100', name: 'Sunnah Student', description: 'Completed 100 Sunnah practices.', icon: '📿' },
+  { id: 'sunnah-morning', name: 'Morning Person', description: 'Completed all 118 Morning Sunnah practices.', icon: '🌅' },
+  { id: 'sunnah-afternoon', name: 'Afternoon Warrior', description: 'Completed all 118 Afternoon Sunnah practices.', icon: '☀️' },
+  { id: 'sunnah-evening', name: 'Night Guardian', description: 'Completed all 118 Evening Sunnah practices.', icon: '🌙' },
+  { id: 'sunnah-master', name: 'Sunnah Master', description: 'Completed all 354 Sunnah practices. SubhanAllah!', icon: '🏆' },
 ];
 
 export const MOCK_LEADERBOARD: LeaderboardEntry[] = [

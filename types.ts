@@ -207,7 +207,8 @@ export type DashboardView =
   | 'communication'
   | 'behaviour'
   | 'practice-hub'
-  | 'course-player';
+  | 'course-player'
+  | 'sunnah-module';
 
 export type Transcript = {
   speaker: 'user' | 'model';
@@ -575,6 +576,36 @@ export interface GroundedCareerDetail {
     groundedSalaryRange: string;
     jobMarketTrends: string;
     groundingLinks: { uri: string; title: string }[];
+}
+
+// --- Claude AI Generated Module Content ---
+export interface GeneratedLesson {
+  title: string;
+  explanation: string;
+  keyPoints: string[];
+  practicalTip: string;
+  deeperInsight: string;
+}
+
+export interface GeneratedQuiz {
+  question: string;
+  options: [string, string, string, string];
+  correctIndex: 0 | 1 | 2 | 3;
+  explanation: string;
+}
+
+export interface GeneratedReflection {
+  prompt: string;
+  guidingQuestions: string[];
+}
+
+export interface GeneratedModuleContent {
+  lesson: GeneratedLesson;
+  quiz: GeneratedQuiz;
+  reflection: GeneratedReflection;
+  module: string;
+  topic: string;
+  generatedAt: string;
 }
 
 // Global type extensions for Vite env

@@ -1,6 +1,7 @@
 import React from 'react';
 import DimensionCard from '../../shared/DimensionCard';
 import HabitTracker from '../../shared/HabitTracker';
+import AIContentGenerator from '../../shared/AIContentGenerator';
 import { BarbellIcon } from '../../Icons';
 
 const HABITS = [
@@ -86,6 +87,12 @@ const PhysicalPage: React.FC = () => {
                     ))}
                 </div>
             </section>
+
+            <AIContentGenerator
+                moduleId="physical"
+                moduleName="Physical Wellness"
+                topics={physicalTopics.map(t => ({ icon: t.icon, title: t.title }))}
+            />
         </div>
     );
 };

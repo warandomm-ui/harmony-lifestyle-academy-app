@@ -1,6 +1,7 @@
 import React from 'react';
 import DimensionCard from '../../shared/DimensionCard';
 import HabitTracker from '../../shared/HabitTracker';
+import AIContentGenerator from '../../shared/AIContentGenerator';
 import { AcademicCapIcon } from '../../Icons';
 
 const HABITS = [
@@ -86,6 +87,12 @@ const IntellectualPage: React.FC = () => {
                     ))}
                 </div>
             </section>
+
+            <AIContentGenerator
+                moduleId="intellectual"
+                moduleName="Intellectual Wellness"
+                topics={intellectualTopics.map(t => ({ icon: t.icon, title: t.title }))}
+            />
         </div>
     );
 };

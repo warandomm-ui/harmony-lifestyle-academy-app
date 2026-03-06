@@ -1,5 +1,6 @@
 import React from 'react';
 import DimensionCard from '../../shared/DimensionCard';
+import AIContentGenerator from '../../shared/AIContentGenerator';
 import { FaceSmileIcon } from '../../Icons';
 import EmotionTrackerSection from '../../sections/EmotionTrackerSection';
 
@@ -73,6 +74,12 @@ const EmotionalPage: React.FC = () => {
                     ))}
                 </div>
             </section>
+
+            <AIContentGenerator
+                moduleId="emotional"
+                moduleName="Emotional Wellness"
+                topics={emotionalTopics.map(t => ({ icon: t.icon, title: t.title }))}
+            />
         </div>
     );
 };

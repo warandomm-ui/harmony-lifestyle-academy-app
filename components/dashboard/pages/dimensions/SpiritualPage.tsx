@@ -5,6 +5,15 @@ import type { Surah, SpiritualCategory } from '../../../../types';
 import { useToast } from '../../../../contexts/ToastContext';
 import { useGamification } from '../../../../contexts/GamificationContext';
 import AyatCourseViewer from './AyatCourseViewer';
+import AIContentGenerator from '../../shared/AIContentGenerator';
+
+const islamicSpiritualTopics = [
+  { icon: '📿', title: 'Dhikr & Remembrance' },
+  { icon: '🤲', title: "Du'a & Supplication" },
+  { icon: '🌿', title: 'Tawakkul & Trust in Allah' },
+  { icon: '💛', title: 'Gratitude (Shukr)' },
+  { icon: '🕌', title: 'Prayer & Devotion' },
+];
 
 // --- Components ---
 
@@ -474,6 +483,13 @@ const UniversalMindfulnessPage: React.FC = () => {
         ))}
       </div>
 
+      <AIContentGenerator
+        moduleId="spiritual"
+        moduleName="Spiritual Wellness"
+        topics={MINDFULNESS_PATHWAYS.map(p => ({ icon: p.icon, title: p.title }))}
+        context="Focus on secular mindfulness: breathing, meditation, and gratitude practices."
+      />
+
       <style>{`
         @keyframes bounce-slow {
           0%, 100% { transform: translateY(0); }
@@ -570,6 +586,13 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
                     onClose={() => setSelectedSurah(null)}
                 />
             )}
+
+            <AIContentGenerator
+                moduleId="spiritual-islamic"
+                moduleName="Islamic Spiritual Wellness"
+                topics={islamicSpiritualTopics}
+                context="Focus on Islamic spiritual practices: dhikr, du'a, tawakkul, gratitude, and taqwa."
+            />
 
             <style>{`
                 @keyframes bounce-slow {
