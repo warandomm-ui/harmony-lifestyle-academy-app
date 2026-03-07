@@ -260,11 +260,11 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       // ═══ MODE-SPECIFIC ROUTES ═══
       // Muslim only: Sunnah module
       case 'sunnah-module':
-        return <FullPageWrapper title={getDimensionTitle('sunnah-module', dashboardMode)}><SunnahModulePage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('sunnah-module', dashboardMode)}><import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage'; /></FullPageWrapper>;
       
       // Both: School subjects (same component, different title)
       case 'school-subjects':
-        return <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}><IntellectualPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}><<SchoolSubjectsPage dashboardMode={dashboardMode} /> /></FullPageWrapper>;
       
       // Universal only: Wellness module (you'll create this later)
       // For now it routes to SpiritualPage with universal context
