@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import OnboardingFlow from './components/OnboardingFlow';
+import { isMuslimStudent } from './components/OnboardingFlow';
 import ThemeToggle from './components/ThemeToggle';
 import MainDashboard from './components/dashboard/MainDashboard';
 import AuthScreen from './components/AuthScreen';
-import type { AnalysisResult, UserStatus, UserProfile, LifeVision } from './types';
+import type { AnalysisResult, UserStatus, UserProfile, LifeVision, DashboardMode } from './types';
 import { ChatProvider } from './contexts/ChatContext';
 import { useAuth } from './contexts/AuthContext';
 import ToastContainer from './components/ToastContainer';
@@ -21,6 +21,11 @@ const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [lifeVision, setLifeVision] = useState<LifeVision | null>(null);
+  
+  // ═══ NEW: Dashboard mode — 'muslim' or 'universal' ═══
+  // Determined by religion selection during registration
+  // Stored in localStorage and Supabase for persistence
+  const [dashboardMode, setDashboardMode] = useState<DashboardMode>('universal');
 
   // Load existing data for the authenticated user
   useEffect(() => {
@@ -32,6 +37,11 @@ const App: React.FC = () => {
         setUserStatus(savedData.status);
         setLifeVision(savedData.vision);
         setUserSkills(savedData.skills);
+        // ═══ Load saved dashboard mode, or derive from religion ═══
+        setDashboardMode(
+          savedData.dashboardMode || 
+          (savedData.profile?.religion ? (isMuslimStudent(savedData.profile.religion) ? 'muslim' : 'universal') : 'universal')
+        );
         setIsOnboardingComplete(true);
       } else {
         setIsOnboardingComplete(false);
@@ -46,8 +56,11 @@ const App: React.FC = () => {
     vision: LifeVision,
     skills: string[]
   ) => {
+    // ═══ Determine dashboard mode from religion ═══
+    const mode: DashboardMode = isMuslimStudent(profile.religion) ? 'muslim' : 'universal';
+    
     if (user) {
-        const data = { profile, results, status, vision, skills };
+        const data = { profile, results, status, vision, skills, dashboardMode: mode };
         storage.set(`user_data_${user.id}`, data);
     }
     setUserProfile(profile);
@@ -55,6 +68,7 @@ const App: React.FC = () => {
     setUserStatus(status);
     setLifeVision(vision);
     setUserSkills(skills);
+    setDashboardMode(mode);
     setIsOnboardingComplete(true);
   };
 
@@ -95,6 +109,7 @@ const App: React.FC = () => {
         <ChatProvider>
           <GamificationProvider>
             <StudyBuddyProvider>
+              {/* ═══ PASS dashboardMode to MainDashboard ═══ */}
               <MainDashboard 
                 userProfile={userProfile}
                 userResults={userResults} 
@@ -102,6 +117,7 @@ const App: React.FC = () => {
                 userStatus={userStatus}
                 lifeVision={lifeVision}
                 onProfileUpdate={handleProfileUpdate}
+                dashboardMode={dashboardMode}
               />
             </StudyBuddyProvider>
           </GamificationProvider>
