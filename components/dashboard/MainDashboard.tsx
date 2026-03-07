@@ -1,13 +1,10 @@
-
-
-
 import React, { useState } from 'react';
 import HeaderBar from './HeaderBar';
 import SidebarNav from './SidebarNav';
 import DashboardContent from './DashboardContent';
 import HarmonyAIChat from './HarmonyAIChat';
 import AdminPanel from './sections/AdminPanel';
-import { AnalysisResult, Course, DashboardView, Product, UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan, Transaction, UserProfile, LifeVision } from '../../types';
+import { AnalysisResult, Course, DashboardView, DashboardMode, Product, UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan, Transaction, UserProfile, LifeVision } from '../../types';
 import { useToast } from '../../contexts/ToastContext';
 import SupportModal from './SupportModal';
 import LeaderboardSection from './gamification/LeaderboardSection';
@@ -40,10 +37,10 @@ import LanguageLabPage from './pages/LanguageLabPage';
 import IdeaWallPage from './pages/IdeaWallPage'; 
 import RealWorldPage from './pages/RealWorldPage';
 import CommunitySpacePage from './pages/CommunitySpacePage'; 
-import ThePathPage from './pages/ThePathPage'; // New Import
+import ThePathPage from './pages/ThePathPage';
 import CoursePlayer from './lms/CoursePlayer'; 
 import StudentDashboard from './pages/StudentDashboard';
-import NotebookPage from './pages/NotebookPage'; // New Notebook Import
+import NotebookPage from './pages/NotebookPage';
 
 import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import CourseCreatorModal from './CourseCreatorModal';
@@ -60,14 +57,52 @@ interface MainDashboardProps {
   userStatus: UserStatus;
   lifeVision: LifeVision;
   onProfileUpdate: (profile: UserProfile) => void;
+  dashboardMode: DashboardMode; // ═══ NEW PROP ═══
 }
 
-const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults, selectedSkills, userStatus, lifeVision, onProfileUpdate }) => {
+// ═══ HELPER: Get page title based on dashboard mode ═══
+// Muslim students see BM/Arabic titles, Universal see English
+const getDimensionTitle = (view: DashboardView, mode: DashboardMode): string => {
+  if (mode === 'muslim') {
+    const titles: Partial<Record<DashboardView, string>> = {
+      'physical': 'Jasad — Kekuatan Fizikal',
+      'emotional': 'Qalb — Pengurusan Emosi',
+      'social': 'Suhbah — Hubungan Sosial',
+      'intellectual': 'Aql — Kecerdasan & Ilmu',
+      'spiritual': 'Ruh — Kesedaran Spiritual',
+      'environmental': 'Bi\'ah — Kelestarian Alam',
+      'vocational': 'Rizq — Kemahiran & Kerjaya',
+      'sunnah-module': 'Modul Sunnah Nabi ﷺ',
+      'school-subjects': 'Akademi Sekolah',
+    };
+    return titles[view] || '';
+  } else {
+    const titles: Partial<Record<DashboardView, string>> = {
+      'physical': 'Body — Physical Wellness',
+      'emotional': 'Heart — Emotional Intelligence',
+      'social': 'Tribe — Social Wellness',
+      'intellectual': 'Mind — Intellectual Growth',
+      'spiritual': 'Spirit — Inner Awareness',
+      'environmental': 'Planet — Environmental Awareness',
+      'vocational': 'Wealth — Skills & Career',
+      'wellness-module': 'Wellness & Mindfulness',
+      'school-subjects': 'School Academy',
+    };
+    return titles[view] || '';
+  }
+};
+
+const MainDashboard: React.FC<MainDashboardProps> = ({ 
+  userProfile, userResults, selectedSkills, userStatus, lifeVision, onProfileUpdate, 
+  dashboardMode // ═══ RECEIVE MODE ═══
+}) => {
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   const { addToast } = useToast();
   
+  const isMuslim = dashboardMode === 'muslim';
+
   // Lifted State from DashboardContent
   const [cart, setCart] = useState<Product[]>([]);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
@@ -79,7 +114,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
     { id: 'c_4', icon: '🔬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 55 },
   ]);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  // Checkout Modal State
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
 
@@ -104,7 +138,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
           setIsCheckoutOpen(false);
           addToast(`Receipt for ${checkoutProduct.name} sent to ${userProfile.name.toLowerCase().replace(/\s/g, '.')}@gmail.com`, 'success');
           
-          // Auto-enrollment Logic (Simulated)
           if (checkoutProduct.category === 'E-Book' || checkoutProduct.name.includes('Course')) {
               const newCourse: Course = {
                   id: `purchased_${Date.now()}`,
@@ -121,7 +154,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
   };
 
   const handleAddToCart = (product: Product) => {
-    // Redirect to immediate checkout for this demo
     handleInitiateCheckout(product);
   };
 
@@ -196,54 +228,66 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
         return <FullPageWrapper title="Polyglot Lab"><LanguageLabPage /></FullPageWrapper>;
       case 'idea-wall':
         return <FullPageWrapper title=""><IdeaWallPage /></FullPageWrapper>;
-      case 'notebook': // New Case for Notebook
-        return <FullPageWrapper title="Smart Notebook"><NotebookPage /></FullPageWrapper>;
+      case 'notebook':
+        return <FullPageWrapper title={isMuslim ? "Buku Nota Pintar" : "Smart Notebook"}><NotebookPage /></FullPageWrapper>;
       case 'real-world':
         return <FullPageWrapper title=""><RealWorldPage /></FullPageWrapper>;
       case 'community-space':
         return <FullPageWrapper title=""><CommunitySpacePage /></FullPageWrapper>;
-      case 'the-path': // Route for "The Path"
+      case 'the-path':
         return <FullPageWrapper title=""><ThePathPage /></FullPageWrapper>;
       case 'student-dashboard':
-        return <FullPageWrapper title="My Learning Dashboard"><StudentDashboard courses={activeCourses} userProfile={userProfile} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Dashboard Pembelajaran" : "My Learning Dashboard"}><StudentDashboard courses={activeCourses} userProfile={userProfile} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
       
-      // Dimensions
+      // ═══ 7 DIMENSIONS — Titles change based on dashboardMode ═══
       case 'physical':
-        return <FullPageWrapper title="Physical Wellness"><PhysicalPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('physical', dashboardMode)}><PhysicalPage /></FullPageWrapper>;
       case 'emotional':
-        return <FullPageWrapper title="Emotional Wellness"><EmotionalPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('emotional', dashboardMode)}><EmotionalPage /></FullPageWrapper>;
       case 'social':
-        return <FullPageWrapper title="Social Wellness"><SocialDimensionPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('social', dashboardMode)}><SocialDimensionPage /></FullPageWrapper>;
       case 'social-impact':
         return <FullPageWrapper title="Social Impact Projects"><SocialImpactProjectsPage /></FullPageWrapper>;
       case 'intellectual':
-        return <FullPageWrapper title="Intellectual Wellness"><IntellectualPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('intellectual', dashboardMode)}><IntellectualPage /></FullPageWrapper>;
       case 'spiritual':
-        return <FullPageWrapper title="Spiritual Wellness"><SpiritualPage religion={userProfile.religion} /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('spiritual', dashboardMode)}><SpiritualPage religion={userProfile.religion} /></FullPageWrapper>;
       case 'environmental':
-        return <FullPageWrapper title="Environmental Wellness"><EnvironmentalPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('environmental', dashboardMode)}><EnvironmentalPage /></FullPageWrapper>;
       case 'vocational':
-        return <FullPageWrapper title="Vocational Wellness"><VocationalPage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('vocational', dashboardMode)}><VocationalPage /></FullPageWrapper>;
+      
+      // ═══ MODE-SPECIFIC ROUTES ═══
+      // Muslim only: Sunnah module
       case 'sunnah-module':
-        return <FullPageWrapper title=""><SunnahModulePage /></FullPageWrapper>;
+        return <FullPageWrapper title={getDimensionTitle('sunnah-module', dashboardMode)}><SunnahModulePage /></FullPageWrapper>;
+      
+      // Both: School subjects (same component, different title)
+      case 'school-subjects':
+        return <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}><IntellectualPage /></FullPageWrapper>;
+      
+      // Universal only: Wellness module (you'll create this later)
+      // For now it routes to SpiritualPage with universal context
+      case 'wellness-module':
+        return <FullPageWrapper title={getDimensionTitle('wellness-module', dashboardMode)}><SpiritualPage religion={userProfile.religion} /></FullPageWrapper>;
 
       // Legacy Pages
       case 'wisdom':
-        return <FullPageWrapper title="Wisdom (Soul)"><WisdomPage initialLifeVision={lifeVision} posts={anonymousPosts} onPost={handlePostAnonymously} onRequestHelp={() => setIsRequestHelpModalOpen(true)} onDonate={() => setIsDonateModalOpen(true)}/></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Hikmah (Ruh)" : "Wisdom (Soul)"}><WisdomPage initialLifeVision={lifeVision} posts={anonymousPosts} onPost={handlePostAnonymously} onRequestHelp={() => setIsRequestHelpModalOpen(true)} onDonate={() => setIsDonateModalOpen(true)}/></FullPageWrapper>;
       case 'knowledge':
-        return <FullPageWrapper title="Knowledge (Mind)"><KnowledgePage courses={activeCourses} selectedSkills={selectedSkills} onOpenCourseCreator={() => setIsCourseCreatorOpen(true)} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Ilmu (Aql)" : "Knowledge (Mind)"}><KnowledgePage courses={activeCourses} selectedSkills={selectedSkills} onOpenCourseCreator={() => setIsCourseCreatorOpen(true)} onPlayCourse={handlePlayCourse} /></FullPageWrapper>;
       case 'health':
-        return <FullPageWrapper title="Health (Heart & Emotions)"><HealthPage /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Sihat (Qalb & Emosi)" : "Health (Heart & Emotions)"}><HealthPage /></FullPageWrapper>;
       case 'financial':
-        return <FullPageWrapper title="Desire (Finance)"><FinancialPage onAddToCart={handleAddToCart} currentPlan={currentPlan} paymentMethods={paymentMethods} transactions={transactions} onAddPaymentMethod={() => setIsPaymentModalOpen(true)} onRemovePaymentMethod={() => {}} onChangePlan={() => setIsPlanModalOpen(true)} /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Rizq (Kewangan)" : "Finance"}><FinancialPage onAddToCart={handleAddToCart} currentPlan={currentPlan} paymentMethods={paymentMethods} transactions={transactions} onAddPaymentMethod={() => setIsPaymentModalOpen(true)} onRemovePaymentMethod={() => {}} onChangePlan={() => setIsPlanModalOpen(true)} /></FullPageWrapper>;
       case 'business':
-        return <FullPageWrapper title="Desire (Business & Career)"><BusinessPage userResults={userResults} /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Rizq (Bisnes & Kerjaya)" : "Business & Career"}><BusinessPage userResults={userResults} /></FullPageWrapper>;
       case 'fitness':
-        return <FullPageWrapper title="Health (Fitness & Self-Defense)"><FitnessPage /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Jasad (Kecergasan)" : "Fitness & Self-Defense"}><FitnessPage /></FullPageWrapper>;
       case 'communication':
-        return <FullPageWrapper title="Body (Communication)"><CommunicationPage /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Bayan (Komunikasi)" : "Communication"}><CommunicationPage /></FullPageWrapper>;
       case 'behaviour':
-        return <FullPageWrapper title="Body (Behaviour & Profile)"><BehaviourPage userResults={userResults} /></FullPageWrapper>;
+        return <FullPageWrapper title={isMuslim ? "Akhlak (Perwatakan)" : "Behaviour & Profile"}><BehaviourPage userResults={userResults} /></FullPageWrapper>;
       
       case 'dashboard':
       default:
@@ -268,6 +312,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ userProfile, userResults,
             onOpenSupport={() => setIsSupportModalOpen(true)}
             isMobileOpen={isMobileMenuOpen}
             onMobileClose={() => setIsMobileMenuOpen(false)}
+            dashboardMode={dashboardMode}
         />
       )}
       <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
