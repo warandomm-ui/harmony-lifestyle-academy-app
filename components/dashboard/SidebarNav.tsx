@@ -1,10 +1,9 @@
-
 import React from 'react';
 import * as Icons from './Icons';
 import { useChat } from '../../contexts/ChatContext';
 import { useAdmin } from '../../contexts/AdminContext';
 import { useAuth } from '../../contexts/AuthContext';
-import type { DashboardView } from '../../types';
+import type { DashboardView, DashboardMode } from '../../types';
 
 interface SidebarNavProps {
   currentView: DashboardView;
@@ -12,6 +11,7 @@ interface SidebarNavProps {
   onOpenSupport: () => void;
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
+  dashboardMode: DashboardMode; // ═══ NEW PROP ═══
 }
 
 const NavGroup: React.FC<{ label: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }> = ({ label, icon, children, defaultOpen = false }) => (
@@ -66,10 +66,15 @@ const NavItem: React.FC<{ icon: React.ReactNode; label: string; isActive?: boole
   </button>
 );
 
-const SidebarNav: React.FC<SidebarNavProps> = ({ currentView, setCurrentView, onOpenSupport, isMobileOpen = false, onMobileClose }) => {
+const SidebarNav: React.FC<SidebarNavProps> = ({ 
+  currentView, setCurrentView, onOpenSupport, isMobileOpen = false, onMobileClose,
+  dashboardMode // ═══ RECEIVE MODE ═══
+}) => {
   const { toggleChat, isChatOpen } = useChat();
   const { isAdminMode, toggleAdminMode, adminRole, setAdminRole } = useAdmin();
   const { signOut } = useAuth();
+
+  const isMuslim = dashboardMode === 'muslim';
 
   const handleSuperAdminToggle = () => {
       setAdminRole(adminRole === 'super-admin' ? 'admin' : 'super-admin');
@@ -110,7 +115,6 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ currentView, setCurrentView, on
             </p>
           </div>
           <div className="flex items-center gap-1">
-            {/* Close button — mobile only */}
             <button
               onClick={onMobileClose}
               className="md:hidden p-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -142,29 +146,126 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ currentView, setCurrentView, on
             />
           ) : (
             <>
-              <NavItem icon={<Icons.HomeIcon />} label="Home" isActive={currentView === 'dashboard'} onClick={() => handleNavClick('dashboard')} />
-              <NavItem icon={<Icons.BookOpenIcon />} label="My Learning" isActive={currentView === 'student-dashboard'} onClick={() => handleNavClick('student-dashboard')} />
-              <NavItem icon={<Icons.UserIcon />} label="Profile" isActive={currentView === 'profile'} onClick={() => handleNavClick('profile')} />
-              <NavItem icon={<Icons.LightBulbIcon />} label="Idea Wall" isActive={currentView === 'idea-wall'} onClick={() => handleNavClick('idea-wall')} />
-              <NavItem icon={<Icons.NotebookIcon />} label="Smart Notebook" isActive={currentView === 'notebook'} onClick={() => handleNavClick('notebook')} />
-              <NavItem icon={<Icons.CameraIcon />} label="Real World" isActive={currentView === 'real-world'} onClick={() => handleNavClick('real-world')} />
-              <NavItem icon={<Icons.UsersIcon />} label="Community Space" isActive={currentView === 'community-space'} onClick={() => handleNavClick('community-space')} />
+              {/* ═══ COMMON NAV — Same for both Muslim & Universal ═══ */}
+              <NavItem 
+                icon={<Icons.HomeIcon />} 
+                label={isMuslim ? "Utama" : "Home"} 
+                isActive={currentView === 'dashboard'} 
+                onClick={() => handleNavClick('dashboard')} 
+              />
+              <NavItem 
+                icon={<Icons.BookOpenIcon />} 
+                label={isMuslim ? "Pembelajaran" : "My Learning"} 
+                isActive={currentView === 'student-dashboard'} 
+                onClick={() => handleNavClick('student-dashboard')} 
+              />
+              <NavItem 
+                icon={<Icons.UserIcon />} 
+                label={isMuslim ? "Profil" : "Profile"} 
+                isActive={currentView === 'profile'} 
+                onClick={() => handleNavClick('profile')} 
+              />
+              <NavItem 
+                icon={<Icons.LightBulbIcon />} 
+                label={isMuslim ? "Dinding Idea" : "Idea Wall"} 
+                isActive={currentView === 'idea-wall'} 
+                onClick={() => handleNavClick('idea-wall')} 
+              />
+              <NavItem 
+                icon={<Icons.NotebookIcon />} 
+                label={isMuslim ? "Buku Nota Pintar" : "Smart Notebook"} 
+                isActive={currentView === 'notebook'} 
+                onClick={() => handleNavClick('notebook')} 
+              />
+              <NavItem 
+                icon={<Icons.CameraIcon />} 
+                label={isMuslim ? "Dunia Sebenar" : "Real World"} 
+                isActive={currentView === 'real-world'} 
+                onClick={() => handleNavClick('real-world')} 
+              />
+              <NavItem 
+                icon={<Icons.UsersIcon />} 
+                label={isMuslim ? "Ruang Komuniti" : "Community Space"} 
+                isActive={currentView === 'community-space'} 
+                onClick={() => handleNavClick('community-space')} 
+              />
 
+              {/* ═══ THE PATH — both get this ═══ */}
               <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
-                <NavItem icon={<Icons.SparklesIcon />} label="The Path Book" isActive={currentView === 'the-path'} onClick={() => handleNavClick('the-path')} />
+                <NavItem 
+                  icon={<Icons.SparklesIcon />} 
+                  label={isMuslim ? "Buku The Path" : "The Path Book"} 
+                  isActive={currentView === 'the-path'} 
+                  onClick={() => handleNavClick('the-path')} 
+                />
               </div>
 
-              <div className="pt-2">
-                <NavGroup label="7 Dimensions of Wellness" icon={<Icons.SparklesIcon />} defaultOpen={true}>
-                  <NavItem label="Physical" icon={<Icons.BarbellIcon />} isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
-                  <NavItem label="Emotional" icon={<Icons.FaceSmileIcon />} isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
-                  <NavItem label="Social" icon={<Icons.UsersIcon />} isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
-                  <NavItem label="Intellectual" icon={<Icons.AcademicCapIcon />} isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
-                  <NavItem label="Spiritual" icon={<Icons.SparklesIcon />} isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
-                  <NavItem label="Environmental" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
-                  <NavItem label="Vocational" icon={<Icons.BriefcaseIcon />} isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
-                </NavGroup>
-              </div>
+              {/* ═══════════════════════════════════════════════════ */}
+              {/* THIS IS WHERE THE TWO DASHBOARDS DIVERGE COMPLETELY */}
+              {/* ═══════════════════════════════════════════════════ */}
+
+              {isMuslim ? (
+                /* ═══ MUSLIM SIDEBAR — Islamic terms, Sunnah module ═══ */
+                <div className="pt-2">
+                  <NavGroup label="8 Dimensi Pembangunan" icon={<Icons.SparklesIcon />} defaultOpen={true}>
+                    <NavItem label="Ruh — Spiritual" icon="✦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
+                    <NavItem label="Aql — Intelektual" icon="◈" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
+                    <NavItem label="Jasad — Fizikal" icon="◉" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
+                    <NavItem label="Qalb — Emosi" icon="♡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
+                    <NavItem label="Suhbah — Sosial" icon="○" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
+                    <NavItem label="Bi'ah — Alam Sekitar" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
+                    <NavItem label="Rizq — Kerjaya" icon="◆" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
+                    <NavItem label="Raqmi — Digital" icon="⬡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
+                  </NavGroup>
+
+                  {/* Muslim-only items */}
+                  <div className="pt-2 mt-1" style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>
+                    <NavItem 
+                      label="Modul Sunnah" 
+                      icon="🕌" 
+                      isActive={currentView === 'sunnah-module'} 
+                      onClick={() => handleNavClick('sunnah-module')} 
+                    />
+                    <NavItem 
+                      label="Akademi Sekolah" 
+                      icon="🏫" 
+                      isActive={currentView === 'school-subjects'} 
+                      onClick={() => handleNavClick('school-subjects')} 
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* ═══ UNIVERSAL SIDEBAR — English terms, Wellness module ═══ */
+                /* NO Arabic. NO Islamic references. Completely separate. */
+                <div className="pt-2">
+                  <NavGroup label="8 Development Dimensions" icon={<Icons.SparklesIcon />} defaultOpen={true}>
+                    <NavItem label="Spirit — Inner Awareness" icon="✦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
+                    <NavItem label="Mind — Intellectual" icon="◈" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
+                    <NavItem label="Body — Physical" icon="◉" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
+                    <NavItem label="Heart — Emotional" icon="♡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
+                    <NavItem label="Tribe — Social" icon="○" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
+                    <NavItem label="Planet — Environmental" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
+                    <NavItem label="Wealth — Career" icon="◆" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
+                    <NavItem label="Digital — Tech & AI" icon="⬡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
+                  </NavGroup>
+
+                  {/* Universal-only items */}
+                  <div className="pt-2 mt-1" style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>
+                    <NavItem 
+                      label="Wellness Module" 
+                      icon="🧘" 
+                      isActive={currentView === 'wellness-module'} 
+                      onClick={() => handleNavClick('wellness-module')} 
+                    />
+                    <NavItem 
+                      label="School Academy" 
+                      icon="🏫" 
+                      isActive={currentView === 'school-subjects'} 
+                      onClick={() => handleNavClick('school-subjects')} 
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -194,7 +295,9 @@ const SidebarNav: React.FC<SidebarNavProps> = ({ currentView, setCurrentView, on
             style={{ background: 'rgba(239,68,68,0.08)', color: 'rgba(252,165,165,0.9)', border: '1px solid rgba(239,68,68,0.2)' }}
           >
             <Icons.LifebuoyIcon />
-            <span style={{ fontFamily: "'DM Sans', sans-serif" }}>Counseling & Support</span>
+            <span style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              {isMuslim ? "Kaunseling & Sokongan" : "Counseling & Support"}
+            </span>
           </button>
         </div>
 
