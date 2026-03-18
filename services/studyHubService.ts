@@ -35,7 +35,7 @@ export const extractTextFromPDF = async (file: File): Promise<string> => {
                   { text: "Extract ALL text content from this PDF. Keep the structure (headings, paragraphs, lists, tables). Return the full text content only, no commentary." }
                 ]
               }],
-              model: 'gemini-2.5-flash-preview-05-20',
+              model: 'gemini-2.0-flash',
             },
           });
           return res.text;
