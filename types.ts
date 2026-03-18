@@ -1,5 +1,10 @@
-
 export type QuestionType = 'multiple-choice' | 'rating-scale' | 'selection';
+
+// ═══ NEW: Dashboard mode — determined by religion at registration ═══
+// Muslim student → 'muslim' → sees Quran, Sunnah, Doa, Arabic
+// Non-Muslim student → 'universal' → sees Science, Philosophy, Wisdom
+// Set ONCE at registration. No toggle. No overlap.
+export type DashboardMode = 'muslim' | 'universal';
 
 export interface Question {
   id: string;
@@ -208,7 +213,9 @@ export type DashboardView =
   | 'behaviour'
   | 'practice-hub'
   | 'course-player'
-  | 'sunnah-module';
+  | 'sunnah-module'
+  | 'school-subjects'
+  | 'wellness-module';
 
 export type Transcript = {
   speaker: 'user' | 'model';
@@ -564,13 +571,11 @@ export interface SpiritualCategory {
     surahs: Surah[];
 }
 
-// FIX: Added missing SkillSuggestion interface to resolve import errors in geminiService and SkillSelectionStep.
 export interface SkillSuggestion {
     recommendedSkills: { skill: string; reason: string }[];
     smartSuggestions?: { context: string; skills: string[] }[];
 }
 
-// FIX: Added missing GroundedCareerDetail interface to resolve import errors in geminiService and CareerPathCard.
 export interface GroundedCareerDetail {
     groundedExplanation: string;
     groundedSalaryRange: string;
@@ -606,6 +611,16 @@ export interface GeneratedModuleContent {
   module: string;
   topic: string;
   generatedAt: string;
+}
+
+// ═══ NEW: Profile data structure for Supabase storage ═══
+export interface ProfileData {
+  profile: UserProfile;
+  results: AnalysisResult;
+  status: UserStatus;
+  vision: LifeVision;
+  skills: string[];
+  dashboardMode: DashboardMode;
 }
 
 // Global type extensions for Vite env
