@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useToast } from '../../contexts/ToastContext';
 
 // --- Post Card ---
 interface PostCardProps {
@@ -35,7 +36,7 @@ const PostCard: React.FC<PostCardProps> = ({ author, time, group, content, likes
         <div className="flex items-center gap-4 text-xs" style={{ color: '#8a8a9a' }}>
             <span>❤️ {likes}</span>
             <span>💬 {comments}</span>
-            <button className="font-semibold hover:underline transition-colors" style={{ color: 'rgba(201,168,76,0.7)' }}>
+            <button onClick={() => addToast('Post shared to your feed!', 'success')} className="font-semibold hover:underline transition-colors" style={{ color: 'rgba(201,168,76,0.7)' }}>
                 Share
             </button>
         </div>
@@ -87,8 +88,7 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
                         background: 'linear-gradient(135deg, #c9a84c, #e8c97a)',
                         color: '#0a0a0f',
                         fontFamily: "'DM Sans', sans-serif",
-                    }}
-                >
+                    }} onClick={() => addToast('You have registered for this event!', 'success')}>
                     {type === 'online' ? 'RSVP' : 'Join'}
                 </button>
             </div>
@@ -98,6 +98,7 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
 
 // --- Main Section ---
 const CommunityHighlightsSection: React.FC = () => {
+  const { addToast } = useToast();
     const posts = [
         {
             author: 'Ahmad — Form 4',
@@ -154,8 +155,7 @@ const CommunityHighlightsSection: React.FC = () => {
                     </div>
                     <button
                         className="mt-4 w-full text-center text-xs font-semibold uppercase tracking-[0.15em] py-2 transition-colors hover:opacity-80"
-                        style={{ color: 'rgba(201,168,76,0.7)', fontFamily: "'DM Sans', sans-serif" }}
-                    >
+                        style={{ color: 'rgba(201,168,76,0.7)', fontFamily: "'DM Sans', sans-serif" }} onClick={() => addToast('Events page coming soon!', 'info')}>
                         View All Events
                     </button>
                 </div>
