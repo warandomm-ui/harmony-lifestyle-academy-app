@@ -10,6 +10,7 @@ import {
   Transaction, UserProfile, LifeVision,
 } from '../../types';
 import { useToast } from '../../contexts/ToastContext';
+import { useChat } from '../../contexts/ChatContext';
 import SupportModal from './SupportModal';
 import LeaderboardSection from './gamification/LeaderboardSection';
 import BadgesSection from './gamification/BadgesSection';
@@ -152,6 +153,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   dashboardMode,
 }) => {
   const { addToast } = useToast();
+  const { toggleChat } = useChat();
   const isMuslim = dashboardMode === 'muslim';
 
   // ─── Navigation State ───
@@ -213,8 +215,19 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   };
 
   const handleQuickAction = (actionLabel: string) => {
-    if (actionLabel === 'Share Your Skills') {
-      setIsCourseCreatorOpen(true);
+    switch (actionLabel) {
+      case 'Ask Harmony':
+        toggleChat();
+        break;
+      case 'Keep Learning':
+        setCurrentView('student-dashboard');
+        break;
+      case 'Build Something':
+        setIsCourseCreatorOpen(true);
+        break;
+      case 'Share Your Skills':
+        setIsCourseCreatorOpen(true);
+        break;
     }
   };
 
