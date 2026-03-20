@@ -99,6 +99,7 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
 // --- Main Section ---
 const CommunityHighlightsSection: React.FC = () => {
   const { addToast } = useToast();
+  const { addToast } = useToast();
     const posts = [
         {
             author: 'Ahmad — Form 4',
