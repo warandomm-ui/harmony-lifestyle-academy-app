@@ -34,8 +34,8 @@ const PostCard: React.FC<PostCardProps> = ({ author, time, group, content, likes
         </div>
         <p className="my-3 text-sm leading-relaxed" style={{ color: 'rgba(245,240,232,0.85)' }}>{content}</p>
         <div className="flex items-center gap-4 text-xs" style={{ color: '#8a8a9a' }}>
-            <span>❤️ {likes}</span>
-            <span>💬 {comments}</span>
+            <span>â¤ï¸ {likes}</span>
+            <span>ð¬ {comments}</span>
             <button onClick={() => addToast('Post shared to your feed!', 'success')} className="font-semibold hover:underline transition-colors" style={{ color: 'rgba(201,168,76,0.7)' }}>
                 Share
             </button>
@@ -64,7 +64,7 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
             className="text-2xl pt-0.5 flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl"
             style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)' }}
         >
-            {type === 'online' ? '📅' : '🏟️'}
+            {type === 'online' ? 'ð' : 'ðï¸'}
         </div>
         <div className="flex-1 min-w-0">
             <p
@@ -99,13 +99,12 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
 // --- Main Section ---
 const CommunityHighlightsSection: React.FC = () => {
   const { addToast } = useToast();
-  const { addToast } = useToast();
     const posts = [
         {
-            author: 'Ahmad — Form 4',
+            author: 'Ahmad â Form 4',
             time: '2 hours ago',
             group: 'SPM 2025 Warriors',
-            content: 'Just completed my first Python game! 🎮 So hyped! This is giving me life.',
+            content: 'Just completed my first Python game! ð® So hyped! This is giving me life.',
             likes: 23,
             comments: 8,
         },
@@ -127,7 +126,7 @@ const CommunityHighlightsSection: React.FC = () => {
                 className="text-xl font-bold mb-5 flex items-center gap-2"
                 style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#f5f0e8' }}
             >
-                <span style={{ color: '#c9a84c' }}>✦</span>
+                <span style={{ color: '#c9a84c' }}>â¦</span>
                 Community Feed
             </h2>
 
