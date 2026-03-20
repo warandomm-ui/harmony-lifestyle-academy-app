@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useToast } from '../../contexts/ToastContext';
+import { useChat } from '../../contexts/ChatContext';
 import { BellIcon, SearchIcon, ChevronDownIcon, ShoppingCartIcon } from './Icons';
 import type { UserProfile } from '../../types';
 
@@ -9,6 +11,9 @@ interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, onMobileMenuToggle }) => {
+  const { addToast } = useToast();
+  const { toggleChat } = useChat();
+  const [showSearch, setShowSearch] = useState(false);
   return (
     <header className="flex-shrink-0 z-10 hla-dashboard-header">
       <div className="flex items-center justify-between h-14 md:h-16 px-3 md:px-8 gap-2">
@@ -75,14 +80,16 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
             className="sm:hidden flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
             aria-label="Search"
-          >
-            <SearchIcon className="h-5 w-5" />
+              onClick={() => addToast("Search feature coming soon!", "info")}
+            >
+              <SearchIcon className="h-5 w-5" />
           </button>
 
           <button
             className="relative flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
             aria-label="Cart"
+              onClick={() => addToast(cartItemCount > 0 ? "You have items in cart" : "Your cart is empty", "info")}
           >
             <ShoppingCartIcon className="h-5 w-5" />
             {cartItemCount > 0 && (
@@ -96,13 +103,16 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
             className="flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
             aria-label="Notifications"
+              onClick={() => addToast("No new notifications", "info")}
           >
             <BellIcon className="h-5 w-5" />
           </button>
 
           {/* Avatar with gold ring */}
           <div
-            className="flex items-center gap-1.5 cursor-pointer p-1 rounded-full ml-1 transition-all"
+            onClick={() => toggleChat()}
+              onClick={() => addToast("Profile menu coming soon!", "info")}
+              className="flex items-center gap-1.5 cursor-pointer p-1 rounded-full ml-1 transition-all"
             style={{ border: '1px solid rgba(201,168,76,0.35)' }}
           >
             <img
