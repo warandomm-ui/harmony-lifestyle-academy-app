@@ -696,7 +696,7 @@ interface SchoolSubjectsPageProps {
 const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode }) => {
   const isMuslim = dashboardMode === 'muslim';
   const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
-  const [selectedTingkatan, setSelectedTingkatan] = useState<string>('T4');
+  const [selectedTingkatan, setSelectedTingkatan] = useState<string>('T1');
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
   const [lesson, setLesson] = useState<GeneratedLesson | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
