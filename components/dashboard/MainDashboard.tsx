@@ -302,6 +302,12 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <ThePathPage />
           </FullPageWrapper>
         );
+      case 'parent-dashboard':
+        return (
+          <FullPageWrapper title="Dashboard Ibu Bapa">
+            <ParentDashboardPage userProfile={userProfile} />
+          </FullPageWrapper>
+        );
       case 'student-dashboard':
         return (
           <FullPageWrapper title={isMuslim ? 'Dashboard Pembelajaran' : 'My Learning Dashboard'}>
@@ -597,6 +603,7 @@ import ThePathPage from './pages/ThePathPage';
 import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
+import ParentDashboardPage from './pages/ParentDashboardPage';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
