@@ -5,6 +5,7 @@ import { decode, decodeAudioData, createBlob } from '../../utils/audioUtils';
 import { MicrophoneIcon, StopIcon, XIcon, ChatAltIcon, TrashIcon, DownloadIcon } from './Icons';
 import type { Transcript } from '../../types'; // Import Transcript type
 import { useToast } from '../../contexts/ToastContext';
+import { generateContent } from '../../services/aiProxyService';
 
 const TypingIndicator = () => (
     <div className="flex space-x-1 p-3">
@@ -115,7 +116,6 @@ const HarmonyAIChat: React.FC = () => {
             audioRefs.current.mediaStream = stream;
 
             const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
-import { generateContent } from '../../services/aiProxyService';
             
             // Initialize audio contexts
             audioRefs.current.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
