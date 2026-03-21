@@ -140,6 +140,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   // ─── Navigation State ───
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('hla_onboarding_done'));
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   // ─── Data State ───
   const [cart, setCart] = useState<Product[]>([]);
@@ -234,7 +235,10 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const renderContent = () => {
     // Admin routes
     if (currentView.startsWith('admin')) {
-      return <AdminPanel currentView={currentView} setCurrentView={setCurrentView} />;
+      return <AdminPanel currentView={currentView} setCurrentView={setCurrentView} />
+      {showOnboarding && (
+        <OnboardingFlow onComplete={() => { localStorage.setItem('hla_onboarding_done', 'true'); setShowOnboarding(false); }} />
+      )};
     }
     // Course player
     if (currentView === 'course-player' && activeCourse) {
@@ -600,6 +604,7 @@ import CheckoutModal from './CheckoutModal';
 import PlanSelectionModal from './PlanSelectionModal';
 import RequestHelpModal from './RequestHelpModal';
 import DonateModal from './DonateModal';
+import OnboardingFlow from '../OnboardingFlow';
 /* ═══════════════════════════════════════════════
    TYPES
    ═══════════════════════════════════════════════ */
