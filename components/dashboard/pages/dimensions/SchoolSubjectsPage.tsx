@@ -626,7 +626,7 @@ const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
 };
 
 // ── AI Lesson Generator ──
-const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean, userProfile: any, userResults: any): Promise<GeneratedLesson> => {
+const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean, userProfile: any, userResults: any, difficulty: string): Promise<GeneratedLesson> => {
   const lang = isMuslim ? "Bahasa Malaysia" : "English";
 
   // Build personalized context from user profile
@@ -660,7 +660,7 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
     ? "\n\nIMPORTANT - PERSONALIZE the lesson for this specific student:\n" + personalContext + "\nAdapt your teaching style to match their personality and learning preferences. For example:\n- If they are Visual learner (Spatial intelligence): use diagrams, charts, visual descriptions\n- If they are Kinesthetic (Bodily-Kinesthetic): use hands-on examples, real-world applications\n- If they are Linguistic: use storytelling, word-based explanations\n- If they are Logical-Mathematical: use step-by-step logic, patterns\n- Match their temperament: Sanguine=fun examples, Melancholic=detailed/thorough, Choleric=goal-oriented, Phlegmatic=calm/supportive\n"
     : "";
 
-  const prompt = baseContext + personalizationInstructions + "\n\nSubject: " + subject + "\nTopic: " + chapter + "\nLevel: " + tingkatan + "\nCurriculum: KSSM Malaysia\n\nGenerate a lesson in this EXACT JSON format (no markdown, no backticks):\n{\n  \"title\": \"" + chapter + "\",\n  \"explanation\": \"Clear explanation of the topic in 3-4 paragraphs in " + lang + "\",\n  \"keyPoints\": [\"point 1\", \"point 2\", \"point 3\", \"point 4\", \"point 5\"],\n  \"example\": \"One worked example with step-by-step solution\",\n  \"practiceQuestion\": \"One practice question for the student\",\n  \"practiceAnswer\": \"The answer with explanation\"\n}";
+  const prompt = baseContext + personalizationInstructions + "\n\nSubject: " + subject + "\nTopic: " + chapter + "\nLevel: " + tingkatan + "\nCurriculum: KSSM Malaysia\n\nGenerate a lesson in this EXACT JSON format (no markdown, no backticks):\n{\n  \"title\": \"" + chapter + "\",\n  \"explanation\": \"Clear explanation of the topic in 3-4 paragraphs in " + lang + "\",\n  \"keyPoints\": [\"point 1\", \"point 2\", \"point 3\", \"point 4\", \"point 5\"],\n  \"example\": \"One worked example with step-by-step solution\",\n  \"practiceQuestion\": \"One practice question for the student\",\n  \"practiceAnswer\": \"The answer with explanation\"\n}\n\nDifficulty Level: " + difficulty + "\nAdjust complexity: easy=simple language with more examples, medium=standard KSSM level, hard=advanced challenging concepts.\n\nAfter the main lesson, also include a Quiz Section with 5 multiple-choice questions in HTML format using this structure:\n<div class=\"quiz-section\"><h3>Quiz Time!</h3><div class=\"quiz-q\"><p><strong>Q1:</strong> question</p><label><input type=\"radio\" name=\"q1\" value=\"a\"> A) option</label><br><label><input type=\"radio\" name=\"q1\" value=\"b\"> B) option</label><br><label><input type=\"radio\" name=\"q1\" value=\"c\"> C) option</label><br><label><input type=\"radio\" name=\"q1\" value=\"d\"> D) option</label><p class=\"answer\" style=\"display:none\">Answer: A</p></div></div>\nRepeat for all 5 questions. Make quiz appropriate for the difficulty level.";
 
   try {
     const text = await generateContent(prompt, { jsonMode: true });
@@ -692,6 +692,16 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
   const [lesson, setLesson] = useState<GeneratedLesson | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
+  const [completedChapters, setCompletedChapters] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('hla_completed_chapters') || '[]'); } catch { return []; }
+  });
+
+  const markChapterComplete = (chapterKey: string) => {
+    const updated = [...new Set([...completedChapters, chapterKey])];
+    setCompletedChapters(updated);
+    localStorage.setItem('hla_completed_chapters', JSON.stringify(updated));
+  };
 
   // Filter subjects based on dashboard mode
   const filteredSubjects = SUBJECTS.filter(s => 
@@ -709,7 +719,8 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
       isMuslim,
       userProfile,
       userResults
-    );
+    difficulty,
+      );
     setLesson(result);
     setIsGenerating(false);
   }, [isMuslim, selectedTingkatan]);
@@ -1006,12 +1017,42 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
 
           {/* Regenerate Button */}
           <div className="flex justify-center pt-4">
-            <button
+            {/* Difficulty Selector */}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Difficulty:</span>
+                  <div className="flex gap-2">
+                    {(['easy', 'medium', 'hard'] as const).map((level) => (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => setDifficulty(level)}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                          difficulty === level
+                            ? level === 'easy' ? 'bg-green-500 text-white shadow-md' : level === 'medium' ? 'bg-amber-500 text-white shadow-md' : 'bg-red-500 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400'
+                        }`}
+                      >
+                        {level === 'easy' ? '😊 Easy' : level === 'medium' ? '📚 Medium' : '🔥 Hard'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button
               onClick={() => handleGenerateLesson(selectedSubject, selectedChapter)}
               className="px-6 py-2.5 rounded-full text-sm font-semibold border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--foreground)] transition-all"
             >
               {isMuslim ? '🔄 Jana Pelajaran Baru' : '🔄 Generate New Lesson'}
             </button>
+                <button
+                  onClick={() => {
+                    if (selectedSubject && selectedChapter) {
+                      markChapterComplete(selectedSubject + '_' + selectedChapter);
+                    }
+                  }}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                >
+                  ✅ Mark Chapter Complete
+                </button>
           </div>
         </div>
       )}
