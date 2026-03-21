@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { DashboardMode } from '../../../types';
+import { generateContent } from '../../../../services/aiProxyService';
 
 // ═══════════════════════════════════════════════════════════
 // SCHOOL SUBJECTS PAGE — Akademi Sekolah / School Academy
@@ -626,22 +627,8 @@ const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
 
 // ── AI Lesson Generator ──
 const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean): Promise<GeneratedLesson> => {
-  const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || '';
-  if (!apiKey) {
-    return {
-      title: chapter,
-      explanation: isMuslim 
-        ? 'API key tidak dikonfigurasi. Sila hubungi admin.' 
-        : 'API key not configured. Please contact admin.',
-      keyPoints: [],
-      example: '',
-      practiceQuestion: '',
-      practiceAnswer: '',
-    };
-  }
-
   const lang = isMuslim ? 'Bahasa Malaysia' : 'English';
-  const context = isMuslim 
+  const context = isMuslim
     ? 'You are a Malaysian school tutor. Explain in Bahasa Malaysia. Use simple BM that Form 1-5 students understand. Give Malaysian context examples (RM for money, local places, SPM format).'
     : 'You are a Malaysian school tutor. Explain in English. Use simple English that Form 1-5 students understand. Give Malaysian context examples where relevant.';
 
@@ -663,22 +650,15 @@ Generate a lesson in this EXACT JSON format (no markdown, no backticks):
 }`;
 
   try {
-    const { GoogleGenAI } = await import('@google/genai');
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: [{ parts: [{ text: prompt }] }],
-    });
-    
-    const text = response.text || '';
-    const clean = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const text = await generateContent(prompt, { jsonMode: true });
+    const clean = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
     return JSON.parse(clean);
   } catch (err) {
-    console.error('Gemini lesson generation failed:', err);
+    console.error('AI lesson generation failed:', err);
     return {
       title: chapter,
-      explanation: isMuslim 
-        ? 'Maaf, gagal menjana pelajaran. Sila cuba lagi.' 
+      explanation: isMuslim
+        ? 'Maaf, gagal menjana pelajaran. Sila cuba lagi.'
         : 'Sorry, failed to generate lesson. Please try again.',
       keyPoints: [],
       example: '',
