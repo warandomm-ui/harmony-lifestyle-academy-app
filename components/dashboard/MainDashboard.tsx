@@ -474,8 +474,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       )}
       <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
         {!isInCoursePlayer && (
-        )}
-        {!isInCoursePlayer && (
           <HeaderBar
             userProfile={userProfile}
             cartItemCount={cart.length}
