@@ -2,16 +2,16 @@ import React, { useState, useCallback } from 'react';
 import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
 
-// ═══════════════════════════════════════════════════════════
-// SCHOOL SUBJECTS PAGE — Akademi Sekolah / School Academy
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// SCHOOL SUBJECTS PAGE â Akademi Sekolah / School Academy
 // 
-// 8 subjects × 5 tingkatan × KSSM syllabus chapters
+// 8 subjects Ã 5 tingkatan Ã KSSM syllabus chapters
 // AI-generated lessons via Gemini
-// Muslim → sees Pendidikan Islam
-// Universal → sees Pendidikan Moral
-// ═══════════════════════════════════════════════════════════
+// Muslim â sees Pendidikan Islam
+// Universal â sees Pendidikan Moral
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-// ── Types ──
+// ââ Types ââ
 interface Chapter {
   id: string;
   title: string;
@@ -37,9 +37,9 @@ interface GeneratedLesson {
   practiceAnswer: string;
 }
 
-// ── KSSM Syllabus Data ──
-// ═══════════════════════════════════════════════════════════
-// COMPLETE KSSM SUBJECTS DATA — Tingkatan 1-5
+// ââ KSSM Syllabus Data ââ
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// COMPLETE KSSM SUBJECTS DATA â Tingkatan 1-5
 // 
 // DROP-IN REPLACEMENT for the SUBJECTS array in SchoolSubjectsPage.tsx
 // 
@@ -53,15 +53,15 @@ interface GeneratedLesson {
 //   STEM (T4-T5): Add Math, Physics, Chemistry, Biology
 //   HUMANITIES: Geography, Economics
 //   RELIGION: Pendidikan Islam (muslim), Pendidikan Moral (universal)
-// ═══════════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 const SUBJECTS: SubjectData[] = [
-  // ══════════════════════════════════════
-  // 1. MATEMATIK (CORE — Semua pelajar T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 1. MATEMATIK (CORE â Semua pelajar T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'matematik',
-    icon: '🔢',
+    icon: 'ð¢',
     name: 'Mathematics',
     nameBM: 'Matematik',
     color: '#3b82f6',
@@ -133,12 +133,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 2. SAINS (CORE — Semua pelajar T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 2. SAINS (CORE â Semua pelajar T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'sains',
-    icon: '🔬',
+    icon: 'ð¬',
     name: 'Science',
     nameBM: 'Sains',
     color: '#14b8a6',
@@ -193,12 +193,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 3. BAHASA MELAYU (CORE — Semua pelajar T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 3. BAHASA MELAYU (CORE â Semua pelajar T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'bahasa-melayu',
-    icon: '📝',
+    icon: 'ð',
     name: 'Bahasa Melayu',
     nameBM: 'Bahasa Melayu',
     color: '#ef4444',
@@ -206,36 +206,36 @@ const SUBJECTS: SubjectData[] = [
     chapters: {
       T1: [
         { id: 'bm1-1', title: 'Comprehension Skills', titleBM: 'Kemahiran Membaca dan Memahami' },
-        { id: 'bm1-2', title: 'Essay Writing — Narrative', titleBM: 'Penulisan Karangan — Naratif' },
-        { id: 'bm1-3', title: 'Grammar — Word Classes', titleBM: 'Tatabahasa — Golongan Kata' },
-        { id: 'bm1-4', title: 'KOMSAS — Poems & Short Stories', titleBM: 'KOMSAS — Sajak & Cerpen' },
+        { id: 'bm1-2', title: 'Essay Writing â Narrative', titleBM: 'Penulisan Karangan â Naratif' },
+        { id: 'bm1-3', title: 'Grammar â Word Classes', titleBM: 'Tatabahasa â Golongan Kata' },
+        { id: 'bm1-4', title: 'KOMSAS â Poems & Short Stories', titleBM: 'KOMSAS â Sajak & Cerpen' },
         { id: 'bm1-5', title: 'Summary Writing', titleBM: 'Penulisan Rumusan' },
       ],
       T2: [
-        { id: 'bm2-1', title: 'Essay Writing — Descriptive', titleBM: 'Penulisan Karangan — Deskriptif' },
-        { id: 'bm2-2', title: 'Grammar — Sentence Structure', titleBM: 'Tatabahasa — Ayat Tunggal & Ayat Majmuk' },
-        { id: 'bm2-3', title: 'KOMSAS — Drama & Pantun', titleBM: 'KOMSAS — Drama & Pantun' },
+        { id: 'bm2-1', title: 'Essay Writing â Descriptive', titleBM: 'Penulisan Karangan â Deskriptif' },
+        { id: 'bm2-2', title: 'Grammar â Sentence Structure', titleBM: 'Tatabahasa â Ayat Tunggal & Ayat Majmuk' },
+        { id: 'bm2-3', title: 'KOMSAS â Drama & Pantun', titleBM: 'KOMSAS â Drama & Pantun' },
         { id: 'bm2-4', title: 'Formal Letter Writing', titleBM: 'Penulisan Surat Rasmi' },
         { id: 'bm2-5', title: 'Idioms & Proverbs', titleBM: 'Peribahasa & Simpulan Bahasa' },
       ],
       T3: [
-        { id: 'bm3-1', title: 'Essay Writing — Argumentative', titleBM: 'Penulisan Karangan — Perbahasan' },
-        { id: 'bm3-2', title: 'Grammar — Morphology', titleBM: 'Tatabahasa — Morfologi (Imbuhan)' },
-        { id: 'bm3-3', title: 'KOMSAS — Novel', titleBM: 'KOMSAS — Novel' },
+        { id: 'bm3-1', title: 'Essay Writing â Argumentative', titleBM: 'Penulisan Karangan â Perbahasan' },
+        { id: 'bm3-2', title: 'Grammar â Morphology', titleBM: 'Tatabahasa â Morfologi (Imbuhan)' },
+        { id: 'bm3-3', title: 'KOMSAS â Novel', titleBM: 'KOMSAS â Novel' },
         { id: 'bm3-4', title: 'Report Writing', titleBM: 'Penulisan Laporan' },
         { id: 'bm3-5', title: 'Listening & Speaking Skills', titleBM: 'Kemahiran Mendengar & Bertutur' },
       ],
       T4: [
-        { id: 'bm4-1', title: 'SPM Essay — Section A (Directed)', titleBM: 'Karangan SPM — Bahagian A (Berpandu)' },
-        { id: 'bm4-2', title: 'SPM Essay — Section B (Open)', titleBM: 'Karangan SPM — Bahagian B (Terbuka)' },
+        { id: 'bm4-1', title: 'SPM Essay â Section A (Directed)', titleBM: 'Karangan SPM â Bahagian A (Berpandu)' },
+        { id: 'bm4-2', title: 'SPM Essay â Section B (Open)', titleBM: 'Karangan SPM â Bahagian B (Terbuka)' },
         { id: 'bm4-3', title: 'Advanced Grammar & Error Correction', titleBM: 'Tatabahasa Lanjutan & Pembetulan Kesalahan' },
-        { id: 'bm4-4', title: 'KOMSAS SPM — Anthology', titleBM: 'KOMSAS SPM — Antologi' },
+        { id: 'bm4-4', title: 'KOMSAS SPM â Anthology', titleBM: 'KOMSAS SPM â Antologi' },
         { id: 'bm4-5', title: 'SPM Summary Techniques', titleBM: 'Teknik Rumusan SPM' },
-        { id: 'bm4-6', title: 'Comprehension — SPM Format', titleBM: 'Pemahaman — Format SPM' },
+        { id: 'bm4-6', title: 'Comprehension â SPM Format', titleBM: 'Pemahaman â Format SPM' },
       ],
       T5: [
         { id: 'bm5-1', title: 'SPM Essay Mastery', titleBM: 'Penguasaan Karangan SPM' },
-        { id: 'bm5-2', title: 'KOMSAS SPM — Novel & Anthology Revision', titleBM: 'KOMSAS SPM — Ulangkaji Novel & Antologi' },
+        { id: 'bm5-2', title: 'KOMSAS SPM â Novel & Anthology Revision', titleBM: 'KOMSAS SPM â Ulangkaji Novel & Antologi' },
         { id: 'bm5-3', title: 'Grammar Intensive Review', titleBM: 'Ulangkaji Intensif Tatabahasa' },
         { id: 'bm5-4', title: 'Oral Test Preparation', titleBM: 'Persediaan Ujian Lisan' },
         { id: 'bm5-5', title: 'SPM Full Paper Practice', titleBM: 'Latihan Kertas Penuh SPM' },
@@ -243,48 +243,48 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 4. BAHASA INGGERIS (CORE — Semua pelajar T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 4. BAHASA INGGERIS (CORE â Semua pelajar T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'english',
-    icon: '🇬🇧',
+    icon: 'ð¬ð§',
     name: 'English',
     nameBM: 'Bahasa Inggeris',
     color: '#8b5cf6',
     forMode: 'both',
     chapters: {
       T1: [
-        { id: 'en1-1', title: 'Reading Comprehension — Fiction & Non-Fiction', titleBM: 'Pemahaman Bacaan — Fiksyen & Bukan Fiksyen' },
-        { id: 'en1-2', title: 'Grammar — Tenses (Present & Past)', titleBM: 'Tatabahasa — Kala (Kini & Lampau)' },
-        { id: 'en1-3', title: 'Writing — Descriptive Paragraph', titleBM: 'Penulisan — Perenggan Deskriptif' },
-        { id: 'en1-4', title: 'Literature — Short Stories', titleBM: 'Kesusasteraan — Cerpen' },
+        { id: 'en1-1', title: 'Reading Comprehension â Fiction & Non-Fiction', titleBM: 'Pemahaman Bacaan â Fiksyen & Bukan Fiksyen' },
+        { id: 'en1-2', title: 'Grammar â Tenses (Present & Past)', titleBM: 'Tatabahasa â Kala (Kini & Lampau)' },
+        { id: 'en1-3', title: 'Writing â Descriptive Paragraph', titleBM: 'Penulisan â Perenggan Deskriptif' },
+        { id: 'en1-4', title: 'Literature â Short Stories', titleBM: 'Kesusasteraan â Cerpen' },
         { id: 'en1-5', title: 'Vocabulary Building', titleBM: 'Pembinaan Kosa Kata' },
       ],
       T2: [
-        { id: 'en2-1', title: 'Grammar — Continuous & Perfect Tenses', titleBM: 'Tatabahasa — Kala Berterusan & Sempurna' },
-        { id: 'en2-2', title: 'Writing — Narrative Essay', titleBM: 'Penulisan — Karangan Naratif' },
-        { id: 'en2-3', title: 'Literature — Poems', titleBM: 'Kesusasteraan — Puisi' },
+        { id: 'en2-1', title: 'Grammar â Continuous & Perfect Tenses', titleBM: 'Tatabahasa â Kala Berterusan & Sempurna' },
+        { id: 'en2-2', title: 'Writing â Narrative Essay', titleBM: 'Penulisan â Karangan Naratif' },
+        { id: 'en2-3', title: 'Literature â Poems', titleBM: 'Kesusasteraan â Puisi' },
         { id: 'en2-4', title: 'Informal Letter & Email Writing', titleBM: 'Penulisan Surat Tak Rasmi & E-mel' },
-        { id: 'en2-5', title: 'Speaking — Conversations & Discussions', titleBM: 'Pertuturan — Perbualan & Perbincangan' },
+        { id: 'en2-5', title: 'Speaking â Conversations & Discussions', titleBM: 'Pertuturan â Perbualan & Perbincangan' },
       ],
       T3: [
-        { id: 'en3-1', title: 'Grammar — Conditionals & Passive Voice', titleBM: 'Tatabahasa — Ayat Bersyarat & Ayat Pasif' },
-        { id: 'en3-2', title: 'Writing — Formal Letter & Report', titleBM: 'Penulisan — Surat Rasmi & Laporan' },
-        { id: 'en3-3', title: 'Literature — Drama & Novel', titleBM: 'Kesusasteraan — Drama & Novel' },
-        { id: 'en3-4', title: 'Reading — Critical Thinking', titleBM: 'Bacaan — Pemikiran Kritis' },
+        { id: 'en3-1', title: 'Grammar â Conditionals & Passive Voice', titleBM: 'Tatabahasa â Ayat Bersyarat & Ayat Pasif' },
+        { id: 'en3-2', title: 'Writing â Formal Letter & Report', titleBM: 'Penulisan â Surat Rasmi & Laporan' },
+        { id: 'en3-3', title: 'Literature â Drama & Novel', titleBM: 'Kesusasteraan â Drama & Novel' },
+        { id: 'en3-4', title: 'Reading â Critical Thinking', titleBM: 'Bacaan â Pemikiran Kritis' },
         { id: 'en3-5', title: 'Summary Writing Skills', titleBM: 'Kemahiran Penulisan Rumusan' },
       ],
       T4: [
-        { id: 'en4-1', title: 'SPM Writing — Directed & Continuous', titleBM: 'Penulisan SPM — Berpandu & Berterusan' },
+        { id: 'en4-1', title: 'SPM Writing â Directed & Continuous', titleBM: 'Penulisan SPM â Berpandu & Berterusan' },
         { id: 'en4-2', title: 'SPM Literature Component', titleBM: 'Komponen Kesusasteraan SPM' },
-        { id: 'en4-3', title: 'Advanced Grammar — Complex Sentences', titleBM: 'Tatabahasa Lanjutan — Ayat Kompleks' },
-        { id: 'en4-4', title: 'Comprehension — SPM Format', titleBM: 'Pemahaman — Format SPM' },
-        { id: 'en4-5', title: 'Summary — SPM Techniques', titleBM: 'Rumusan — Teknik SPM' },
+        { id: 'en4-3', title: 'Advanced Grammar â Complex Sentences', titleBM: 'Tatabahasa Lanjutan â Ayat Kompleks' },
+        { id: 'en4-4', title: 'Comprehension â SPM Format', titleBM: 'Pemahaman â Format SPM' },
+        { id: 'en4-5', title: 'Summary â SPM Techniques', titleBM: 'Rumusan â Teknik SPM' },
       ],
       T5: [
-        { id: 'en5-1', title: 'SPM Essay Mastery — All Formats', titleBM: 'Penguasaan Karangan SPM — Semua Format' },
-        { id: 'en5-2', title: 'Literature Revision — Poems, Stories, Drama, Novel', titleBM: 'Ulangkaji Sastera — Puisi, Cerpen, Drama, Novel' },
+        { id: 'en5-1', title: 'SPM Essay Mastery â All Formats', titleBM: 'Penguasaan Karangan SPM â Semua Format' },
+        { id: 'en5-2', title: 'Literature Revision â Poems, Stories, Drama, Novel', titleBM: 'Ulangkaji Sastera â Puisi, Cerpen, Drama, Novel' },
         { id: 'en5-3', title: 'Grammar Intensive Review', titleBM: 'Ulangkaji Intensif Tatabahasa' },
         { id: 'en5-4', title: 'Speaking Test Preparation', titleBM: 'Persediaan Ujian Lisan' },
         { id: 'en5-5', title: 'SPM Full Paper Practice', titleBM: 'Latihan Kertas Penuh SPM' },
@@ -292,12 +292,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 5. SEJARAH (CORE — Semua pelajar T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 5. SEJARAH (CORE â Semua pelajar T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'sejarah',
-    icon: '📜',
+    icon: 'ð',
     name: 'History',
     nameBM: 'Sejarah',
     color: '#d97706',
@@ -346,12 +346,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 6. MATEMATIK TAMBAHAN (STEM — T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 6. MATEMATIK TAMBAHAN (STEM â T4-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'add-math',
-    icon: '📊',
+    icon: 'ð',
     name: 'Additional Mathematics',
     nameBM: 'Matematik Tambahan',
     color: '#6366f1',
@@ -383,12 +383,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 7. FIZIK (STEM — T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 7. FIZIK (STEM â T4-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'physics',
-    icon: '⚡',
+    icon: 'â¡',
     name: 'Physics',
     nameBM: 'Fizik',
     color: '#f59e0b',
@@ -415,12 +415,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 8. KIMIA (STEM — T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 8. KIMIA (STEM â T4-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'chemistry',
-    icon: '🧪',
+    icon: 'ð§ª',
     name: 'Chemistry',
     nameBM: 'Kimia',
     color: '#10b981',
@@ -446,12 +446,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 9. BIOLOGI (STEM — T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 9. BIOLOGI (STEM â T4-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'biology',
-    icon: '🧬',
+    icon: 'ð§¬',
     name: 'Biology',
     nameBM: 'Biologi',
     color: '#22c55e',
@@ -478,12 +478,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
   // 10. GEOGRAFI (T1-T3 + elective T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'geography',
-    icon: '🌍',
+    icon: 'ð',
     name: 'Geography',
     nameBM: 'Geografi',
     color: '#0ea5e9',
@@ -508,12 +508,12 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
   // 11. EKONOMI ASAS (Elektif T4-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'economics',
-    icon: '💰',
+    icon: 'ð°',
     name: 'Basic Economics',
     nameBM: 'Ekonomi Asas',
     color: '#f97316',
@@ -537,55 +537,55 @@ const SUBJECTS: SubjectData[] = [
     },
   },
 
-  // ══════════════════════════════════════
-  // 12. PENDIDIKAN ISLAM (Muslim Only — T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 12. PENDIDIKAN ISLAM (Muslim Only â T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'pend-islam',
-    icon: '🕌',
+    icon: 'ð',
     name: 'Pendidikan Islam',
     nameBM: 'Pendidikan Islam',
     color: '#c9a84c',
     forMode: 'muslim',
     chapters: {
       T1: [
-        { id: 'pi1-1', title: 'Aqidah — Beriman kepada Allah', titleBM: 'Aqidah — Beriman kepada Allah' },
-        { id: 'pi1-2', title: 'Ibadah — Solat Fardhu', titleBM: 'Ibadah — Solat Fardhu' },
-        { id: 'pi1-3', title: 'Sirah — Rasulullah SAW', titleBM: 'Sirah — Rasulullah SAW' },
-        { id: 'pi1-4', title: 'Akhlak — Adab Mulia', titleBM: 'Akhlak — Adab Mulia' },
+        { id: 'pi1-1', title: 'Aqidah â Beriman kepada Allah', titleBM: 'Aqidah â Beriman kepada Allah' },
+        { id: 'pi1-2', title: 'Ibadah â Solat Fardhu', titleBM: 'Ibadah â Solat Fardhu' },
+        { id: 'pi1-3', title: 'Sirah â Rasulullah SAW', titleBM: 'Sirah â Rasulullah SAW' },
+        { id: 'pi1-4', title: 'Akhlak â Adab Mulia', titleBM: 'Akhlak â Adab Mulia' },
         { id: 'pi1-5', title: 'Tilawah al-Quran', titleBM: 'Tilawah al-Quran' },
       ],
       T2: [
-        { id: 'pi2-1', title: 'Aqidah — Sifat Allah', titleBM: 'Aqidah — Sifat Allah' },
-        { id: 'pi2-2', title: 'Ibadah — Puasa & Zakat', titleBM: 'Ibadah — Puasa & Zakat' },
-        { id: 'pi2-3', title: 'Sirah — Khulafa al-Rasyidin', titleBM: 'Sirah — Khulafa al-Rasyidin' },
-        { id: 'pi2-4', title: 'Akhlak — Adab Bermasyarakat', titleBM: 'Akhlak — Adab Bermasyarakat' },
+        { id: 'pi2-1', title: 'Aqidah â Sifat Allah', titleBM: 'Aqidah â Sifat Allah' },
+        { id: 'pi2-2', title: 'Ibadah â Puasa & Zakat', titleBM: 'Ibadah â Puasa & Zakat' },
+        { id: 'pi2-3', title: 'Sirah â Khulafa al-Rasyidin', titleBM: 'Sirah â Khulafa al-Rasyidin' },
+        { id: 'pi2-4', title: 'Akhlak â Adab Bermasyarakat', titleBM: 'Akhlak â Adab Bermasyarakat' },
       ],
       T3: [
-        { id: 'pi3-1', title: 'Aqidah — Iman kepada Hari Akhirat', titleBM: 'Aqidah — Iman kepada Hari Akhirat' },
-        { id: 'pi3-2', title: 'Ibadah — Haji & Korban', titleBM: 'Ibadah — Haji & Korban' },
-        { id: 'pi3-3', title: 'Muamalat — Jual Beli Islam', titleBM: 'Muamalat — Jual Beli Islam' },
+        { id: 'pi3-1', title: 'Aqidah â Iman kepada Hari Akhirat', titleBM: 'Aqidah â Iman kepada Hari Akhirat' },
+        { id: 'pi3-2', title: 'Ibadah â Haji & Korban', titleBM: 'Ibadah â Haji & Korban' },
+        { id: 'pi3-3', title: 'Muamalat â Jual Beli Islam', titleBM: 'Muamalat â Jual Beli Islam' },
       ],
       T4: [
-        { id: 'pi4-1', title: 'Aqidah — Qada & Qadar', titleBM: 'Aqidah — Qada & Qadar' },
+        { id: 'pi4-1', title: 'Aqidah â Qada & Qadar', titleBM: 'Aqidah â Qada & Qadar' },
         { id: 'pi4-2', title: 'Fiqh Munakahat', titleBM: 'Fiqh Munakahat' },
         { id: 'pi4-3', title: 'Tamadun Islam', titleBM: 'Tamadun Islam' },
-        { id: 'pi4-4', title: 'Hadis — 40 Hadis Pilihan', titleBM: 'Hadis — 40 Hadis Pilihan' },
+        { id: 'pi4-4', title: 'Hadis â 40 Hadis Pilihan', titleBM: 'Hadis â 40 Hadis Pilihan' },
       ],
       T5: [
-        { id: 'pi5-1', title: 'Aqidah — Islam & Sains', titleBM: 'Aqidah — Islam & Sains' },
+        { id: 'pi5-1', title: 'Aqidah â Islam & Sains', titleBM: 'Aqidah â Islam & Sains' },
         { id: 'pi5-2', title: 'Fiqh Jenayah & Kekeluargaan', titleBM: 'Fiqh Jenayah & Kekeluargaan' },
         { id: 'pi5-3', title: 'Dakwah & Kepimpinan Islam', titleBM: 'Dakwah & Kepimpinan Islam' },
       ],
     },
   },
 
-  // ══════════════════════════════════════
-  // 13. PENDIDIKAN MORAL (Universal Only — T1-T5)
-  // ══════════════════════════════════════
+  // ââââââââââââââââââââââââââââââââââââââ
+  // 13. PENDIDIKAN MORAL (Universal Only â T1-T5)
+  // ââââââââââââââââââââââââââââââââââââââ
   {
     id: 'pend-moral',
-    icon: '🤝',
+    icon: 'ð¤',
     name: 'Moral Education',
     nameBM: 'Pendidikan Moral',
     color: '#a855f7',
@@ -618,6 +618,69 @@ const SUBJECTS: SubjectData[] = [
       ],
     },
   },
+
+  {
+    id: 'perakaunan',
+    icon: '📊',
+    name: 'Principles of Accounting',
+    nameBM: 'Prinsip Perakaunan',
+    color: '#0891b2',
+    forMode: 'universal',
+    chapters: {
+      T4: [
+        { id: 'pa4-1', title: 'Introduction to Accounting', titleBM: 'Pengenalan Perakaunan' },
+        { id: 'pa4-2', title: 'Classification of Accounts', titleBM: 'Pengelasan Akaun' },
+        { id: 'pa4-3', title: 'Documents as Source of Information', titleBM: 'Dokumen Sebagai Sumber Maklumat' },
+        { id: 'pa4-4', title: 'Journals', titleBM: 'Jurnal' },
+        { id: 'pa4-5', title: 'Ledger', titleBM: 'Lejar' },
+        { id: 'pa4-6', title: 'Trial Balance', titleBM: 'Imbangan Duga' },
+        { id: 'pa4-7', title: 'Financial Statements of Sole Proprietorship', titleBM: 'Penyata Kewangan Milikan Tunggal' },
+      ],
+      T5: [
+        { id: 'pa5-1', title: 'Adjustments in Financial Statements', titleBM: 'Pelarasan Penyata Kewangan' },
+        { id: 'pa5-2', title: 'Financial Statements of Partnership', titleBM: 'Penyata Kewangan Perkongsian' },
+        { id: 'pa5-3', title: 'Company Accounts', titleBM: 'Akaun Syarikat' },
+        { id: 'pa5-4', title: 'Cash Flow Statement', titleBM: 'Penyata Aliran Tunai' },
+        { id: 'pa5-5', title: 'Financial Ratios', titleBM: 'Nisbah Kewangan' },
+        { id: 'pa5-6', title: 'Cost Accounting', titleBM: 'Perakaunan Kos' },
+      ],
+    },
+  },
+  {
+    id: 'sains-komputer',
+    icon: '💻',
+    name: 'Computer Science',
+    nameBM: 'Sains Komputer',
+    color: '#6366f1',
+    forMode: 'universal',
+    chapters: {
+      T1: [
+        { id: 'sk1-1', title: 'Computational Thinking', titleBM: 'Pemikiran Komputasional' },
+        { id: 'sk1-2', title: 'Representation of Data', titleBM: 'Perwakilan Data' },
+        { id: 'sk1-3', title: 'Algorithms', titleBM: 'Algoritma' },
+      ],
+      T2: [
+        { id: 'sk2-1', title: 'Data & Information', titleBM: 'Data dan Maklumat' },
+        { id: 'sk2-2', title: 'Introduction to Programming', titleBM: 'Pengenalan Pengaturcaraan' },
+        { id: 'sk2-3', title: 'Flowcharts & Pseudocode', titleBM: 'Carta Alir dan Pseudokod' },
+      ],
+      T3: [
+        { id: 'sk3-1', title: 'Computer System', titleBM: 'Sistem Komputer' },
+        { id: 'sk3-2', title: 'Computer Networking', titleBM: 'Rangkaian Komputer' },
+        { id: 'sk3-3', title: 'Interactive Application Development', titleBM: 'Pembangunan Aplikasi Interaktif' },
+      ],
+      T4: [
+        { id: 'sk4-1', title: 'Database Management', titleBM: 'Pengurusan Pangkalan Data' },
+        { id: 'sk4-2', title: 'Programming Fundamentals', titleBM: 'Asas Pengaturcaraan' },
+        { id: 'sk4-3', title: 'Web Application Development', titleBM: 'Pembangunan Aplikasi Web' },
+      ],
+      T5: [
+        { id: 'sk5-1', title: 'Emerging Technologies', titleBM: 'Teknologi Baharu Muncul' },
+        { id: 'sk5-2', title: 'Advanced Programming', titleBM: 'Pengaturcaraan Lanjutan' },
+        { id: 'sk5-3', title: 'Innovation & Entrepreneurship in IT', titleBM: 'Inovasi dan Keusahawanan dalam IT' },
+      ],
+    },
+  },
 ];
 const TINGKATAN = ['T1', 'T2', 'T3', 'T4', 'T5'];
 const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
@@ -625,7 +688,7 @@ const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
   universal: { T1: 'Form 1', T2: 'Form 2', T3: 'Form 3', T4: 'Form 4', T5: 'Form 5' },
 };
 
-// ── AI Lesson Generator ──
+// ââ AI Lesson Generator ââ
 const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean, userProfile: any, userResults: any, difficulty: string): Promise<GeneratedLesson> => {
   const lang = isMuslim ? "Bahasa Malaysia" : "English";
 
@@ -679,7 +742,7 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
   }
 };
 
-// ═══ MAIN COMPONENT ═══
+// âââ MAIN COMPONENT âââ
 interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
 }
@@ -732,14 +795,14 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     }
   };
 
-  // ── SUBJECT GRID VIEW ──
+  // ââ SUBJECT GRID VIEW ââ
   if (!selectedSubject) {
     return (
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-[var(--foreground)]">
-            {isMuslim ? '🏫 Akademi Sekolah' : '🏫 School Academy'}
+            {isMuslim ? 'ð« Akademi Sekolah' : 'ð« School Academy'}
           </h2>
           <p className="text-[var(--muted)] mt-2 text-sm">
             {isMuslim 
@@ -795,7 +858,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     );
   }
 
-  // ── CHAPTER LIST VIEW ──
+  // ââ CHAPTER LIST VIEW ââ
   if (!selectedChapter) {
     const chapters = selectedSubject.chapters[selectedTingkatan] || [];
     
@@ -887,7 +950,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
         ) : (
           <div className="text-center py-12 text-[var(--muted)]">
             <p className="text-lg mb-2">
-              {isMuslim ? '📚 Tiada bab untuk tingkatan ini' : '📚 No chapters for this form level'}
+              {isMuslim ? 'ð Tiada bab untuk tingkatan ini' : 'ð No chapters for this form level'}
             </p>
             <p className="text-sm">
               {isMuslim 
@@ -900,7 +963,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     );
   }
 
-  // ── LESSON VIEW (AI-generated) ──
+  // ââ LESSON VIEW (AI-generated) ââ
   return (
     <div className="space-y-6">
       {/* Back + Chapter Header */}
@@ -918,7 +981,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
             {isMuslim ? selectedChapter.titleBM : selectedChapter.title}
           </h2>
           <p className="text-xs text-[var(--muted)]">
-            {selectedSubject.icon} {isMuslim ? selectedSubject.nameBM : selectedSubject.name} · {TINGKATAN_LABELS[dashboardMode][selectedTingkatan]}
+            {selectedSubject.icon} {isMuslim ? selectedSubject.nameBM : selectedSubject.name} Â· {TINGKATAN_LABELS[dashboardMode][selectedTingkatan]}
           </p>
         </div>
       </div>
@@ -944,7 +1007,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {/* Explanation */}
           <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)]">
             <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-              <span className="text-lg">📖</span>
+              <span className="text-lg">ð</span>
               {isMuslim ? 'Penerangan' : 'Explanation'}
             </h3>
             <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap">
@@ -956,7 +1019,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.keyPoints && lesson.keyPoints.length > 0 && (
             <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)]">
               <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-                <span className="text-lg">⭐</span>
+                <span className="text-lg">â­</span>
                 {isMuslim ? 'Poin Penting' : 'Key Points'}
               </h3>
               <ul className="space-y-2">
@@ -974,7 +1037,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.example && (
             <div className="p-5 rounded-2xl border border-[var(--border)]" style={{ background: `${selectedSubject.color}08` }}>
               <h3 className="font-bold mb-3 flex items-center gap-2" style={{ color: selectedSubject.color }}>
-                <span className="text-lg">✏️</span>
+                <span className="text-lg">âï¸</span>
                 {isMuslim ? 'Contoh' : 'Worked Example'}
               </h3>
               <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap">
@@ -987,7 +1050,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.practiceQuestion && (
             <div className="p-5 rounded-2xl border-2 border-dashed border-[var(--border)] bg-[var(--card)]">
               <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-                <span className="text-lg">🧠</span>
+                <span className="text-lg">ð§ </span>
                 {isMuslim ? 'Soalan Latihan' : 'Practice Question'}
               </h3>
               <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap mb-4">
@@ -1032,7 +1095,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
                             : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400'
                         }`}
                       >
-                        {level === 'easy' ? '😊 Easy' : level === 'medium' ? '📚 Medium' : '🔥 Hard'}
+                        {level === 'easy' ? 'ð Easy' : level === 'medium' ? 'ð Medium' : 'ð¥ Hard'}
                       </button>
                     ))}
                   </div>
@@ -1041,7 +1104,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
               onClick={() => handleGenerateLesson(selectedSubject, selectedChapter)}
               className="px-6 py-2.5 rounded-full text-sm font-semibold border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--foreground)] transition-all"
             >
-              {isMuslim ? '🔄 Jana Pelajaran Baru' : '🔄 Generate New Lesson'}
+              {isMuslim ? 'ð Jana Pelajaran Baru' : 'ð Generate New Lesson'}
             </button>
                 <button
                   onClick={() => {
@@ -1051,7 +1114,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
                   }}
                   className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
                 >
-                  ✅ Mark Chapter Complete
+                  â Mark Chapter Complete
                 </button>
           </div>
         </div>
