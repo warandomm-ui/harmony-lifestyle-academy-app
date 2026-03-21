@@ -15,8 +15,6 @@ import SupportModal from './SupportModal';
 import LeaderboardSection from './gamification/LeaderboardSection';
 import BadgesSection from './gamification/BadgesSection';
 import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_TRANSACTIONS, MOCK_FULL_COURSE } from '../../constants';
-import DesktopMenuBar from './DesktopMenuBar';
-
 // Legacy Page Imports
 import WisdomPage from './pages/WisdomPage';
 import KnowledgePage from './pages/KnowledgePage';
@@ -28,7 +26,6 @@ import CommunicationPage from './pages/CommunicationPage';
 import BehaviourPage from './pages/BehaviourPage';
 import PracticeHubPage from './pages/PracticeHubPage';
 import ProfilePage from './pages/ProfilePage';
-
 // 7 Dimensions Page Imports
 import PhysicalPage from './pages/dimensions/PhysicalPage';
 import EmotionalPage from './pages/dimensions/EmotionalPage';
@@ -40,7 +37,6 @@ import VocationalPage from './pages/dimensions/VocationalPage';
 import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
 import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
-
 // Other Page Imports
 import LanguageLabPage from './pages/LanguageLabPage';
 import IdeaWallPage from './pages/IdeaWallPage';
@@ -50,7 +46,6 @@ import ThePathPage from './pages/ThePathPage';
 import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
-
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
@@ -58,11 +53,9 @@ import CheckoutModal from './CheckoutModal';
 import PlanSelectionModal from './PlanSelectionModal';
 import RequestHelpModal from './RequestHelpModal';
 import DonateModal from './DonateModal';
-
 /* ═══════════════════════════════════════════════
    TYPES
    ═══════════════════════════════════════════════ */
-
 interface MainDashboardProps {
   userProfile: UserProfile;
   userResults: AnalysisResult;
@@ -72,16 +65,13 @@ interface MainDashboardProps {
   onProfileUpdate: (profile: UserProfile) => void;
   dashboardMode: DashboardMode;
 }
-
 interface FullPageWrapperProps {
   children: React.ReactNode;
   title: string;
 }
-
 /* ═══════════════════════════════════════════════
    HELPER: Dimension titles based on dashboard mode
    ═══════════════════════════════════════════════ */
-
 const MUSLIM_TITLES: Partial<Record<DashboardView, string>> = {
   'physical': 'Jasad — Kekuatan Fizikal',
   'emotional': 'Qalb — Pengurusan Emosi',
@@ -93,7 +83,6 @@ const MUSLIM_TITLES: Partial<Record<DashboardView, string>> = {
   'sunnah-module': 'Modul Sunnah Nabi ﷺ',
   'school-subjects': 'Akademi Sekolah',
 };
-
 const UNIVERSAL_TITLES: Partial<Record<DashboardView, string>> = {
   'physical': 'Body — Physical Wellness',
   'emotional': 'Heart — Emotional Intelligence',
@@ -105,16 +94,13 @@ const UNIVERSAL_TITLES: Partial<Record<DashboardView, string>> = {
   'wellness-module': 'Wellness & Mindfulness',
   'school-subjects': 'School Academy',
 };
-
 const getDimensionTitle = (view: DashboardView, mode: DashboardMode): string => {
   const titles = mode === 'muslim' ? MUSLIM_TITLES : UNIVERSAL_TITLES;
   return titles[view] || '';
 };
-
 /* ═══════════════════════════════════════════════
    REUSABLE WRAPPER
    ═══════════════════════════════════════════════ */
-
 const FullPageWrapper: React.FC<FullPageWrapperProps> = ({ children, title }) => (
   <main className="flex-1 p-3 sm:p-5 md:p-8 overflow-y-auto bg-[var(--background)] min-w-0">
     <div className="max-w-7xl mx-auto">
@@ -127,22 +113,18 @@ const FullPageWrapper: React.FC<FullPageWrapperProps> = ({ children, title }) =>
     </div>
   </main>
 );
-
 /* ═══════════════════════════════════════════════
    DEFAULT COURSES
    ═══════════════════════════════════════════════ */
-
 const DEFAULT_COURSES: Course[] = [
   { id: 'c_1', icon: '📐', title: 'Matematik', subtitle: 'Tingkatan 3', progress: 45 },
   { id: 'c_2', icon: '💻', title: 'Python', subtitle: 'for Beginners', progress: 30 },
   { id: 'c_3', icon: '🎨', title: 'Web Design', subtitle: 'Basics', progress: 15 },
   { id: 'c_4', icon: '🔬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 55 },
 ];
-
 /* ═══════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════ */
-
 const MainDashboard: React.FC<MainDashboardProps> = ({
   userProfile,
   userResults,
@@ -155,12 +137,10 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const { addToast } = useToast();
   const { toggleChat } = useChat();
   const isMuslim = dashboardMode === 'muslim';
-
   // ─── Navigation State ───
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
-
   // ─── Data State ───
   const [cart, setCart] = useState<Product[]>([]);
   const [activeCourses, setActiveCourses] = useState<Course[]>(DEFAULT_COURSES);
@@ -170,7 +150,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   ]);
   const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan>(SUBSCRIPTION_PLANS[0]);
   const [transactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
-
   // ─── Modal State ───
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isCourseCreatorOpen, setIsCourseCreatorOpen] = useState(false);
@@ -180,21 +159,16 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const [isRequestHelpModalOpen, setIsRequestHelpModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
-
   // ─── Handlers ───
-
   const handleInitiateCheckout = (product: Product) => {
     setCheckoutProduct(product);
     setIsCheckoutOpen(true);
   };
-
   const handleCheckoutSuccess = () => {
     if (!checkoutProduct) return;
-
     setIsCheckoutOpen(false);
     const emailSlug = userProfile.name.toLowerCase().replace(/\s/g, '.');
     addToast(`Receipt for ${checkoutProduct.name} sent to ${emailSlug}@gmail.com`, 'success');
-
     if (checkoutProduct.category === 'E-Book' || checkoutProduct.name.includes('Course')) {
       const newCourse: Course = {
         id: `purchased_${Date.now()}`,
@@ -206,14 +180,11 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       setActiveCourses((prev) => [newCourse, ...prev]);
       addToast(`Auto-enrolled in ${checkoutProduct.name}! Check 'My Learning'.`, 'info');
     }
-
     setCheckoutProduct(null);
   };
-
   const handleAddToCart = (product: Product) => {
     handleInitiateCheckout(product);
   };
-
   const handleQuickAction = (actionLabel: string) => {
     switch (actionLabel) {
       case 'Ask Harmony':
@@ -230,25 +201,21 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
         break;
     }
   };
-
   const handleCourseCreated = (newCourse: Course) => {
     setActiveCourses((prev) => [newCourse, ...prev]);
     setIsCourseCreatorOpen(false);
   };
-
   const handleSavePaymentMethod = (data: Omit<PaymentMethod, 'id'>) => {
     const newMethod: PaymentMethod = { id: `pm_${Date.now()}`, ...data };
     setPaymentMethods((prev) => [...prev, newMethod]);
     setIsPaymentModalOpen(false);
     addToast(`${data.cardType} card ending in ${data.last4} added.`, 'success');
   };
-
   const handleSelectPlan = (plan: SubscriptionPlan) => {
     setCurrentPlan(plan);
     setIsPlanModalOpen(false);
     addToast(`Switched to ${plan.name} plan!`, 'success');
   };
-
   const handlePostAnonymously = (content: string) => {
     const newPost: AnonymousPost = {
       id: `anon_${Date.now()}`,
@@ -259,32 +226,26 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     setAnonymousPosts((prev) => [newPost, ...prev]);
     addToast('Your anonymous post has been shared.', 'success');
   };
-
   const handlePlayCourse = (course: Course) => {
     setActiveCourse(course);
     setCurrentView('course-player');
   };
-
   // ─── Content Router ───
-
   const renderContent = () => {
     // Admin routes
     if (currentView.startsWith('admin')) {
       return <AdminPanel currentView={currentView} setCurrentView={setCurrentView} />;
     }
-
     // Course player
     if (currentView === 'course-player' && activeCourse) {
       return <CoursePlayer course={activeCourse} onExit={() => setCurrentView('dashboard')} />;
     }
-
     switch (currentView) {
       // ─── Gamification ───
       case 'leaderboard':
         return <LeaderboardSection />;
       case 'badges':
         return <BadgesSection />;
-
       // ─── Profile ───
       case 'profile':
         return (
@@ -294,7 +255,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             onProfileUpdate={onProfileUpdate}
           />
         );
-
       // ─── Tools & Features ───
       case 'practice-hub':
         return (
@@ -348,7 +308,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             />
           </FullPageWrapper>
         );
-
       // ─── 7 Dimensions ───
       case 'physical':
         return (
@@ -398,7 +357,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <VocationalPage />
           </FullPageWrapper>
         );
-
       // ─── Mode-Specific Routes ───
       case 'sunnah-module':
         return (
@@ -418,7 +376,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <SpiritualPage religion={userProfile.religion} />
           </FullPageWrapper>
         );
-
       // ─── Legacy Pages ───
       case 'wisdom':
         return (
@@ -487,7 +444,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <BehaviourPage userResults={userResults} />
           </FullPageWrapper>
         );
-
       // ─── Default: Dashboard Home ───
       case 'dashboard':
       default:
@@ -502,11 +458,8 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
         );
     }
   };
-
   // ─── Layout ───
-
   const isInCoursePlayer = currentView === 'course-player';
-
   return (
     <div className="hla-dashboard flex h-screen bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
       {!isInCoursePlayer && (
@@ -519,13 +472,8 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
           dashboardMode={dashboardMode}
         />
       )}
-
       <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
         {!isInCoursePlayer && (
-          <DesktopMenuBar
-            setCurrentView={setCurrentView}
-            onOpenSupport={() => setIsSupportModalOpen(true)}
-          />
         )}
         {!isInCoursePlayer && (
           <HeaderBar
@@ -534,12 +482,30 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             onMobileMenuToggle={() => setIsMobileMenuOpen((prev) => !prev)}
           />
         )}
-
         {renderContent()}
-
         {!isInCoursePlayer && <HarmonyAIChat />}
+        {/* Mobile Bottom Tab Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50">
+          <div className="flex justify-around items-center h-14">
+            <button onClick={() => setCurrentView('home')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'home' ? 'text-purple-600' : 'text-gray-500'}`}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+              <span className="text-[10px] font-medium">Home</span>
+            </button>
+            <button onClick={() => setCurrentView('school-subjects')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'school-subjects' ? 'text-purple-600' : 'text-gray-500'}`}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              <span className="text-[10px] font-medium">Learn</span>
+            </button>
+            <button onClick={() => setCurrentView('personality')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'personality' ? 'text-purple-600' : 'text-gray-500'}`}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <span className="text-[10px] font-medium">Grow</span>
+            </button>
+            <button onClick={() => setCurrentView('profile')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'profile' ? 'text-purple-600' : 'text-gray-500'}`}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <span className="text-[10px] font-medium">Profile</span>
+            </button>
+          </div>
+        </nav>
       </div>
-
       {/* ─── Modals ─── */}
       {isSupportModalOpen && (
         <SupportModal onClose={() => setIsSupportModalOpen(false)} />
@@ -580,7 +546,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     </div>
   );
 };
-
 export default MainDashboard;
 import React, { useState } from 'react';
 import HeaderBar from './HeaderBar';
@@ -599,8 +564,6 @@ import SupportModal from './SupportModal';
 import LeaderboardSection from './gamification/LeaderboardSection';
 import BadgesSection from './gamification/BadgesSection';
 import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_TRANSACTIONS, MOCK_FULL_COURSE } from '../../constants';
-import DesktopMenuBar from './DesktopMenuBar';
-
 // Legacy Page Imports
 import WisdomPage from './pages/WisdomPage';
 import KnowledgePage from './pages/KnowledgePage';
@@ -612,7 +575,6 @@ import CommunicationPage from './pages/CommunicationPage';
 import BehaviourPage from './pages/BehaviourPage';
 import PracticeHubPage from './pages/PracticeHubPage';
 import ProfilePage from './pages/ProfilePage';
-
 // 7 Dimensions Page Imports
 import PhysicalPage from './pages/dimensions/PhysicalPage';
 import EmotionalPage from './pages/dimensions/EmotionalPage';
@@ -624,7 +586,6 @@ import VocationalPage from './pages/dimensions/VocationalPage';
 import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
 import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
-
 // Other Page Imports
 import LanguageLabPage from './pages/LanguageLabPage';
 import IdeaWallPage from './pages/IdeaWallPage';
@@ -634,7 +595,6 @@ import ThePathPage from './pages/ThePathPage';
 import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
-
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
@@ -642,11 +602,9 @@ import CheckoutModal from './CheckoutModal';
 import PlanSelectionModal from './PlanSelectionModal';
 import RequestHelpModal from './RequestHelpModal';
 import DonateModal from './DonateModal';
-
 /* ═══════════════════════════════════════════════
    TYPES
    ═══════════════════════════════════════════════ */
-
 interface MainDashboardProps {
   userProfile: UserProfile;
   userResults: AnalysisResult;
@@ -656,13 +614,10 @@ interface MainDashboardProps {
   onProfileUpdate: (profile: UserProfile) => void;
   dashboardMode: DashboardMode;
 }
-
 interface FullPageWrapperProps {
   children: React.ReactNode;
   title: string;
 }
-
 /* ═══════════════════════════════════════════════
    HELPER: Dimension titles based on dashboard mode
    ═══════════════════════════════════════════════ */
-
