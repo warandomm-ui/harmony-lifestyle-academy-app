@@ -718,8 +718,8 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
       selectedTingkatan,
       isMuslim,
       userProfile,
-      userResults
-    difficulty,
+      userResults,
+    difficulty
       );
     setLesson(result);
     setIsGenerating(false);
