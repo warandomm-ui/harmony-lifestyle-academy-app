@@ -409,7 +409,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       case 'school-subjects':
         return (
           <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}>
-            <SchoolSubjectsPage dashboardMode={dashboardMode} />
+            <SchoolSubjectsPage setMode={setMode} userProfile={userProfile} userResults={userResults} />
           </FullPageWrapper>
         );
       case 'wellness-module':
