@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import type { DashboardMode } from '../../../types';
+import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
 
 // ═══════════════════════════════════════════════════════════
@@ -627,43 +627,54 @@ const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
 
 // ── AI Lesson Generator ──
 const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean): Promise<GeneratedLesson> => {
-  const lang = isMuslim ? 'Bahasa Malaysia' : 'English';
-  const context = isMuslim
-    ? 'You are a Malaysian school tutor. Explain in Bahasa Malaysia. Use simple BM that Form 1-5 students understand. Give Malaysian context examples (RM for money, local places, SPM format).'
-    : 'You are a Malaysian school tutor. Explain in English. Use simple English that Form 1-5 students understand. Give Malaysian context examples where relevant.';
+  const lang = isMuslim ? "Bahasa Malaysia" : "English";
 
-  const prompt = `${context}
+  // Build personalized context from user profile
+  let personalContext = "";
+  if (userProfile) {
+    personalContext += "STUDENT PROFILE:\n";
+    personalContext += "- Name: " + userProfile.name + "\n";
+    if (userProfile.age) personalContext += "- Age: " + userProfile.age + " years old\n";
+    if (userProfile.religion) personalContext += "- Religion: " + userProfile.religion + "\n";
+    if (userProfile.state) personalContext += "- State: " + userProfile.state + "\n";
+  }
 
-Subject: ${subject}
-Topic: ${chapter}
-Level: ${tingkatan}
-Curriculum: KSSM Malaysia
+  if (userResults) {
+    personalContext += "PERSONALITY & LEARNING STYLE:\n";
+    personalContext += "- Personality Type: " + (userResults.personalityType || "") + "\n";
+    if (userResults.studentProfile?.mbti?.type) personalContext += "- MBTI: " + userResults.studentProfile.mbti.type + "\n";
+    if (userResults.studentProfile?.disc?.style) personalContext += "- DISC Style: " + userResults.studentProfile.disc.style + "\n";
+    if (userResults.studentProfile?.temperament?.type) personalContext += "- Temperament: " + userResults.studentProfile.temperament.type + "\n";
+    if (userResults.studentProfile?.multipleIntelligences?.topIntelligences) {
+      personalContext += "- Top Intelligences: " + userResults.studentProfile.multipleIntelligences.topIntelligences.join(", ") + "\n";
+    }
+    if (userResults.studentProfile?.enneagram?.type) personalContext += "- Enneagram: " + userResults.studentProfile.enneagram.type + "\n";
+    if (userResults.overallSummary) personalContext += "- Summary: " + userResults.overallSummary + "\n";
+  }
 
-Generate a lesson in this EXACT JSON format (no markdown, no backticks):
-{
-  "title": "${chapter}",
-  "explanation": "Clear explanation of the topic in 3-4 paragraphs in ${lang}",
-  "keyPoints": ["point 1", "point 2", "point 3", "point 4", "point 5"],
-  "example": "One worked example with step-by-step solution",
-  "practiceQuestion": "One practice question for the student",
-  "practiceAnswer": "The answer with explanation"
-}`;
+  const baseContext = isMuslim
+    ? "You are a Malaysian school tutor. Explain in Bahasa Malaysia. Use simple BM that Form 1-5 students understand. Give Malaysian context examples (RM for money, local places, SPM format)."
+    : "You are a Malaysian school tutor. Explain in English. Use simple English that Form 1-5 students understand. Give Malaysian context examples where relevant.";
+
+  const personalizationInstructions = personalContext
+    ? "\n\nIMPORTANT - PERSONALIZE the lesson for this specific student:\n" + personalContext + "\nAdapt your teaching style to match their personality and learning preferences. For example:\n- If they are Visual learner (Spatial intelligence): use diagrams, charts, visual descriptions\n- If they are Kinesthetic (Bodily-Kinesthetic): use hands-on examples, real-world applications\n- If they are Linguistic: use storytelling, word-based explanations\n- If they are Logical-Mathematical: use step-by-step logic, patterns\n- Match their temperament: Sanguine=fun examples, Melancholic=detailed/thorough, Choleric=goal-oriented, Phlegmatic=calm/supportive\n"
+    : "";
+
+  const prompt = baseContext + personalizationInstructions + "\n\nSubject: " + subject + "\nTopic: " + chapter + "\nLevel: " + tingkatan + "\nCurriculum: KSSM Malaysia\n\nGenerate a lesson in this EXACT JSON format (no markdown, no backticks):\n{\n  \"title\": \"" + chapter + "\",\n  \"explanation\": \"Clear explanation of the topic in 3-4 paragraphs in " + lang + "\",\n  \"keyPoints\": [\"point 1\", \"point 2\", \"point 3\", \"point 4\", \"point 5\"],\n  \"example\": \"One worked example with step-by-step solution\",\n  \"practiceQuestion\": \"One practice question for the student\",\n  \"practiceAnswer\": \"The answer with explanation\"\n}";
 
   try {
     const text = await generateContent(prompt, { jsonMode: true });
-    const clean = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
+    const clean = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
     return JSON.parse(clean);
   } catch (err) {
-    console.error('AI lesson generation failed:', err);
+    console.error("AI lesson generation failed:", err);
     return {
       title: chapter,
-      explanation: isMuslim
-        ? 'Maaf, gagal menjana pelajaran. Sila cuba lagi.'
-        : 'Sorry, failed to generate lesson. Please try again.',
+      explanation: isMuslim ? "Maaf, gagal menjana pelajaran. Sila cuba lagi." : "Sorry, failed to generate lesson. Please try again.",
       keyPoints: [],
-      example: '',
-      practiceQuestion: '',
-      practiceAnswer: '',
+      example: "",
+      practiceQuestion: "",
+      practiceAnswer: "",
     };
   }
 };
@@ -673,7 +684,7 @@ interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
 }
 
-const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode }) => {
+const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults }) => {
   const isMuslim = dashboardMode === 'muslim';
   const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
   const [selectedTingkatan, setSelectedTingkatan] = useState<string>('T1');
