@@ -626,7 +626,7 @@ const TINGKATAN_LABELS: Record<string, Record<string, string>> = {
 };
 
 // ── AI Lesson Generator ──
-const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean): Promise<GeneratedLesson> => {
+const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean, userProfile: any, userResults: any): Promise<GeneratedLesson> => {
   const lang = isMuslim ? "Bahasa Malaysia" : "English";
 
   // Build personalized context from user profile
@@ -706,7 +706,9 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
       isMuslim ? subject.nameBM : subject.name,
       isMuslim ? chapter.titleBM : chapter.title,
       selectedTingkatan,
-      isMuslim
+      isMuslim,
+      userProfile,
+      userResults
     );
     setLesson(result);
     setIsGenerating(false);
