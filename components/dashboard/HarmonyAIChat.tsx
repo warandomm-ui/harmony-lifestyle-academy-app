@@ -20,6 +20,8 @@ const HarmonyAIChat: React.FC = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [isConnecting, setIsConnecting] = useState(false);
     const [status, setStatus] = useState('Idle. Press mic to start.');
+  const [textInput, setTextInput] = useState('');
+  const [isSendingText, setIsSendingText] = useState(false);
     const [transcripts, setTranscripts] = useState<Transcript[]>([]);
     const transcriptEndRef = useRef<HTMLDivElement>(null);
     const { addToast } = useToast();
@@ -113,6 +115,7 @@ const HarmonyAIChat: React.FC = () => {
             audioRefs.current.mediaStream = stream;
 
             const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+import { generateContent } from '../../services/aiProxyService';
             
             // Initialize audio contexts
             audioRefs.current.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -289,7 +292,31 @@ const HarmonyAIChat: React.FC = () => {
         return null;
     }
     
-    return (
+    
+  // Send text message via AI proxy
+  const sendTextMessage = async () => {
+    if (!textInput.trim() || isSendingText) return;
+    const userMsg = textInput.trim();
+    setTextInput('');
+    setIsSendingText(true);
+    // Add user message to transcript
+    setTranscript(prev => [...prev, { role: 'user', text: userMsg }]);
+    try {
+      const response = await generateContent(
+        'You are Harmony AI, a friendly and knowledgeable assistant for Harmony Lifestyle Academy (HLA). ' +
+        'HLA is a homeschooling academy for students aged 7-17 in Malaysia. ' +
+        'Help students with their studies, personal development, and well-being. ' +
+        'Respond in a warm, encouraging tone. Use Bahasa Malaysia if the student writes in BM. ' +
+        'User message: ' + userMsg
+      );
+      setTranscript(prev => [...prev, { role: 'model', text: response }]);
+    } catch (error) {
+      setTranscript(prev => [...prev, { role: 'model', text: 'Maaf, saya tidak dapat memproses mesej anda. Sila cuba lagi.' }]);
+    }
+    setIsSendingText(false);
+  };
+
+return (
         <div className="absolute bottom-4 right-4 w-[400px] h-[600px] bg-[var(--card)] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[var(--border)] animate-fade-in-up">
             <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--accent)]/10">
                 <div className="flex items-center gap-3">
@@ -353,7 +380,30 @@ const HarmonyAIChat: React.FC = () => {
                      <p className={`text-sm text-center font-medium transition-colors ${isConnecting ? 'text-yellow-500' : 'text-[var(--muted)]'}`}>
                         {status}
                     </p>
-                    <button 
+                    <div className="flex items-center gap-2 flex-1">
+                <input
+                  type="text"
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendTextMessage()}
+                  placeholder="Type a message..."
+                  className="flex-1 px-3 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  disabled={isSendingText}
+                />
+                <button
+                  onClick={sendTextMessage}
+                  disabled={!textInput.trim() || isSendingText}
+                  className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Send message"
+                >
+                  {isSendingText ? (
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                  )}
+                </button>
+              </div>
+              <button 
                         onClick={handleToggleRecording}
                         disabled={isConnecting}
                         className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 text-white focus:outline-none focus:ring-4 focus:ring-opacity-50
