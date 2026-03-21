@@ -124,6 +124,16 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
+            
+            <button
+              onClick={signOut}
+              className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              title="Log Out"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
             <button
               onClick={signOut}
               className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
