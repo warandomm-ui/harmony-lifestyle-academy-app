@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { MOCK_BADGES } from '../../../constants';
 import { ProgressBar } from '../shared/ProgressBar';
@@ -13,7 +13,29 @@ const GamificationWidget: React.FC = () => {
     .filter(badge => earnedBadgeIds.includes(badge.id))
     .slice(0, 3);
 
-  return (
+  
+  // Streak tracking with localStorage
+  const [streak, setStreak] = useState(0);
+  const [lastLoginDate, setLastLoginDate] = useState('');
+  
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const savedStreak = parseInt(localStorage.getItem('hla_streak') || '0');
+    const savedDate = localStorage.getItem('hla_last_login') || '';
+    
+    if (savedDate === today) {
+      setStreak(savedStreak);
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      const newStreak = savedDate === yesterday ? savedStreak + 1 : 1;
+      setStreak(newStreak);
+      localStorage.setItem('hla_streak', String(newStreak));
+      localStorage.setItem('hla_last_login', today);
+    }
+    setLastLoginDate(today);
+  }, []);
+
+return (
     <div className="bento-card h-full" style={{ border: '1px solid rgba(201,168,76,0.3)', boxShadow: '0 0 30px rgba(201,168,76,0.06)' }}>
       <h2
         className="text-xl font-bold mb-5 flex items-center gap-2"
@@ -52,6 +74,17 @@ const GamificationWidget: React.FC = () => {
             {points.toLocaleString()} pts
           </p>
         </div>
+            {/* Streak Counter */}
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-4 text-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm opacity-90">Login Streak</p>
+                  <p className="text-2xl font-bold">{streak} hari</p>
+                </div>
+                <div className="text-3xl">{streak >= 7 ? '🔥' : streak >= 3 ? '⚡' : '✨'}</div>
+              </div>
+              <p className="text-xs mt-2 opacity-80">{streak >= 7 ? 'Hebat! Konsisten!' : streak >= 3 ? 'Teruskan!' : 'Log in setiap hari!'}</p>
+            </div>
 
         {/* XP progress bar */}
         <div>
