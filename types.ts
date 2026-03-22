@@ -164,8 +164,77 @@ export interface Course {
 
 export type AdminRole = 'admin' | 'super-admin';
 
+// ═══ Learning Path System Types ═══
+export type AgeGroup = '7-12' | '13-17';
+export type StudentInterest = 'business' | 'nature' | 'fitness' | 'technology' | 'arts' | 'cooking' | 'agriculture' | 'leadership';
+export type StudentPersonality = 'active' | 'calm' | 'curious';
+export type LessonStep = 'learn' | 'do' | 'share';
+export type LessonStatus = 'locked' | 'available' | 'in-progress' | 'completed';
+export type PathLevelStatus = 'locked' | 'current' | 'completed';
+
+export interface StartHereProfile {
+  ageGroup: AgeGroup;
+  interests: StudentInterest[];
+  personality: StudentPersonality;
+  completedAt: string;
+}
+
+export interface PathLesson {
+  id: string;
+  title: string;
+  description: string;
+  learnContent: string;       // 5-min video or reading
+  learnVideoUrl?: string;
+  doTask: string;             // Real-life task
+  sharePrompt: string;        // Upload photo/video/report
+  status: LessonStatus;
+  pointsReward: number;
+  submission?: {
+    type: 'photo' | 'video' | 'text';
+    content: string;
+    submittedAt: string;
+    parentApproved?: boolean;
+    parentFeedback?: string;
+  };
+}
+
+export interface PathLevel {
+  id: string;
+  number: 1 | 2 | 3;
+  title: string;
+  subtitle: string;
+  description: string;
+  durationWeeks: string;
+  status: PathLevelStatus;
+  lessons: PathLesson[];
+  badge: { name: string; icon: string };
+}
+
+export interface StudentLearningPath {
+  ageGroup: AgeGroup;
+  interests: StudentInterest[];
+  personality: StudentPersonality;
+  levels: PathLevel[];
+  currentLevelIndex: number;
+  totalPoints: number;
+  completedLessons: number;
+  totalLessons: number;
+}
+
+export interface ParentWeeklyCheckIn {
+  id: string;
+  weekNumber: number;
+  date: string;
+  childProgress: string;
+  parentNotes: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+}
+
 export type DashboardView =
   | 'dashboard'
+  | 'start-here'
+  | 'my-path'
+  | 'lesson-viewer'
   | 'student-dashboard'
   | 'leaderboard'
   | 'badges'

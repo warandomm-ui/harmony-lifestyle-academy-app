@@ -8,6 +8,7 @@ import {
   AnalysisResult, Course, DashboardView, DashboardMode, Product,
   UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan,
   Transaction, UserProfile, LifeVision,
+  StartHereProfile, StudentLearningPath,
 } from '../../types';
 import { useToast } from '../../contexts/ToastContext';
 import { useChat } from '../../contexts/ChatContext';
@@ -37,6 +38,10 @@ import VocationalPage from './pages/dimensions/VocationalPage';
 import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
 import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
+// New Learning Path Pages
+import StartHerePage from './pages/StartHerePage';
+import MyPathPage from './pages/MyPathPage';
+import LessonViewerPage from './pages/LessonViewerPage';
 // Other Page Imports
 import LanguageLabPage from './pages/LanguageLabPage';
 import IdeaWallPage from './pages/IdeaWallPage';
@@ -142,6 +147,16 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('hla_onboarding_done'));
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
+  // ─── Learning Path State ───
+  const [startHereProfile, setStartHereProfile] = useState<StartHereProfile | null>(() => {
+    const saved = localStorage.getItem('hla_start_here_profile');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [learningPath, setLearningPath] = useState<StudentLearningPath | null>(() => {
+    const saved = localStorage.getItem('hla_learning_path');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [activeLessonRef, setActiveLessonRef] = useState<{ levelIndex: number; lessonIndex: number } | null>(null);
   // ─── Data State ───
   const [cart, setCart] = useState<Product[]>([]);
   const [activeCourses, setActiveCourses] = useState<Course[]>(DEFAULT_COURSES);
@@ -231,6 +246,73 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     setActiveCourse(course);
     setCurrentView('course-player');
   };
+  // ─── Learning Path Handlers ───
+  const handleStartHereComplete = (profile: StartHereProfile, path: StudentLearningPath) => {
+    setStartHereProfile(profile);
+    setLearningPath(path);
+    localStorage.setItem('hla_start_here_profile', JSON.stringify(profile));
+    localStorage.setItem('hla_learning_path', JSON.stringify(path));
+    addToast('Your learning path is ready! Go to "My Path" to begin.', 'success');
+    setCurrentView('my-path');
+  };
+  const handleOpenLesson = (levelIndex: number, lessonIndex: number) => {
+    if (!learningPath) return;
+    const lesson = learningPath.levels[levelIndex]?.lessons[lessonIndex];
+    if (!lesson || lesson.status === 'locked') return;
+    // Mark as in-progress if available
+    if (lesson.status === 'available') {
+      const updated = { ...learningPath };
+      updated.levels[levelIndex].lessons[lessonIndex] = { ...lesson, status: 'in-progress' };
+      setLearningPath(updated);
+      localStorage.setItem('hla_learning_path', JSON.stringify(updated));
+    }
+    setActiveLessonRef({ levelIndex, lessonIndex });
+    setCurrentView('lesson-viewer');
+  };
+  const handleLessonComplete = (submission: { type: 'photo' | 'video' | 'text'; content: string }) => {
+    if (!learningPath || !activeLessonRef) return;
+    const { levelIndex, lessonIndex } = activeLessonRef;
+    const updated = { ...learningPath };
+    const level = updated.levels[levelIndex];
+    level.lessons[lessonIndex] = {
+      ...level.lessons[lessonIndex],
+      status: 'completed',
+      submission: { ...submission, submittedAt: new Date().toISOString() },
+    };
+    updated.completedLessons = updated.levels.reduce(
+      (sum, l) => sum + l.lessons.filter(le => le.status === 'completed').length, 0,
+    );
+    // Unlock next lesson if available
+    if (lessonIndex + 1 < level.lessons.length && level.lessons[lessonIndex + 1].status === 'locked') {
+      level.lessons[lessonIndex + 1] = { ...level.lessons[lessonIndex + 1], status: 'available' };
+    }
+    // Check if level is complete → unlock next level
+    const allLessonsComplete = level.lessons.every(l => l.status === 'completed');
+    if (allLessonsComplete) {
+      level.status = 'completed';
+      if (levelIndex + 1 < updated.levels.length) {
+        updated.levels[levelIndex + 1].status = 'current';
+        updated.levels[levelIndex + 1].lessons[0] = { ...updated.levels[levelIndex + 1].lessons[0], status: 'available' };
+        updated.currentLevelIndex = levelIndex + 1;
+      }
+    }
+    setLearningPath(updated);
+    localStorage.setItem('hla_learning_path', JSON.stringify(updated));
+    setActiveLessonRef(null);
+    setCurrentView('my-path');
+  };
+  const handleParentApproveTask = (levelIndex: number, lessonIndex: number, feedback: string) => {
+    if (!learningPath) return;
+    const updated = { ...learningPath };
+    const lesson = updated.levels[levelIndex].lessons[lessonIndex];
+    if (lesson.submission) {
+      lesson.submission.parentApproved = true;
+      lesson.submission.parentFeedback = feedback;
+    }
+    setLearningPath(updated);
+    localStorage.setItem('hla_learning_path', JSON.stringify(updated));
+    addToast('Task approved! Your child will see your feedback.', 'success');
+  };
   // ─── Content Router ───
   const renderContent = () => {
     // Admin routes
@@ -245,6 +327,44 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       return <CoursePlayer course={activeCourse} onExit={() => setCurrentView('dashboard')} />;
     }
     switch (currentView) {
+      // ─── Learning Path System ───
+      case 'start-here':
+        return (
+          <FullPageWrapper title={isMuslim ? 'Mula Di Sini' : 'Start Here'}>
+            <StartHerePage
+              onComplete={handleStartHereComplete}
+              existingProfile={startHereProfile}
+            />
+          </FullPageWrapper>
+        );
+      case 'my-path':
+        return (
+          <FullPageWrapper title="">
+            <MyPathPage
+              learningPath={learningPath}
+              onStartHere={() => setCurrentView('start-here')}
+              onOpenLesson={handleOpenLesson}
+            />
+          </FullPageWrapper>
+        );
+      case 'lesson-viewer': {
+        if (!learningPath || !activeLessonRef) {
+          setCurrentView('my-path');
+          return null;
+        }
+        const level = learningPath.levels[activeLessonRef.levelIndex];
+        const lesson = level.lessons[activeLessonRef.lessonIndex];
+        return (
+          <FullPageWrapper title="">
+            <LessonViewerPage
+              lesson={lesson}
+              levelTitle={`Level ${level.number}: ${level.title}`}
+              onComplete={handleLessonComplete}
+              onBack={() => { setActiveLessonRef(null); setCurrentView('my-path'); }}
+            />
+          </FullPageWrapper>
+        );
+      }
       // ─── Gamification ───
       case 'leaderboard':
         return <LeaderboardSection />;
@@ -305,7 +425,11 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       case 'parent-dashboard':
         return (
           <FullPageWrapper title="Dashboard Ibu Bapa">
-            <ParentDashboardPage userProfile={userProfile} />
+            <ParentDashboardPage
+              userProfile={userProfile}
+              learningPath={learningPath}
+              onApproveTask={handleParentApproveTask}
+            />
           </FullPageWrapper>
         );
       case 'student-dashboard':
@@ -493,24 +617,25 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
         {renderContent()}
         {!isInCoursePlayer && <HarmonyAIChat />}
         {/* Mobile Bottom Tab Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50" style={{ background: '#0a0a0f', borderTop: '1px solid rgba(201,168,76,0.15)' }}>
           <div className="flex justify-around items-center h-14">
-            <button onClick={() => setCurrentView('home')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'home' ? 'text-purple-600' : 'text-gray-500'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-              <span className="text-[10px] font-medium">Home</span>
-            </button>
-            <button onClick={() => setCurrentView('school-subjects')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'school-subjects' ? 'text-purple-600' : 'text-gray-500'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-              <span className="text-[10px] font-medium">Learn</span>
-            </button>
-            <button onClick={() => setCurrentView('personality')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'personality' ? 'text-purple-600' : 'text-gray-500'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              <span className="text-[10px] font-medium">Grow</span>
-            </button>
-            <button onClick={() => setCurrentView('profile')} className={`flex flex-col items-center gap-0.5 px-2 py-1 ${currentView === 'profile' ? 'text-purple-600' : 'text-gray-500'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              <span className="text-[10px] font-medium">Profile</span>
-            </button>
+            {[
+              { view: 'dashboard' as DashboardView, label: 'Home', icon: '🏠' },
+              { view: 'start-here' as DashboardView, label: 'Start', icon: '✨' },
+              { view: 'my-path' as DashboardView, label: 'My Path', icon: '🧭' },
+              { view: 'community-space' as DashboardView, label: 'Community', icon: '👥' },
+              { view: 'profile' as DashboardView, label: 'Profile', icon: '👤' },
+            ].map(tab => (
+              <button
+                key={tab.view}
+                onClick={() => setCurrentView(tab.view)}
+                className="flex flex-col items-center gap-0.5 px-2 py-1"
+                style={{ color: currentView === tab.view ? '#e8c97a' : '#8a8a9a' }}
+              >
+                <span className="text-lg">{tab.icon}</span>
+                <span className="text-[10px] font-medium">{tab.label}</span>
+              </button>
+            ))}
           </div>
         </nav>
       </div>
@@ -555,79 +680,3 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   );
 };
 export default MainDashboard;
-import React, { useState } from 'react';
-import HeaderBar from './HeaderBar';
-import SidebarNav from './SidebarNav';
-import DashboardContent from './DashboardContent';
-import HarmonyAIChat from './HarmonyAIChat';
-import AdminPanel from './sections/AdminPanel';
-import {
-  AnalysisResult, Course, DashboardView, DashboardMode, Product,
-  UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan,
-  Transaction, UserProfile, LifeVision,
-} from '../../types';
-import { useToast } from '../../contexts/ToastContext';
-import { useChat } from '../../contexts/ChatContext';
-import SupportModal from './SupportModal';
-import LeaderboardSection from './gamification/LeaderboardSection';
-import BadgesSection from './gamification/BadgesSection';
-import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_TRANSACTIONS, MOCK_FULL_COURSE } from '../../constants';
-// Legacy Page Imports
-import WisdomPage from './pages/WisdomPage';
-import KnowledgePage from './pages/KnowledgePage';
-import HealthPage from './pages/HealthPage';
-import FinancialPage from './pages/FinancialPage';
-import BusinessPage from './pages/BusinessPage';
-import FitnessPage from './pages/FitnessPage';
-import CommunicationPage from './pages/CommunicationPage';
-import BehaviourPage from './pages/BehaviourPage';
-import PracticeHubPage from './pages/PracticeHubPage';
-import ProfilePage from './pages/ProfilePage';
-// 7 Dimensions Page Imports
-import PhysicalPage from './pages/dimensions/PhysicalPage';
-import EmotionalPage from './pages/dimensions/EmotionalPage';
-import SocialDimensionPage from './pages/dimensions/SocialPage';
-import IntellectualPage from './pages/dimensions/IntellectualPage';
-import SpiritualPage from './pages/dimensions/SpiritualPage';
-import EnvironmentalPage from './pages/dimensions/EnvironmentalPage';
-import VocationalPage from './pages/dimensions/VocationalPage';
-import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
-import SunnahModulePage from './pages/dimensions/SunnahModulePage';
-import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
-// Other Page Imports
-import LanguageLabPage from './pages/LanguageLabPage';
-import IdeaWallPage from './pages/IdeaWallPage';
-import RealWorldPage from './pages/RealWorldPage';
-import CommunitySpacePage from './pages/CommunitySpacePage';
-import ThePathPage from './pages/ThePathPage';
-import CoursePlayer from './lms/CoursePlayer';
-import StudentDashboard from './pages/StudentDashboard';
-import NotebookPage from './pages/NotebookPage';
-import ParentDashboardPage from './pages/ParentDashboardPage';
-// Modal Imports
-import CourseCreatorModal from './CourseCreatorModal';
-import PaymentModal from './PaymentModal';
-import CheckoutModal from './CheckoutModal';
-import PlanSelectionModal from './PlanSelectionModal';
-import RequestHelpModal from './RequestHelpModal';
-import DonateModal from './DonateModal';
-import OnboardingFlow from '../OnboardingFlow';
-/* ═══════════════════════════════════════════════
-   TYPES
-   ═══════════════════════════════════════════════ */
-interface MainDashboardProps {
-  userProfile: UserProfile;
-  userResults: AnalysisResult;
-  selectedSkills: string[];
-  userStatus: UserStatus;
-  lifeVision: LifeVision;
-  onProfileUpdate: (profile: UserProfile) => void;
-  dashboardMode: DashboardMode;
-}
-interface FullPageWrapperProps {
-  children: React.ReactNode;
-  title: string;
-}
-/* ═══════════════════════════════════════════════
-   HELPER: Dimension titles based on dashboard mode
-   ═══════════════════════════════════════════════ */

@@ -156,49 +156,67 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             />
           ) : (
             <>
-              {/* ═══ COMMON NAV — Same for both Muslim & Universal ═══ */}
-              <NavItem 
-                icon={<Icons.HomeIcon />} 
-                label={isMuslim ? "Utama" : "Home"} 
-                isActive={currentView === 'dashboard'} 
-                onClick={() => handleNavClick('dashboard')} 
+              {/* ═══ PRIMARY NAV — Simple & Clear ═══ */}
+              <NavItem
+                icon={<Icons.HomeIcon />}
+                label={isMuslim ? "Utama" : "Home"}
+                isActive={currentView === 'dashboard'}
+                onClick={() => handleNavClick('dashboard')}
               />
-              <NavItem 
-                icon={<Icons.BookOpenIcon />} 
-                label={isMuslim ? "Pembelajaran" : "My Learning"} 
-                isActive={currentView === 'student-dashboard'} 
-                onClick={() => handleNavClick('student-dashboard')} 
+              <NavItem
+                icon={<Icons.SparklesIcon />}
+                label={isMuslim ? "Mula Di Sini" : "Start Here"}
+                isActive={currentView === 'start-here'}
+                onClick={() => handleNavClick('start-here')}
               />
-              <NavItem 
-                icon={<Icons.UserIcon />} 
-                label={isMuslim ? "Profil" : "Profile"} 
-                isActive={currentView === 'profile'} 
-                onClick={() => handleNavClick('profile')} 
+              <NavItem
+                icon="🧭"
+                label={isMuslim ? "Laluan Saya" : "My Path"}
+                isActive={currentView === 'my-path' || currentView === 'lesson-viewer'}
+                onClick={() => handleNavClick('my-path')}
               />
-              <NavItem 
-                icon={<Icons.LightBulbIcon />} 
-                label={isMuslim ? "Dinding Idea" : "Idea Wall"} 
-                isActive={currentView === 'idea-wall'} 
-                onClick={() => handleNavClick('idea-wall')} 
+              <NavItem
+                icon={<Icons.BookOpenIcon />}
+                label={isMuslim ? "Kursus" : "Courses"}
+                isActive={currentView === 'student-dashboard'}
+                onClick={() => handleNavClick('student-dashboard')}
               />
-              <NavItem 
-                icon={<Icons.NotebookIcon />} 
-                label={isMuslim ? "Buku Nota Pintar" : "Smart Notebook"} 
-                isActive={currentView === 'notebook'} 
-                onClick={() => handleNavClick('notebook')} 
+              <NavItem
+                icon={<Icons.UsersIcon />}
+                label={isMuslim ? "Komuniti" : "Community"}
+                isActive={currentView === 'community-space'}
+                onClick={() => handleNavClick('community-space')}
               />
-              <NavItem 
-                icon={<Icons.CameraIcon />} 
-                label={isMuslim ? "Dunia Sebenar" : "Real World"} 
-                isActive={currentView === 'real-world'} 
-                onClick={() => handleNavClick('real-world')} 
+              <NavItem
+                icon={<Icons.UserIcon />}
+                label={isMuslim ? "Profil" : "Profile"}
+                isActive={currentView === 'profile'}
+                onClick={() => handleNavClick('profile')}
               />
-              <NavItem 
-                icon={<Icons.UsersIcon />} 
-                label={isMuslim ? "Ruang Komuniti" : "Community Space"} 
-                isActive={currentView === 'community-space'} 
-                onClick={() => handleNavClick('community-space')} 
-              />
+
+              {/* ═══ EXTRA TOOLS — Collapsed section ═══ */}
+              <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>
+                <NavGroup label={isMuslim ? "Alat Lain" : "More Tools"} icon={<Icons.NotebookIcon />}>
+                  <NavItem
+                    icon={<Icons.LightBulbIcon />}
+                    label={isMuslim ? "Dinding Idea" : "Idea Wall"}
+                    isActive={currentView === 'idea-wall'}
+                    onClick={() => handleNavClick('idea-wall')}
+                  />
+                  <NavItem
+                    icon={<Icons.NotebookIcon />}
+                    label={isMuslim ? "Buku Nota Pintar" : "Smart Notebook"}
+                    isActive={currentView === 'notebook'}
+                    onClick={() => handleNavClick('notebook')}
+                  />
+                  <NavItem
+                    icon={<Icons.CameraIcon />}
+                    label={isMuslim ? "Dunia Sebenar" : "Real World"}
+                    isActive={currentView === 'real-world'}
+                    onClick={() => handleNavClick('real-world')}
+                  />
+                </NavGroup>
+              </div>
 
               {/* ═══ THE PATH — both get this ═══ */}
               <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
