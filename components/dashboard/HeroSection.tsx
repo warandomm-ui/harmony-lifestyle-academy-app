@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ userProfile, userResults }) => {
     const userName = userProfile.name || "User";
-    const weather = "☀️ 32°C, Sunny";
+    const weather = "âï¸ 32Â°C, Sunny";
 
     const today = new Date();
     const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -29,7 +29,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userProfile, userResults }) =
                         className="text-xs uppercase tracking-[0.3em] mb-2 font-light"
                         style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
                     >
-                        Welcome back
+                        Selamat Kembali
                     </p>
                     <h1
                         className="text-4xl md:text-5xl font-bold leading-tight"
@@ -42,13 +42,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userProfile, userResults }) =
                             backgroundClip: 'text',
                         }}
                     >
-                        Good day, {firstName}
+                        Hai, {firstName}
                     </h1>
                     <p
                         className="mt-2 text-lg italic"
                         style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: 'rgba(201,168,76,0.8)' }}
                     >
-                        {userResults.personalityType} &mdash; your journey continues today
+                        {userResults.personalityType} &mdash; jom sambung belajar hari ini!
                     </p>
                 </div>
 
@@ -58,7 +58,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userProfile, userResults }) =
                     style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
                 >
                     <span>{formattedDate}</span>
-                    <span style={{ color: 'rgba(201,168,76,0.4)' }}>·</span>
+                    <span style={{ color: 'rgba(201,168,76,0.4)' }}>Â·</span>
                     <span>{weather}</span>
                 </div>
             </div>
