@@ -11,6 +11,7 @@ import LifeBalanceWheel from './widgets/LifeBalanceWheel';
 import DailyCheckIn from './widgets/DailyCheckIn';
 import HabitTrackerWidget from './widgets/HabitTrackerWidget';
 import DailyRoutineTable from './widgets/DailyRoutineTable';
+import SectionErrorBoundary from '../SectionErrorBoundary';
 
 interface DashboardContentProps {
   userProfile: UserProfile;
@@ -50,46 +51,66 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Hero */}
-        <HeroSection userProfile={userProfile} userResults={userResults} />
+        <SectionErrorBoundary sectionName="Hero">
+          <HeroSection userProfile={userProfile} userResults={userResults} />
+        </SectionErrorBoundary>
 
         {/* Quick Actions + Gamification */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-8">
-            <QuickActions onActionClick={onQuickAction} />
+            <SectionErrorBoundary sectionName="Quick Actions">
+              <QuickActions onActionClick={onQuickAction} />
+            </SectionErrorBoundary>
           </div>
           <div className="md:col-span-4">
-            <GamificationWidget />
+            <SectionErrorBoundary sectionName="Gamification">
+              <GamificationWidget />
+            </SectionErrorBoundary>
           </div>
         </div>
 
         {/* Daily Routine */}
         <SectionHeading>Daily Schedule</SectionHeading>
-        <DailyRoutineTable religion={userProfile.religion} />
+        <SectionErrorBoundary sectionName="Daily Schedule">
+          <DailyRoutineTable religion={userProfile.religion} />
+        </SectionErrorBoundary>
 
         {/* Wellness Grid */}
         <SectionHeading>Wellness Trackers</SectionHeading>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-4">
-            <DailyCheckIn />
+            <SectionErrorBoundary sectionName="Daily Check-In">
+              <DailyCheckIn />
+            </SectionErrorBoundary>
           </div>
           <div className="md:col-span-4">
-            <HabitTrackerWidget />
+            <SectionErrorBoundary sectionName="Habit Tracker">
+              <HabitTrackerWidget />
+            </SectionErrorBoundary>
           </div>
           <div className="md:col-span-4">
-            <LifeBalanceWheel />
+            <SectionErrorBoundary sectionName="Life Balance">
+              <LifeBalanceWheel />
+            </SectionErrorBoundary>
           </div>
         </div>
 
         {/* Deep Work */}
         <SectionHeading>Deep Work Zone</SectionHeading>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <EmotionTrackerSection />
-          <TodoListSection />
+          <SectionErrorBoundary sectionName="Emotion Tracker">
+            <EmotionTrackerSection />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary sectionName="Todo List">
+            <TodoListSection />
+          </SectionErrorBoundary>
         </div>
 
         {/* Community */}
         <SectionHeading>Community</SectionHeading>
-        <CommunityHighlightsSection />
+        <SectionErrorBoundary sectionName="Community">
+          <CommunityHighlightsSection />
+        </SectionErrorBoundary>
 
       </div>
     </main>
