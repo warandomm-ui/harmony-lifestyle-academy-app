@@ -7,26 +7,26 @@ interface QuickActionsProps {
 
 const ACTIONS = [
   {
-    label: 'Ask Harmony',
-    subtitle: 'AI Companion',
+    label: 'Tanya Harmony',
+    subtitle: 'Rakan AI',
     icon: <ChatAltIcon className="h-7 w-7" />,
     gold: true,
   },
   {
-    label: 'Keep Learning',
-    subtitle: 'My Courses',
+    label: 'Sambung Belajar',
+    subtitle: 'Kursus Saya',
     icon: <BookOpenIcon className="h-7 w-7" />,
     gold: false,
   },
   {
-    label: 'Build Something',
-    subtitle: 'Create & Launch',
+    label: 'Bina Sesuatu',
+    subtitle: 'Cipta & Lancar',
     icon: <ClipboardListIcon className="h-7 w-7" />,
     gold: false,
   },
   {
-    label: 'Share Your Skills',
-    subtitle: 'Teach Others',
+    label: 'Kongsi Kemahiran',
+    subtitle: 'Ajar Rakan',
     icon: <LightBulbIcon className="h-7 w-7" />,
     gold: false,
   },
@@ -39,7 +39,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onActionClick }) => {
         className="text-xs uppercase tracking-[0.25em] mb-4 font-light"
         style={{ color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
       >
-        Quick Actions
+        Tindakan Pantas
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {ACTIONS.map((action) => (
