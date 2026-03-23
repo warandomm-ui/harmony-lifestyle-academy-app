@@ -215,7 +215,7 @@ export type DashboardView =
   | 'course-player'
   | 'sunnah-module'
   | 'school-subjects'
-  | 'wellness-module';
+  | 'wellness-module' | 'start-here' | 'my-path' | 'parent-dashboard';
 
 export type Transcript = {
   speaker: 'user' | 'model';
