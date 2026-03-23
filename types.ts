@@ -244,6 +244,7 @@ export type DashboardView =
   | 'real-world'
   | 'community-space'
   | 'the-path'
+  | 'parent-dashboard'
   | 'admin'
   | 'admin-setup'
   | 'admin-branding'

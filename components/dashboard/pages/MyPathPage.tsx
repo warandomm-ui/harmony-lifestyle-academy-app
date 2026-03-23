@@ -125,7 +125,17 @@ const LevelSection: React.FC<{
         </div>
       )}
 
-      {isLocked && (
+      {isLocked && level.number === 2 && (
+        <div className="text-center py-6 space-y-3">
+          <p className="text-sm text-[var(--muted)]">🔒 Complete Level {level.number - 1} to unlock</p>
+          <div className="p-4 rounded-xl mx-auto max-w-sm" style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
+            <p className="text-xs font-bold" style={{ color: '#e8c97a' }}>🟡 Full Access Required</p>
+            <p className="text-xs text-[var(--muted)] mt-1">Levels 2 & 3 are available with Full Access (RM19/month)</p>
+          </div>
+        </div>
+      )}
+
+      {isLocked && level.number !== 2 && (
         <div className="text-center py-4">
           <p className="text-sm text-[var(--muted)]">🔒 Complete Level {level.number - 1} to unlock</p>
         </div>
@@ -138,6 +148,85 @@ const LevelSection: React.FC<{
           <p className="text-sm font-bold text-green-400 mt-1">Badge Earned: {level.badge.name}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+/* ─── AI Suggestion Widget ─── */
+const AISuggestionWidget: React.FC<{
+  learningPath: StudentLearningPath;
+  onOpenLesson: (levelIndex: number, lessonIndex: number) => void;
+}> = ({ learningPath, onOpenLesson }) => {
+  // Find the next available lesson
+  let nextLesson: { levelIndex: number; lessonIndex: number; title: string; levelTitle: string } | null = null;
+  for (let li = 0; li < learningPath.levels.length; li++) {
+    const level = learningPath.levels[li];
+    for (let lei = 0; lei < level.lessons.length; lei++) {
+      const lesson = level.lessons[lei];
+      if (lesson.status === 'available' || lesson.status === 'in-progress') {
+        nextLesson = { levelIndex: li, lessonIndex: lei, title: lesson.title, levelTitle: level.title };
+        break;
+      }
+    }
+    if (nextLesson) break;
+  }
+
+  const completedCount = learningPath.completedLessons;
+  const personality = learningPath.personality;
+
+  // Generate contextual suggestion message
+  const getSuggestion = (): string => {
+    if (completedCount === 0) {
+      return personality === 'active'
+        ? "You're an action-taker! Start your first lesson and earn 50+ points today."
+        : personality === 'curious'
+          ? "Great explorers start with the first step. Your first lesson is waiting!"
+          : "Take it at your pace. Begin with a calm, focused first lesson.";
+    }
+    if (completedCount < 3) {
+      return `Great start! You've completed ${completedCount} lesson${completedCount > 1 ? 's' : ''}. Keep the momentum going!`;
+    }
+    if (completedCount < 7) {
+      return "You're building strong habits! Consistency is the key to mastery.";
+    }
+    return "Amazing progress! You're well on your way to completing your learning path.";
+  };
+
+  if (!nextLesson) {
+    return (
+      <div className="bento-card" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🎉</span>
+          <div>
+            <p className="font-bold text-sm text-green-400">All lessons completed!</p>
+            <p className="text-xs text-[var(--muted)]">Congratulations! You've finished your entire learning path.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bento-card" style={{ background: 'rgba(201,168,76,0.04)', border: '1px solid rgba(201,168,76,0.12)' }}>
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(201,168,76,0.15), rgba(232,201,122,0.15))' }}>
+          <span className="text-lg">🤖</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm" style={{ color: '#e8c97a' }}>AI Suggestion</p>
+          <p className="text-sm text-[var(--muted)] mt-1">{getSuggestion()}</p>
+          <div className="mt-3 flex items-center gap-3">
+            <button
+              onClick={() => onOpenLesson(nextLesson!.levelIndex, nextLesson!.lessonIndex)}
+              className="px-4 py-2 rounded-lg font-bold text-xs transition-all hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg, #c9a84c, #e8c97a)', color: '#0a0a0f' }}
+            >
+              Start: {nextLesson.title} →
+            </button>
+            <span className="text-xs text-[var(--muted)]">{nextLesson.levelTitle}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -197,6 +286,9 @@ const MyPathPage: React.FC<MyPathPageProps> = ({ learningPath, onStartHere, onOp
         </div>
         <ProgressBar value={overallCompleted} max={overallTotal} />
       </div>
+
+      {/* AI Suggestion Widget */}
+      <AISuggestionWidget learningPath={learningPath} onOpenLesson={onOpenLesson} />
 
       {/* Levels */}
       {learningPath.levels.map((level, levelIndex) => (

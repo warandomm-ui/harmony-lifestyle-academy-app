@@ -588,6 +588,8 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             selectedSkills={selectedSkills}
             onQuickAction={handleQuickAction}
             activeCourses={activeCourses}
+            setCurrentView={setCurrentView}
+            learningPath={learningPath}
           />
         );
     }
