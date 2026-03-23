@@ -314,10 +314,22 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <MyPathPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
           </FullPageWrapper>
         );
+      case 'start-here':
+        return (
+          <FullPageWrapper title="Mula Di Sini">
+            <StartHerePage onNavigate={(view) => setCurrentView(view as DashboardView)} />
+          </FullPageWrapper>
+        );
+      case 'my-path':
+        return (
+          <FullPageWrapper title="Laluan Saya">
+            <MyPathPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
+          </FullPageWrapper>
+        );
       case 'parent-dashboard':
         return (
           <FullPageWrapper title="Dashboard Ibu Bapa">
-            <ParentDashboardPage userProfile={userProfile} />
+            <ParentDashboardPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
           </FullPageWrapper>
         );
       case 'student-dashboard':
@@ -624,6 +636,8 @@ import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
 import ParentDashboardPage from './pages/ParentDashboardPage';
+import StartHerePage from './pages/StartHerePage';
+import MyPathPage from './pages/MyPathPage';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
