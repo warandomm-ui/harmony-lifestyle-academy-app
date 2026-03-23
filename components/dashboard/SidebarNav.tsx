@@ -11,7 +11,7 @@ interface SidebarNavProps {
   onOpenSupport: () => void;
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
-  dashboardMode: DashboardMode; // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ NEW PROP Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  dashboardMode: DashboardMode; // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ NEW PROP ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
 }
 
 const NavGroup: React.FC<{ label: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }> = ({ label, icon, children, defaultOpen = false }) => (
@@ -69,7 +69,7 @@ const NavItem: React.FC<{ icon: React.ReactNode; label: string; isActive?: boole
 
 const SidebarNav: React.FC<SidebarNavProps> = ({ 
   currentView, setCurrentView, onOpenSupport, isMobileOpen = false, onMobileClose,
-  dashboardMode // Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ RECEIVE MODE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+  dashboardMode // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ RECEIVE MODE ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
 }) => {
   const { toggleChat, isChatOpen } = useChat();
   const { isAdminMode, toggleAdminMode, adminRole, setAdminRole } = useAdmin();
@@ -157,15 +157,15 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             />
           ) : (
             <>
-              {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ COMMON NAV Ã¢ÂÂ Same for both Muslim & Universal Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+              {/* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ COMMON NAV ÃÂ¢ÃÂÃÂ Same for both Muslim & Universal ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */}
               <NavItem 
                 icon={<Icons.HomeIcon />} 
                 label={isMuslim ? "Utama" : "Home"} 
                 isActive={currentView === 'dashboard'} 
-                onClick={() => handleNavClick('dashboard')} 
-        <NavButton icon="⚡" label="Mula Di Sini" isActive={currentView === 'start-here'} onClick={() => handleNavClick('start-here')} />
-        <NavButton icon="📊" label="Laluan Saya" isActive={currentView === 'my-path'} onClick={() => handleNavClick('my-path')} />
-              />
+                  onClick={() => handleNavClick('dashboard')}
+                />
+                <NavButton icon="⚡" label="Mula Di Sini" isActive={currentView === 'start-here'} onClick={() => handleNavClick('start-here')} />
+                <NavButton icon="📊" label="Laluan Saya" isActive={currentView === 'my-path'} onClick={() => handleNavClick('my-path')} />
               <NavItem 
                 icon={<Icons.BookOpenIcon />} 
                 label={isMuslim ? "Pembelajaran" : "My Learning"} 
@@ -203,7 +203,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                 onClick={() => handleNavClick('community-space')} 
               />
 
-              {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ THE PATH Ã¢ÂÂ both get this Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+              {/* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ THE PATH ÃÂ¢ÃÂÃÂ both get this ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */}
               <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
                 <NavItem 
                   icon={<Icons.SparklesIcon />} 
@@ -213,66 +213,66 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                 />
               </div>
 
-              {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+              {/* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */}
               {/* THIS IS WHERE THE TWO DASHBOARDS DIVERGE COMPLETELY */}
-              {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+              {/* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */}
 
               {isMuslim ? (
-                /* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MUSLIM SIDEBAR Ã¢ÂÂ Islamic terms, Sunnah module Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+                /* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ MUSLIM SIDEBAR ÃÂ¢ÃÂÃÂ Islamic terms, Sunnah module ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */
                 <div className="pt-2">
                   <NavGroup label="8 Dimensi Pembangunan" icon={<Icons.SparklesIcon />} defaultOpen={true}>
-                    <NavItem label="Ruh Ã¢ÂÂ Spiritual" icon="Ã¢ÂÂ¦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
-                    <NavItem label="Aql Ã¢ÂÂ Intelektual" icon="Ã¢ÂÂ" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
-                    <NavItem label="Jasad Ã¢ÂÂ Fizikal" icon="Ã¢ÂÂ" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
-                    <NavItem label="Qalb Ã¢ÂÂ Emosi" icon="Ã¢ÂÂ¡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
-                    <NavItem label="Suhbah Ã¢ÂÂ Sosial" icon="Ã¢ÂÂ" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
-                    <NavItem label="Bi'ah Ã¢ÂÂ Alam Sekitar" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
-                    <NavItem label="Rizq Ã¢ÂÂ Kerjaya" icon="Ã¢ÂÂ" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
-                    <NavItem label="Raqmi Ã¢ÂÂ Digital" icon="Ã¢Â¬Â¡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
+                    <NavItem label="Ruh ÃÂ¢ÃÂÃÂ Spiritual" icon="ÃÂ¢ÃÂÃÂ¦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
+                    <NavItem label="Aql ÃÂ¢ÃÂÃÂ Intelektual" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
+                    <NavItem label="Jasad ÃÂ¢ÃÂÃÂ Fizikal" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
+                    <NavItem label="Qalb ÃÂ¢ÃÂÃÂ Emosi" icon="ÃÂ¢ÃÂÃÂ¡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
+                    <NavItem label="Suhbah ÃÂ¢ÃÂÃÂ Sosial" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
+                    <NavItem label="Bi'ah ÃÂ¢ÃÂÃÂ Alam Sekitar" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
+                    <NavItem label="Rizq ÃÂ¢ÃÂÃÂ Kerjaya" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
+                    <NavItem label="Raqmi ÃÂ¢ÃÂÃÂ Digital" icon="ÃÂ¢ÃÂ¬ÃÂ¡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
                   </NavGroup>
 
                   {/* Muslim-only items */}
                   <div className="pt-2 mt-1" style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>
                     <NavItem 
                       label="Modul Sunnah" 
-                      icon="Ã°ÂÂÂ" 
+                      icon="ÃÂ°ÃÂÃÂÃÂ" 
                       isActive={currentView === 'sunnah-module'} 
                       onClick={() => handleNavClick('sunnah-module')} 
                     />
                     <NavItem 
                       label="Akademi Sekolah" 
-                      icon="Ã°ÂÂÂ«" 
+                      icon="ÃÂ°ÃÂÃÂÃÂ«" 
                       isActive={currentView === 'school-subjects'} 
                       onClick={() => handleNavClick('school-subjects')} 
                     />
                   </div>
                 </div>
               ) : (
-                /* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ UNIVERSAL SIDEBAR Ã¢ÂÂ English terms, Wellness module Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+                /* ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ UNIVERSAL SIDEBAR ÃÂ¢ÃÂÃÂ English terms, Wellness module ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ */
                 /* NO Arabic. NO Islamic references. Completely separate. */
                 <div className="pt-2">
                   <NavGroup label="8 Development Dimensions" icon={<Icons.SparklesIcon />} defaultOpen={true}>
-                    <NavItem label="Spirit Ã¢ÂÂ Inner Awareness" icon="Ã¢ÂÂ¦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
-                    <NavItem label="Mind Ã¢ÂÂ Intellectual" icon="Ã¢ÂÂ" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
-                    <NavItem label="Body Ã¢ÂÂ Physical" icon="Ã¢ÂÂ" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
-                    <NavItem label="Heart Ã¢ÂÂ Emotional" icon="Ã¢ÂÂ¡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
-                    <NavItem label="Tribe Ã¢ÂÂ Social" icon="Ã¢ÂÂ" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
-                    <NavItem label="Planet Ã¢ÂÂ Environmental" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
-                    <NavItem label="Wealth Ã¢ÂÂ Career" icon="Ã¢ÂÂ" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
-                    <NavItem label="Digital Ã¢ÂÂ Tech & AI" icon="Ã¢Â¬Â¡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
+                    <NavItem label="Spirit ÃÂ¢ÃÂÃÂ Inner Awareness" icon="ÃÂ¢ÃÂÃÂ¦" isActive={currentView === 'spiritual'} onClick={() => handleNavClick('spiritual')} />
+                    <NavItem label="Mind ÃÂ¢ÃÂÃÂ Intellectual" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'intellectual' || currentView === 'language-lab' || currentView === 'practice-hub'} onClick={() => handleNavClick('intellectual')} />
+                    <NavItem label="Body ÃÂ¢ÃÂÃÂ Physical" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'physical'} onClick={() => handleNavClick('physical')} />
+                    <NavItem label="Heart ÃÂ¢ÃÂÃÂ Emotional" icon="ÃÂ¢ÃÂÃÂ¡" isActive={currentView === 'emotional'} onClick={() => handleNavClick('emotional')} />
+                    <NavItem label="Tribe ÃÂ¢ÃÂÃÂ Social" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'social' || currentView === 'social-impact'} onClick={() => handleNavClick('social')} />
+                    <NavItem label="Planet ÃÂ¢ÃÂÃÂ Environmental" icon={<Icons.GlobeAltIcon />} isActive={currentView === 'environmental'} onClick={() => handleNavClick('environmental')} />
+                    <NavItem label="Wealth ÃÂ¢ÃÂÃÂ Career" icon="ÃÂ¢ÃÂÃÂ" isActive={currentView === 'vocational'} onClick={() => handleNavClick('vocational')} />
+                    <NavItem label="Digital ÃÂ¢ÃÂÃÂ Tech & AI" icon="ÃÂ¢ÃÂ¬ÃÂ¡" isActive={currentView === 'behaviour'} onClick={() => handleNavClick('behaviour')} />
                   </NavGroup>
 
                   {/* Universal-only items */}
                   <div className="pt-2 mt-1" style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>
                     <NavItem 
                       label="Wellness Module" 
-                      icon="Ã°ÂÂ§Â" 
+                      icon="ÃÂ°ÃÂÃÂ§ÃÂ" 
                       isActive={currentView === 'wellness-module'} 
                       onClick={() => handleNavClick('wellness-module')} 
                     />
                     <NavItem 
                       label="School Academy" 
-                      icon="Ã°ÂÂÂ«" 
+                      icon="ÃÂ°ÃÂÃÂÃÂ«" 
                       isActive={currentView === 'school-subjects'} 
                       onClick={() => handleNavClick('school-subjects')} 
                     />
