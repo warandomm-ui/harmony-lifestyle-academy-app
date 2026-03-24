@@ -326,7 +326,13 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <MyPathPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
           </FullPageWrapper>
         );
-      case 'parent-dashboard':
+            case 'lesson':
+        return (
+          <FullPageWrapper title="Pelajaran">
+            <LessonPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
+          </FullPageWrapper>
+        );
+case 'parent-dashboard':
         return (
           <FullPageWrapper title="Dashboard Ibu Bapa">
             <ParentDashboardPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
@@ -638,6 +644,7 @@ import NotebookPage from './pages/NotebookPage';
 import ParentDashboardPage from './pages/ParentDashboardPage';
 import StartHerePage from './pages/StartHerePage';
 import MyPathPage from './pages/MyPathPage';
+import LessonPage from './pages/LessonPage';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
