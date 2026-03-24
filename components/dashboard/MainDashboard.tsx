@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import HeaderBar from './HeaderBar';
 import SidebarNav from './SidebarNav';
 import DashboardContent from './DashboardContent';
@@ -138,8 +138,40 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const { toggleChat } = useChat();
   const isMuslim = dashboardMode === 'muslim';
   // âââ Navigation State âââ
-  const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
+  // ——— Hash-based URL Routing ———
+  const getViewFromHash = useCallback((): DashboardView => {
+    const hash = window.location.hash.replace('#', '').replace('/', '');
+    const validViews: string[] = [
+      'dashboard','leaderboard','badges','profile','practice-hub','language-lab',
+      'idea-wall','notebook','real-world','community-space','the-path','start-here',
+      'my-path','lesson','parent-dashboard','student-dashboard',
+      'physical','emotional','social','social-impact','intellectual','spiritual',
+      'environmental','vocational','sunnah-module','school-subjects','wellness-module',
+      'wisdom','knowledge','health','financial','business','fitness','communication','behaviour'
+    ];
+    return validViews.includes(hash) ? (hash as DashboardView) : 'dashboard';
+  }, []);
+
+  const [currentView, setCurrentView] = useState<DashboardView>(getViewFromHash);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Sync URL hash when view changes
+  useEffect(() => {
+    const newHash = currentView === 'dashboard' ? '' : currentView;
+    if (window.location.hash.replace('#', '').replace('/', '') !== currentView) {
+      window.location.hash = newHash;
+    }
+  }, [currentView]);
+
+  // Listen for browser back/forward
+  useEffect(() => {
+    const onHashChange = () => {
+      const view = getViewFromHash();
+      setCurrentView(view);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [getViewFromHash]);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('hla_onboarding_done'));
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   // âââ Data State âââ
