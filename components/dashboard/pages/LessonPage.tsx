@@ -1,715 +1,585 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '../../../services/supabaseClient';
 import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../supabase/client';
 
 interface LessonPageProps {
   lessonId?: string;
   onNavigate?: (view: string) => void;
 }
 
-interface LessonData {
-  id: string;
-  title: string;
-  description: string;
-  video_url: string | null;
-  content: string | null;
-  task_instruction: string;
-  requires_upload: boolean;
-  order_index: number;
-  xp_reward: number;
-  duration_minutes: number;
-  learning_path_id: string;
-}
-
-interface ProgressData {
-  status: string;
-  upload_url: string | null;
-  xp_earned: number;
-  completed_at: string | null;
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 const LessonPage: React.FC<LessonPageProps> = ({ lessonId, onNavigate }) => {
   const { user } = useAuth();
-  const [lesson, setLesson] = useState<LessonData | null>(null);
-  const [progress, setProgress] = useState<ProgressData | null>(null);
+  const [lesson, setLesson] = useState<any>(null);
+  const [learningPath, setLearningPath] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [activeStep, setActiveStep] = useState<'learn' | 'do' | 'share'>('learn');
   const [taskResponse, setTaskResponse] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [uploadUrl, setUploadUrl] = useState('');
   const [completing, setCompleting] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [badgeEarned, setBadgeEarned] = useState<string | null>(null);
-  const [levelUp, setLevelUp] = useState(false);
-  const [currentStep, setCurrentStep] = useState<'learn' | 'do' | 'share'>('learn');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = useState<any>(null);
+
+  // AI Tutor state
+  const [showTutor, setShowTutor] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [tutorInput, setTutorInput] = useState('');
+  const [tutorLoading, setTutorLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const resolvedLessonId = lessonId || localStorage.getItem('hla_current_lesson_id') || '';
 
   useEffect(() => {
-    if (user && lessonId) {
-      loadLesson();
-    } else if (user && !lessonId) {
-      loadCurrentLesson();
-    }
-  }, [user, lessonId]);
+    if (!resolvedLessonId || !user) return;
+    loadLesson();
+    loadProfile();
+  }, [resolvedLessonId, user]);
 
-  const loadCurrentLesson = async () => {
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const loadProfile = async () => {
     if (!user) return;
-    try {
-      // Find the user's current lesson (first incomplete)
-      const { data: progressData } = await supabase
-        .from('lp_progress')
-        .select('lesson_id, status')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
-
-      const completedIds = (progressData || [])
-        .filter(p => p.status === 'completed')
-        .map(p => p.lesson_id);
-
-      // Get all lessons
-      const { data: lessons } = await supabase
-        .from('lp_lessons')
-        .select('*')
-        .order('order_index', { ascending: true });
-
-      if (lessons && lessons.length > 0) {
-        const nextLesson = lessons.find(l => !completedIds.includes(l.id)) || lessons[0];
-        setLesson(nextLesson);
-        await loadProgress(nextLesson.id);
-      }
-    } catch (err) {
-      console.error('Error loading current lesson:', err);
-    } finally {
-      setLoading(false);
-    }
+    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    setProfile(data);
   };
 
   const loadLesson = async () => {
-    if (!user || !lessonId) return;
-    try {
-      const { data } = await supabase
-        .from('lp_lessons')
-        .select('*')
-        .eq('id', lessonId)
-        .single();
-
-      if (data) {
-        setLesson(data);
-        await loadProgress(data.id);
-      }
-    } catch (err) {
-      console.error('Error loading lesson:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadProgress = async (lid: string) => {
     if (!user) return;
-    const { data } = await supabase
-      .from('lp_progress')
-      .select('status, upload_url, xp_earned, completed_at')
-      .eq('user_id', user.id)
-      .eq('lesson_id', lid)
+    setLoading(true);
+
+    const { data: lessonData } = await supabase
+      .from('lp_lessons')
+      .select('*, learning_paths(*)')
+      .eq('id', resolvedLessonId)
       .single();
 
-    if (data) {
-      setProgress(data);
-      if (data.status === 'completed') {
+    if (lessonData) {
+      setLesson(lessonData);
+      setLearningPath(lessonData.learning_paths);
+    }
+    // Load progress
+    const { data: prog } = await supabase
+      .from('lp_progress')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('lesson_id', resolvedLessonId)
+      .single();
+
+    if (prog) {
+      setProgress(prog);
+      if (prog.status === 'completed') {
         setCompleted(true);
-        setCurrentStep('share');
+        setActiveStep('share');
+      } else if (prog.status === 'in_progress') {
+        setActiveStep('do');
       }
     }
+
+    // Load existing submission
+    const { data: submission } = await supabase
+      .from('lesson_submissions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('lesson_id', resolvedLessonId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (submission) {
+      setTaskResponse(submission.task_response || '');
+      setUploadUrl(submission.file_url || '');
+    }
+    // Load tutor messages
+    const { data: tutorMsgs } = await supabase
+      .from('ai_tutor_messages')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('lesson_id', resolvedLessonId)
+      .order('created_at', { ascending: true });
+
+    if (tutorMsgs && tutorMsgs.length > 0) {
+      setMessages(tutorMsgs.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })));
+    }
+
+    setLoading(false);
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user || !lesson) return;
-
-    setUploading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${lesson.id}-${Date.now()}.${fileExt}`;
-
-      const { data, error } = await supabase.storage
-        .from('lesson-uploads')
-        .upload(fileName, file);
-
-      if (error) throw error;
-
-      const { data: urlData } = supabase.storage
-        .from('lesson-uploads')
-        .getPublicUrl(fileName);
-
-      setUploadedUrl(urlData.publicUrl);
-    } catch (err) {
-      console.error('Upload error:', err);
-      alert('Gagal muat naik. Cuba lagi.');
-    } finally {
-      setUploading(false);
+  const markInProgress = async () => {
+    if (!user || !lesson) return;
+    if (!progress) {
+      await supabase.from('lp_progress').insert({
+        user_id: user.id,
+        lesson_id: lesson.id,
+        learning_path_id: lesson.learning_path_id,
+        status: 'in_progress',
+      });
     }
   };
 
-  const handleComplete = async () => {
+  const handleStartTask = () => {
+    markInProgress();
+    setActiveStep('do');
+  };
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setUploading(true);
+
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}/${resolvedLessonId}/${Date.now()}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+      .from('lesson-uploads')
+      .upload(fileName, file, { upsert: true });
+
+    if (data && !error) {
+      const { data: urlData } = supabase.storage.from('lesson-uploads').getPublicUrl(data.path);
+      setUploadUrl(urlData.publicUrl);
+    }
+    setUploading(false);
+  };
+
+  const handleSubmitTask = async () => {
     if (!user || !lesson) return;
     setCompleting(true);
 
-    try {
-      // Upsert progress
-      const { error: progError } = await supabase
-        .from('lp_progress')
-        .upsert({
-          user_id: user.id,
-          lesson_id: lesson.id,
-          learning_path_id: lesson.learning_path_id,
-          status: 'completed',
-          upload_url: uploadedUrl,
-          xp_earned: lesson.xp_reward,
-          completed_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,lesson_id' });
-
-      if (progError) {
-        // If upsert fails due to no unique constraint, try insert
-        await supabase.from('lp_progress').insert({
-          user_id: user.id,
-          lesson_id: lesson.id,
-          learning_path_id: lesson.learning_path_id,
-          status: 'completed',
-          upload_url: uploadedUrl,
-          xp_earned: lesson.xp_reward,
-          completed_at: new Date().toISOString()
-        });
-      }
-
-      // Save submission
-      if (taskResponse || uploadedUrl) {
-        await supabase.from('lesson_submissions').insert({
-          user_id: user.id,
-          lesson_id: lesson.id,
-          task_response: taskResponse,
-          file_url: uploadedUrl,
-          status: 'submitted'
-        });
-      }
-
-      // Check for badge
-      const { data: completedCount } = await supabase
-        .from('lp_progress')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'completed');
-
-      const count = completedCount?.length || 0;
-
-      // Badge milestones
-      const badges: Record<number, string> = {
-        1: 'Langkah Pertama',
-        3: 'Pelajar Rajin',
-        5: 'Anak Berdisiplin'
-      };
-
-      if (badges[count]) {
-        try {
-          await supabase.from('badges_earned').insert({
-            user_id: user.id,
-            badge_name: badges[count],
-            badge_icon: count === 1 ? 'â­' : count === 3 ? 'ð' : 'ð',
-            lesson_id: lesson.id
-          });
-          setBadgeEarned(badges[count]);
-        } catch {} // Ignore if badge already exists
-      }
-
-      // Check level up (every 5 lessons)
-      if (count > 0 && count % 5 === 0) {
-        setLevelUp(true);
-      }
-
-      setCompleted(true);
-    } catch (err) {
-      console.error('Error completing lesson:', err);
-      alert('Ralat. Cuba lagi.');
-    } finally {
+    // Save submission
+    await supabase.from('lesson_submissions').upsert({
+      user_id: user.id,
+      lesson_id: lesson.id,
+      task_response: taskResponse,
+      file_url: uploadUrl || null,
+      status: 'submitted',
+    }, { onConflict: 'user_id,lesson_id' }).select();
+    // If no onConflict works, just insert
+    if (!taskResponse && !uploadUrl) {
       setCompleting(false);
+      return;
     }
+
+    // Update progress to completed
+    const { data: existingProgress } = await supabase
+      .from('lp_progress')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('lesson_id', lesson.id)
+      .single();
+
+    if (existingProgress) {
+      await supabase.from('lp_progress').update({
+        status: 'completed',
+        xp_earned: lesson.xp_reward,
+        completed_at: new Date().toISOString(),
+      }).eq('id', existingProgress.id);
+    } else {
+      await supabase.from('lp_progress').insert({
+        user_id: user.id,
+        lesson_id: lesson.id,
+        learning_path_id: lesson.learning_path_id,
+        status: 'completed',
+        xp_earned: lesson.xp_reward,
+        completed_at: new Date().toISOString(),
+      });
+    }
+    // Award badge for first lesson
+    const { data: allProgress } = await supabase
+      .from('lp_progress')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'completed');
+
+    if (allProgress && allProgress.length === 1) {
+      await supabase.from('badges_earned').insert({
+        user_id: user.id,
+        badge_name: 'Pelajar Pertama',
+        badge_icon: '🌟',
+        lesson_id: lesson.id,
+      });
+    }
+
+    setCompleted(true);
+    setActiveStep('share');
+    setCompleting(false);
   };
 
-  // Loading state
+  // AI Tutor
+  const sendTutorMessage = async () => {
+    if (!tutorInput.trim() || !user || !lesson) return;
+    const userMsg = tutorInput.trim();
+    setTutorInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setTutorLoading(true);
+    // Save user message to DB
+    await supabase.from('ai_tutor_messages').insert({
+      user_id: user.id,
+      lesson_id: lesson.id,
+      role: 'user',
+      content: userMsg,
+      age_group: profile?.age_group,
+      personality: profile?.personality_data?.type,
+    });
+
+    // Call AI tutor (Supabase Edge Function or fallback)
+    try {
+      const response = await supabase.functions.invoke('ai-tutor', {
+        body: {
+          message: userMsg,
+          lessonTitle: lesson.title,
+          lessonContent: lesson.content?.substring(0, 500),
+          ageGroup: profile?.age_group || '13-17',
+          personality: profile?.personality_data?.type || 'curious',
+          history: messages.slice(-6),
+        },
+      });
+
+      const aiReply = response.data?.reply || 'Maaf, saya tidak dapat menjawab sekarang. Cuba lagi ya!';
+      setMessages(prev => [...prev, { role: 'assistant', content: aiReply }]);
+
+      // Save assistant message
+      await supabase.from('ai_tutor_messages').insert({
+        user_id: user.id,
+        lesson_id: lesson.id,
+        role: 'assistant',
+        content: aiReply,
+        age_group: profile?.age_group,
+        personality: profile?.personality_data?.type,
+      });    } catch (err) {
+      // Fallback response if edge function not deployed yet
+      const fallback = getFallbackResponse(userMsg, lesson, profile);
+      setMessages(prev => [...prev, { role: 'assistant', content: fallback }]);
+
+      await supabase.from('ai_tutor_messages').insert({
+        user_id: user.id,
+        lesson_id: lesson.id,
+        role: 'assistant',
+        content: fallback,
+      });
+    }
+
+    setTutorLoading(false);
+  };
+
+  const getFallbackResponse = (msg: string, lesson: any, profile: any): string => {
+    const isYoung = profile?.age_group === '7-12';
+    const greeting = isYoung ? 'Hai! 😊' : 'Hey! 👋';
+    const lessonTitle = lesson?.title || 'pelajaran ini';
+
+    if (msg.toLowerCase().includes('tak faham') || msg.toLowerCase().includes('susah')) {
+      return `${greeting} Tak apa, jangan risau! "${lessonTitle}" memang perlukan masa untuk faham. Cuba baca semula bahagian yang susah tu, dan kalau masih tak faham, tulis bahagian mana yang kamu stuck. Saya akan cuba bantu! 💪`;
+    }
+    if (msg.toLowerCase().includes('contoh')) {
+      return `${greeting} Contoh yang baik untuk "${lessonTitle}" — cuba fikir tentang pengalaman harian kamu sendiri. Apa situasi yang berkaitan dengan topik ini yang pernah kamu alami? Berkongsi pengalaman sendiri adalah cara terbaik untuk belajar! ✨`;
+    }
+    if (msg.toLowerCase().includes('tugasan') || msg.toLowerCase().includes('task')) {
+      return `${greeting} Untuk tugasan "${lessonTitle}", yang penting adalah kamu CUBA dulu. Tak perlu sempurna! Tulis apa yang kamu fikir dan rasa. Setiap usaha itu bernilai. ${isYoung ? 'Minta bantuan ibu/ayah kalau perlu ya! 🌟' : 'Go for it! 🚀'}`;
+    }
+    return `${greeting} Soalan bagus! Untuk topik "${lessonTitle}", ingat — belajar itu proses. Tak perlu rush. Cuba explore satu langkah pada satu masa. Ada apa-apa lagi yang kamu nak tanya? 😊`;
+  };
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '12px' }}>ð</div>
-          <p style={{ color: '#d4af37' }}>Memuatkan pelajaran...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+        <div className="animate-pulse text-gray-400">Memuatkan pelajaran...</div>
       </div>
     );
   }
 
-  // No lesson found
   if (!lesson) {
     return (
-      <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>ð</div>
-        <h2 style={{ color: '#d4af37', marginBottom: '12px' }}>Tiada Pelajaran</h2>
-        <p style={{ color: '#999', marginBottom: '24px' }}>Mulakan laluan pembelajaran anda dahulu.</p>
-        <button
-          onClick={() => onNavigate?.('start-here')}
-          style={{
-            background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-            color: '#1a1a2e',
-            border: 'none',
-            padding: '14px 32px',
-            borderRadius: '12px',
-            fontSize: '1rem',
-            fontWeight: 700,
-            cursor: 'pointer'
-          }}
-        >
-          Mula Di Sini
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 text-center py-20">
+        <div className="text-4xl mb-4">📭</div>
+        <p className="text-gray-400">Pelajaran tidak dijumpai.</p>
+        <button onClick={() => onNavigate?.('my-path')} className="mt-4 text-amber-400 hover:text-amber-300">
+          ← Kembali ke Laluan
         </button>
       </div>
     );
   }
 
-  // Badge / Level Up celebration overlay
-  if (badgeEarned || levelUp) {
-    return (
-      <div style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        minHeight: '500px', textAlign: 'center', padding: '40px 20px',
-        animation: 'fadeIn 0.5s ease'
-      }}>
-        <div style={{ fontSize: '5rem', marginBottom: '20px' }}>
-          {badgeEarned ? 'ð' : 'ð'}
-        </div>
-        <h1 style={{ color: '#d4af37', fontSize: '2rem', marginBottom: '12px' }}>
-          {badgeEarned ? 'Tahniah! Badge Diperoleh!' : 'Naik Level!'}
-        </h1>
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))',
-          border: '2px solid #d4af37',
-          borderRadius: '20px',
-          padding: '30px 40px',
-          marginBottom: '24px'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>
-            {badgeEarned ? 'â­' : 'ð'}
-          </div>
-          <h2 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '8px' }}>
-            {badgeEarned ? `"${badgeEarned}"` : 'Level Baru Dibuka!'}
-          </h2>
-          <p style={{ color: '#ccc' }}>
-            {badgeEarned
-              ? 'Kamu telah menunjukkan usaha yang hebat!'
-              : 'Teruskan perjalanan pembelajaran kamu!'}
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button
-            onClick={() => { setBadgeEarned(null); setLevelUp(false); }}
-            style={{
-              background: 'rgba(255,255,255,0.1)',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.2)',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontSize: '0.95rem'
-            }}
-          >
-            Lihat Pelajaran
-          </button>
-          <button
-            onClick={() => onNavigate?.('my-path')}
-            style={{
-              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-              color: '#1a1a2e',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontWeight: 700,
-              fontSize: '0.95rem'
-            }}
-          >
-            Pelajaran Seterusnya â
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Main Lesson View
+  const steps = [
+    { id: 'learn' as const, label: 'Belajar', emoji: '📖', desc: 'Baca & faham' },
+    { id: 'do' as const, label: 'Buat', emoji: '✍️', desc: 'Siapkan tugasan' },
+    { id: 'share' as const, label: 'Kongsi', emoji: '🎉', desc: 'Hantar & kongsi' },
+  ];
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '20px' }}>
-      {/* Lesson Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-          <span style={{ color: '#999', fontSize: '0.85rem' }}>
-            Pelajaran {lesson.order_index}
-          </span>
-          <span style={{ color: '#555' }}>â¢</span>
-          <span style={{ color: '#d4af37', fontSize: '0.85rem' }}>
-            +{lesson.xp_reward} XP
-          </span>
-          <span style={{ color: '#555' }}>â¢</span>
-          <span style={{ color: '#999', fontSize: '0.85rem' }}>
-            {lesson.duration_minutes} min
-          </span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 pb-24">
+      <div className="max-w-2xl mx-auto">
+        {/* Back button */}
+        <button
+          onClick={() => onNavigate?.('my-path')}
+          className="text-gray-400 hover:text-white text-sm mb-4 flex items-center gap-1 transition-colors"
+        >
+          ← Kembali ke Laluan
+        </button>
+
+        {/* Lesson header */}
+        <div className="mb-6">
+          <div className="text-xs text-amber-400/60 font-medium mb-1">
+            {learningPath?.title} — Pelajaran #{lesson.order_index}
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">{lesson.title}</h1>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="text-xs bg-amber-500/10 text-amber-400 px-2 py-1 rounded-full">⭐ {lesson.xp_reward} XP</span>
+            {lesson.duration_minutes && (
+              <span className="text-xs bg-gray-700/50 text-gray-400 px-2 py-1 rounded-full">⏱ {lesson.duration_minutes} min</span>
+            )}
+          </div>
         </div>
-        <h1 style={{ color: '#fff', fontSize: '1.6rem', margin: 0, lineHeight: 1.3 }}>
-          {lesson.title}
-        </h1>
-        {lesson.description && (
-          <p style={{ color: '#aaa', marginTop: '8px', fontSize: '0.95rem', lineHeight: 1.5 }}>
-            {lesson.description}
-          </p>
+        {/* Step tabs */}
+        <div className="flex gap-2 mb-6 bg-gray-800/50 rounded-xl p-1">
+          {steps.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                if (s.id === 'learn') setActiveStep('learn');
+                if (s.id === 'do' && (activeStep === 'do' || activeStep === 'share' || progress)) setActiveStep('do');
+                if (s.id === 'share' && completed) setActiveStep('share');
+              }}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-1.5 ${
+                activeStep === s.id
+                  ? 'bg-amber-500/20 text-amber-400'
+                  : completed || (s.id === 'learn') || (s.id === 'do' && progress)
+                  ? 'text-gray-400 hover:text-gray-300'
+                  : 'text-gray-600 cursor-not-allowed'
+              }`}
+            >
+              <span>{s.emoji}</span>
+              <span className="hidden sm:inline">{s.label}</span>
+            </button>
+          ))}
+        </div>
+        {/* STEP 1: Learn */}
+        {activeStep === 'learn' && (
+          <div>
+            {/* Video */}
+            {lesson.video_url && (
+              <div className="mb-6 rounded-xl overflow-hidden bg-gray-800 border border-gray-700/50">
+                <div className="aspect-video bg-gray-900 flex items-center justify-center">
+                  <a
+                    href={lesson.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                      <span className="text-3xl">▶️</span>
+                    </div>
+                    <span className="text-sm">Tonton Video</span>
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* Content */}
+            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5 sm:p-6 mb-6">
+              <div className="prose prose-invert prose-sm max-w-none">
+                {lesson.content?.split('\n').map((line: string, i: number) => {
+                  if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold text-white mt-4 mb-2">{line.replace('## ', '')}</h2>;
+                  if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-semibold text-amber-400 mt-3 mb-1">{line.replace('### ', '')}</h3>;
+                  if (line.startsWith('- **')) {
+                    const parts = line.replace('- **', '').split('**');                    return <div key={i} className="flex gap-2 ml-2 mb-1"><span className="text-amber-400">•</span><span className="text-gray-300"><strong className="text-white">{parts[0]}</strong>{parts[1]}</span></div>;
+                  }
+                  if (line.startsWith('- ')) return <div key={i} className="flex gap-2 ml-2 mb-1"><span className="text-amber-400">•</span><span className="text-gray-300">{line.replace('- ', '')}</span></div>;
+                  if (line.match(/^\d+\.\s\*\*/)) {
+                    const parts = line.replace(/^\d+\.\s\*\*/, '').split('**');
+                    return <div key={i} className="flex gap-2 ml-2 mb-1"><span className="text-amber-400">{line.match(/^\d+/)?.[0]}.</span><span className="text-gray-300"><strong className="text-white">{parts[0]}</strong>{parts[1]}</span></div>;
+                  }
+                  if (line.match(/^\d+\.\s/)) return <div key={i} className="flex gap-2 ml-2 mb-1"><span className="text-amber-400">{line.match(/^\d+/)?.[0]}.</span><span className="text-gray-300">{line.replace(/^\d+\.\s/, '')}</span></div>;
+                  if (line.trim() === '') return <div key={i} className="h-2" />;
+                  return <p key={i} className="text-gray-300 mb-2">{line}</p>;
+                })}
+              </div>
+            </div>
+
+            <button
+              onClick={handleStartTask}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold text-lg hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/25"
+            >
+              Saya Dah Faham — Mula Tugasan ✍️
+            </button>
+          </div>
+        )}
+        {/* STEP 2: Do */}
+        {activeStep === 'do' && (
+          <div>
+            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-amber-500/30 p-5 sm:p-6 mb-6">
+              <h2 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                <span>✍️</span> Tugasan Kamu
+              </h2>
+              <p className="text-gray-300 whitespace-pre-wrap">{lesson.task_instruction}</p>
+            </div>
+
+            {/* Text response */}
+            <div className="mb-4">
+              <label className="text-sm text-gray-400 mb-2 block">Jawapan / Refleksi Kamu</label>
+              <textarea
+                value={taskResponse}
+                onChange={(e) => setTaskResponse(e.target.value)}
+                placeholder="Tulis jawapan kamu di sini..."
+                rows={6}
+                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-white placeholder-gray-600 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors resize-none"
+              />
+            </div>
+            {/* File upload */}
+            {lesson.requires_upload && (
+              <div className="mb-6">
+                <label className="text-sm text-gray-400 mb-2 block">📸 Upload Bukti (gambar/dokumen)</label>
+                <div className="border-2 border-dashed border-gray-700 rounded-xl p-6 text-center hover:border-gray-500 transition-colors">
+                  {uploadUrl ? (
+                    <div>
+                      <span className="text-green-400 text-sm">✅ Fail telah dimuat naik</span>
+                      <p className="text-xs text-gray-500 mt-1 break-all">{uploadUrl.split('/').pop()}</p>
+                    </div>
+                  ) : uploading ? (
+                    <span className="text-amber-400 text-sm animate-pulse">Memuat naik...</span>
+                  ) : (
+                    <label className="cursor-pointer">
+                      <span className="text-gray-400 text-sm">Klik atau seret fail ke sini</span>
+                      <input type="file" className="hidden" accept="image/*,.pdf,.doc,.docx" onChange={handleFileUpload} />
+                    </label>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={handleSubmitTask}
+              disabled={completing || (!taskResponse.trim() && !uploadUrl)}
+              className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg ${
+                completing || (!taskResponse.trim() && !uploadUrl)
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-400 hover:to-emerald-500 shadow-green-500/25'
+              }`}
+            >
+              {completing ? 'Menghantar...' : 'Hantar Tugasan & Selesai ✅'}
+            </button>
+          </div>
+        )}
+        {/* STEP 3: Share / Completed */}
+        {activeStep === 'share' && completed && (
+          <div className="text-center">
+            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-green-500/30 p-8 mb-6">
+              <div className="text-6xl mb-4">🎉</div>
+              <h2 className="text-2xl font-bold text-green-400 mb-2">Tahniah!</h2>
+              <p className="text-gray-400 mb-4">Kamu telah selesaikan "{lesson.title}"</p>
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full">
+                <span className="text-amber-400 font-bold">+{lesson.xp_reward} XP</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => onNavigate?.('my-path')}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold text-lg hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/25"
+            >
+              Teruskan ke Pelajaran Seterusnya →
+            </button>
+          </div>
         )}
       </div>
 
-      {/* Step Tabs: Learn â Do â Share */}
-      <div style={{
-        display: 'flex', gap: '4px', marginBottom: '24px',
-        background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '4px'
-      }}>
-        {(['learn', 'do', 'share'] as const).map((step, i) => {
-          const labels = ['ð Belajar', 'ð ï¸ Buat', 'ð¤ Kongsi'];
-          const isActive = currentStep === step;
-          const isDone = (step === 'learn' && (currentStep === 'do' || currentStep === 'share')) ||
-                         (step === 'do' && currentStep === 'share');
-          return (
+      {/* Floating AI Tutor Button */}
+      {!showTutor && (
+        <button
+          onClick={() => setShowTutor(true)}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30 flex items-center justify-center text-2xl hover:scale-110 transition-transform z-50"
+          title="Tanya Tutor AI"
+        >
+          🤖
+        </button>
+      )}
+      {/* AI Tutor Chat Panel */}
+      {showTutor && (
+        <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-96 h-[70vh] sm:h-[500px] bg-gray-900 border border-gray-700 sm:rounded-2xl rounded-t-2xl shadow-2xl flex flex-col z-50">
+          {/* Chat header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-700">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🤖</span>
+              <div>
+                <h3 className="text-white font-medium text-sm">HLA Tutor AI</h3>
+                <p className="text-gray-500 text-xs">Tanya apa sahaja tentang pelajaran ini</p>
+              </div>
+            </div>
             <button
-              key={step}
-              onClick={() => setCurrentStep(step)}
-              style={{
-                flex: 1,
-                padding: '10px 8px',
-                background: isActive
-                  ? 'linear-gradient(135deg, #d4af37, #b8962e)'
-                  : 'transparent',
-                color: isActive ? '#1a1a2e' : isDone ? '#d4af37' : '#888',
-                border: 'none',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                fontWeight: isActive ? 700 : 500,
-                fontSize: '0.9rem',
-                transition: 'all 0.2s'
-              }}
+              onClick={() => setShowTutor(false)}
+              className="text-gray-500 hover:text-white transition-colors text-lg"
             >
-              {isDone ? 'â ' : ''}{labels[i]}
+              ✕
             </button>
-          );
-        })}
-      </div>
-
-      {/* STEP 1: Learn */}
-      {currentStep === 'learn' && (
-        <div>
-          {/* Video Section */}
-          {lesson.video_url ? (
-            <div style={{
-              background: '#000',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              marginBottom: '20px',
-              aspectRatio: '16/9',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <iframe
-                src={lesson.video_url}
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                allowFullScreen
-              />
-            </div>
-          ) : (
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(26,26,46,0.9))',
-              borderRadius: '16px',
-              padding: '40px 24px',
-              textAlign: 'center',
-              marginBottom: '20px',
-              border: '1px solid rgba(212,175,55,0.2)'
-            }}>
-              <div style={{ fontSize: '3rem', marginBottom: '12px' }}>ð¥</div>
-              <p style={{ color: '#d4af37', fontWeight: 600, marginBottom: '8px' }}>
-                Video akan datang
-              </p>
-              <p style={{ color: '#888', fontSize: '0.85rem' }}>
-                Baca kandungan di bawah untuk memulakan pelajaran ini
-              </p>
-            </div>
-          )}
-
-          {/* Content Section */}
-          {lesson.content && (
-            <div style={{
-              background: 'rgba(255,255,255,0.05)',
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '20px',
-              lineHeight: 1.7,
-              color: '#ddd',
-              fontSize: '0.95rem'
-            }}>
-              {lesson.content}
-            </div>
-          )}
-
-          <button
-            onClick={() => setCurrentStep('do')}
-            style={{
-              width: '100%',
-              background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-              color: '#1a1a2e',
-              border: 'none',
-              padding: '16px',
-              borderRadius: '12px',
-              fontSize: '1.05rem',
-              fontWeight: 700,
-              cursor: 'pointer'
-            }}
-          >
-            Saya Faham â Buat Tugasan
-          </button>
-        </div>
-      )}
-
-      {/* STEP 2: Do Task */}
-      {currentStep === 'do' && (
-        <div>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(212,175,55,0.1), rgba(26,26,46,0.9))',
-            border: '1px solid rgba(212,175,55,0.3)',
-            borderRadius: '16px',
-            padding: '24px',
-            marginBottom: '20px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <span style={{ fontSize: '1.5rem' }}>ð ï¸</span>
-              <h3 style={{ color: '#d4af37', margin: 0 }}>Tugasan Kamu</h3>
-            </div>
-            <p style={{ color: '#ddd', lineHeight: 1.7, fontSize: '1rem', margin: 0 }}>
-              {lesson.task_instruction}
-            </p>
           </div>
 
-          {/* Text Response */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ color: '#ccc', fontSize: '0.9rem', display: 'block', marginBottom: '8px' }}>
-              âï¸ Jawapan / Catatan Kamu:
-            </label>
-            <textarea
-              value={taskResponse}
-              onChange={(e) => setTaskResponse(e.target.value)}
-              placeholder="Tulis jawapan atau cerita kamu di sini..."
-              style={{
-                width: '100%',
-                minHeight: '120px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '12px',
-                padding: '16px',
-                color: '#fff',
-                fontSize: '0.95rem',
-                resize: 'vertical',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {messages.length === 0 && (
+              <div className="text-center py-8">
+                <div className="text-3xl mb-2">👋</div>
+                <p className="text-gray-400 text-sm">Hai! Saya tutor AI kamu.</p>
+                <p className="text-gray-500 text-xs mt-1">Tanya apa sahaja tentang "{lesson.title}"</p>
+                <div className="mt-4 space-y-2">
+                  {['Saya tak faham pelajaran ini', 'Bagi contoh?', 'Macam mana nak buat tugasan?'].map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setTutorInput(q); }}
+                      className="block w-full text-left text-xs bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-400 hover:text-white hover:border-gray-600 transition-colors"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                  msg.role === 'user'
+                    ? 'bg-amber-500/20 text-amber-100 rounded-br-none'
+                    : 'bg-gray-800 text-gray-300 border border-gray-700 rounded-bl-none'
+                }`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+
+            {tutorLoading && (
+              <div className="flex justify-start">
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl rounded-bl-none px-4 py-3">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
           </div>
 
-          {/* File Upload */}
-          {lesson.requires_upload && (
-            <div style={{
-              border: '2px dashed rgba(212,175,55,0.3)',
-              borderRadius: '16px',
-              padding: '24px',
-              textAlign: 'center',
-              marginBottom: '20px',
-              cursor: 'pointer',
-              transition: 'border-color 0.2s'
-            }}
-            onClick={() => fileInputRef.current?.click()}
-            >
+          {/* Input */}
+          <div className="p-3 border-t border-gray-700">
+            <div className="flex gap-2">
               <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,.pdf"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
+                value={tutorInput}
+                onChange={(e) => setTutorInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendTutorMessage()}
+                placeholder="Tanya soalan..."
+                className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-white text-sm placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
               />
-              {uploading ? (
-                <div>
-                  <div style={{ fontSize: '2rem', marginBottom: '8px' }}>â³</div>
-                  <p style={{ color: '#d4af37' }}>Memuat naik...</p>
-                </div>
-              ) : uploadedUrl ? (
-                <div>
-                  <div style={{ fontSize: '2rem', marginBottom: '8px' }}>â</div>
-                  <p style={{ color: '#4ade80', fontWeight: 600 }}>Fail dimuat naik!</p>
-                  <p style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>Klik untuk tukar fail</p>
-                </div>
-              ) : (
-                <div>
-                  <div style={{ fontSize: '2rem', marginBottom: '8px' }}>ð¤</div>
-                  <p style={{ color: '#ccc', fontWeight: 600 }}>Muat Naik Gambar / Fail</p>
-                  <p style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>
-                    Klik di sini untuk pilih fail (JPG, PNG, PDF)
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          <button
-            onClick={() => setCurrentStep('share')}
-            disabled={!taskResponse && !uploadedUrl}
-            style={{
-              width: '100%',
-              background: (taskResponse || uploadedUrl)
-                ? 'linear-gradient(135deg, #d4af37, #b8962e)'
-                : 'rgba(255,255,255,0.1)',
-              color: (taskResponse || uploadedUrl) ? '#1a1a2e' : '#666',
-              border: 'none',
-              padding: '16px',
-              borderRadius: '12px',
-              fontSize: '1.05rem',
-              fontWeight: 700,
-              cursor: (taskResponse || uploadedUrl) ? 'pointer' : 'not-allowed'
-            }}
-          >
-            Seterusnya â Selesai & Kongsi
-          </button>
-        </div>
-      )}
-
-      {/* STEP 3: Share / Complete */}
-      {currentStep === 'share' && (
-        <div>
-          {completed ? (
-            /* Already completed view */
-            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-              <div style={{ fontSize: '4rem', marginBottom: '16px' }}>ð</div>
-              <h2 style={{ color: '#4ade80', marginBottom: '12px' }}>Pelajaran Selesai!</h2>
-              <p style={{ color: '#ccc', marginBottom: '8px' }}>
-                Kamu dapat <strong style={{ color: '#d4af37' }}>+{lesson.xp_reward} XP</strong>
-              </p>
-              <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '32px' }}>
-                Teruskan usaha, setiap langkah kecil membawa perubahan besar.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => onNavigate?.('my-path')}
-                  style={{
-                    background: 'linear-gradient(135deg, #d4af37, #b8962e)',
-                    color: '#1a1a2e',
-                    border: 'none',
-                    padding: '14px 28px',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
-                >
-                  Pelajaran Seterusnya â
-                </button>
-                <button
-                  onClick={() => onNavigate?.('dashboard')}
-                  style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    color: '#fff',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    padding: '14px 28px',
-                    borderRadius: '12px',
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
-                >
-                  Kembali ke Dashboard
-                </button>
-              </div>
-            </div>
-          ) : (
-            /* Confirm & complete */
-            <div>
-              <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '20px'
-              }}>
-                <h3 style={{ color: '#d4af37', marginTop: 0, marginBottom: '16px' }}>
-                  ð Ringkasan Tugasan Kamu
-                </h3>
-                {taskResponse && (
-                  <div style={{ marginBottom: '12px' }}>
-                    <p style={{ color: '#888', fontSize: '0.8rem', margin: '0 0 4px' }}>Jawapan:</p>
-                    <p style={{ color: '#ddd', margin: 0, lineHeight: 1.6 }}>{taskResponse}</p>
-                  </div>
-                )}
-                {uploadedUrl && (
-                  <div style={{ marginBottom: '12px' }}>
-                    <p style={{ color: '#888', fontSize: '0.8rem', margin: '0 0 4px' }}>Fail dimuat naik:</p>
-                    <p style={{ color: '#4ade80', margin: 0 }}>â Berjaya dimuat naik</p>
-                  </div>
-                )}
-                <div style={{
-                  marginTop: '16px',
-                  padding: '12px 16px',
-                  background: 'rgba(212,175,55,0.1)',
-                  borderRadius: '10px',
-                  borderLeft: '3px solid #d4af37'
-                }}>
-                  <p style={{ color: '#d4af37', margin: 0, fontSize: '0.9rem' }}>
-                    ð Kamu akan dapat <strong>+{lesson.xp_reward} XP</strong> selepas selesai
-                  </p>
-                </div>
-              </div>
-
               <button
-                onClick={handleComplete}
-                disabled={completing}
-                style={{
-                  width: '100%',
-                  background: completing
-                    ? 'rgba(255,255,255,0.1)'
-                    : 'linear-gradient(135deg, #4ade80, #22c55e)',
-                  color: completing ? '#888' : '#1a1a2e',
-                  border: 'none',
-                  padding: '18px',
-                  borderRadius: '12px',
-                  fontSize: '1.1rem',
-                  fontWeight: 700,
-                  cursor: completing ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s'
-                }}
+                onClick={sendTutorMessage}
+                disabled={!tutorInput.trim() || tutorLoading}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-medium disabled:opacity-50 hover:from-purple-400 hover:to-indigo-500 transition-all"
               >
-                {completing ? 'â³ Menyimpan...' : 'â Tandakan Selesai'}
+                ➤
               </button>
             </div>
-          )}
+          </div>
         </div>
       )}
-
-      {/* Back to My Path */}
-      <div style={{ marginTop: '24px', textAlign: 'center' }}>
-        <button
-          onClick={() => onNavigate?.('my-path')}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#888',
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            textDecoration: 'underline'
-          }}
-        >
-          â Kembali ke Laluan Saya
-        </button>
-      </div>
     </div>
   );
 };

@@ -1,461 +1,275 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../../services/supabaseClient';
 import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../supabase/client';
 
 interface MyPathPageProps {
-  onNavigate?: (view: string) => void;
+  onNavigate?: (view: string, params?: any) => void;
 }
 
-interface LpLesson {
+interface LessonWithProgress {
   id: string;
   title: string;
   description: string;
-  video_url: string | null;
-  content: string;
-  task_instruction: string;
-  requires_upload: boolean;
   order_index: number;
   xp_reward: number;
   duration_minutes: number;
-}
-
-interface LpProgress {
-  lesson_id: string;
+  requires_upload: boolean;
+  video_url: string | null;
   status: 'not_started' | 'in_progress' | 'completed';
   xp_earned: number;
-  upload_url: string | null;
-}
-
-interface LearningPath {
-  id: string;
-  title: string;
-  description: string;
-  age_group: string;
-  level: number;
-  icon: string;
-  color: string;
-  total_lessons: number;
 }
 
 const MyPathPage: React.FC<MyPathPageProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [learningPath, setLearningPath] = useState<LearningPath | null>(null);
-  const [lessons, setLessons] = useState<LpLesson[]>([]);
-  const [progress, setProgress] = useState<Record<string, LpProgress>>({});
-  const [activeLesson, setActiveLesson] = useState<string | null>(null);
-  const [viewingContent, setViewingContent] = useState<string | null>(null);
-  const [taskText, setTaskText] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-
-  const totalXp = Object.values(progress).reduce((acc, p) => acc + (p.xp_earned || 0), 0);
-  const completedCount = Object.values(progress).filter(p => p.status === 'completed').length;
-  const progressPct = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
-
+  const [learningPath, setLearningPath] = useState<any>(null);
+  const [lessons, setLessons] = useState<LessonWithProgress[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [totalXP, setTotalXP] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
   useEffect(() => {
+    if (!user) return;
     loadData();
   }, [user]);
 
   const loadData = async () => {
-    if (!user) { setLoading(false); return; }
+    if (!user) return;
+    setLoading(true);
 
-    try {
-      // Get user's age group from profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('age_group')
-        .eq('id', user.id)
-        .single();
+    // Get profile
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    setProfile(profileData);
 
-      const ageGroup = profileData?.age_group || '7-12';
+    const ageGroup = profileData?.age_group || localStorage.getItem('hla_student_profile')
+      ? JSON.parse(localStorage.getItem('hla_student_profile') || '{}').ageGroup || '13-17'
+      : '13-17';
 
-      // Get learning path for this age group
-      const { data: pathData } = await supabase
-        .from('learning_paths')
-        .select('*')
-        .eq('age_group', ageGroup)
-        .eq('level', 1)
-        .single();
-
-      if (!pathData) {
-        // Fallback: get any learning path
-        const { data: anyPath } = await supabase
-          .from('learning_paths')
-          .select('*')
-          .limit(1)
-          .single();
-        if (anyPath) setLearningPath(anyPath);
-        else { setLoading(false); return; }
-      } else {
-        setLearningPath(pathData);
-      }
-
-      const pathId = pathData?.id || (learningPath?.id);
-      if (!pathId) { setLoading(false); return; }
-
-      // Get lessons for this path
-      const { data: lessonsData } = await supabase
-        .from('lp_lessons')
-        .select('*')
-        .eq('learning_path_id', pathId)
-        .order('order_index', { ascending: true });
-
-      if (lessonsData) setLessons(lessonsData);
-
-      // Get user's progress
-      const { data: progressData } = await supabase
-        .from('lp_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('learning_path_id', pathId);
-
-      if (progressData) {
-        const progressMap: Record<string, LpProgress> = {};
-        progressData.forEach(p => {
-          progressMap[p.lesson_id] = {
-            lesson_id: p.lesson_id,
-            status: p.status,
-            xp_earned: p.xp_earned,
-            upload_url: p.upload_url
-          };
-        });
-        setProgress(progressMap);
-      }
-    } catch (e) {
-      console.error('Error loading learning path:', e);
-    } finally {
+    // Get learning path
+    const { data: path } = await supabase
+      .from('learning_paths')
+      .select('*')
+      .eq('age_group', ageGroup)
+      .single();
+    if (!path) {
       setLoading(false);
+      return;
+    }
+    setLearningPath(path);
+
+    // Get lessons
+    const { data: lpLessons } = await supabase
+      .from('lp_lessons')
+      .select('*')
+      .eq('learning_path_id', path.id)
+      .order('order_index');
+
+    // Get progress
+    const { data: progress } = await supabase
+      .from('lp_progress')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('learning_path_id', path.id);
+
+    const progressMap: Record<string, any> = {};
+    (progress || []).forEach(p => { progressMap[p.lesson_id] = p; });
+
+    const lessonsWithProgress: LessonWithProgress[] = (lpLessons || []).map(lesson => ({
+      id: lesson.id,
+      title: lesson.title,
+      description: lesson.description,
+      order_index: lesson.order_index,
+      xp_reward: lesson.xp_reward,
+      duration_minutes: lesson.duration_minutes,
+      requires_upload: lesson.requires_upload,
+      video_url: lesson.video_url,
+      status: progressMap[lesson.id]?.status || 'not_started',
+      xp_earned: progressMap[lesson.id]?.xp_earned || 0,
+    }));
+
+    setLessons(lessonsWithProgress);
+    const completed = lessonsWithProgress.filter(l => l.status === 'completed').length;
+    setCompletedCount(completed);
+    setTotalXP(lessonsWithProgress.reduce((sum, l) => sum + l.xp_earned, 0));
+    setLoading(false);
+  };
+  const getStatusIcon = (status: string, index: number) => {
+    if (status === 'completed') return '✅';
+    if (status === 'in_progress') return '📝';
+    // First not_started after last completed = unlocked
+    const prevCompleted = index === 0 || lessons[index - 1]?.status === 'completed';
+    if (prevCompleted) return '🔓';
+    return '🔒';
+  };
+
+  const isLessonAccessible = (index: number) => {
+    if (index === 0) return true;
+    return lessons[index - 1]?.status === 'completed' || lessons[index]?.status !== 'not_started';
+  };
+
+  const handleLessonClick = (lesson: LessonWithProgress, index: number) => {
+    if (!isLessonAccessible(index)) return;
+    // Navigate to lesson page with lesson ID
+    if (onNavigate) {
+      localStorage.setItem('hla_current_lesson_id', lesson.id);
+      onNavigate('lesson');
     }
   };
 
-  const startLesson = async (lessonId: string) => {
-    if (!user || !learningPath) return;
+  const progressPercent = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
 
-    const current = progress[lessonId];
-    if (!current || current.status === 'not_started') {
-      // Create or update progress to in_progress
-      const { error } = await supabase
-        .from('lp_progress')
-        .upsert({
-          user_id: user.id,
-          lesson_id: lessonId,
-          learning_path_id: learningPath.id,
-          status: 'in_progress',
-          xp_earned: 0
-        }, { onConflict: 'user_id,lesson_id' });
-
-      if (!error) {
-        setProgress(prev => ({
-          ...prev,
-          [lessonId]: { lesson_id: lessonId, status: 'in_progress', xp_earned: 0, upload_url: null }
-        }));
-      }
-    }
-    setViewingContent(lessonId);
-    setTaskText('');
-  };
-
-  const completeLesson = async (lessonId: string) => {
-    if (!user || !learningPath) return;
-    setSubmitting(true);
-
-    const lesson = lessons.find(l => l.id === lessonId);
-    const xpReward = lesson?.xp_reward || 10;
-
-    try {
-      const { error } = await supabase
-        .from('lp_progress')
-        .upsert({
-          user_id: user.id,
-          lesson_id: lessonId,
-          learning_path_id: learningPath.id,
-          status: 'completed',
-          xp_earned: xpReward,
-          completed_at: new Date().toISOString()
-        }, { onConflict: 'user_id,lesson_id' });
-
-      if (!error) {
-        setProgress(prev => ({
-          ...prev,
-          [lessonId]: { lesson_id: lessonId, status: 'completed', xp_earned: xpReward, upload_url: null }
-        }));
-      }
-    } catch (e) {
-      console.error('Error completing lesson:', e);
-    } finally {
-      setSubmitting(false);
-      setViewingContent(null);
-    }
-  };
-
+  // Find next lesson to continue
+  const nextLesson = lessons.find(l => l.status === 'in_progress') ||
+                     lessons.find((l, i) => l.status === 'not_started' && isLessonAccessible(i));
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="text-gray-400">Memuatkan laluan pembelajaran...</p>
+          <div className="text-4xl mb-3 animate-pulse">📚</div>
+          <p className="text-gray-400">Memuatkan laluan kamu...</p>
         </div>
       </div>
     );
   }
 
-  if (!learningPath || lessons.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <div className="text-5xl mb-4">ð</div>
-          <h2 className="text-xl font-bold text-white mb-2">Tiada Laluan Ditemui</h2>
-          <p className="text-gray-400 mb-6">Sila lengkapkan profil kamu terlebih dahulu di "Mula Di Sini"</p>
-          <button
-            onClick={() => onNavigate?.('start-here')}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold hover:from-amber-400 hover:to-amber-500 transition-all"
-          >
-            Pergi ke Mula Di Sini
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Viewing lesson content
-  if (viewingContent) {
-    const lesson = lessons.find(l => l.id === viewingContent);
-    if (!lesson) return null;
-    const lessonProgress = progress[lesson.id];
-    const isCompleted = lessonProgress?.status === 'completed';
-
+  if (!learningPath) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
-        <div className="max-w-2xl mx-auto">
-          {/* Back button */}
+        <div className="max-w-xl mx-auto text-center py-20">
+          <div className="text-5xl mb-4">🗺️</div>
+          <h1 className="text-2xl font-bold text-white mb-3">Belum Ada Laluan</h1>
+          <p className="text-gray-400 mb-6">Sila lengkapkan profil kamu di "Mula Di Sini" untuk dapatkan laluan pembelajaran.</p>
           <button
-            onClick={() => setViewingContent(null)}
-            className="mb-4 text-gray-400 hover:text-white text-sm flex items-center gap-1 transition-colors"
+            onClick={() => onNavigate?.('start-here')}
+            className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold hover:from-amber-400 hover:to-amber-500 transition-all"
           >
-            â Kembali ke Laluan
+            Mula Di Sini →
           </button>
-
-          {/* Lesson Header */}
-          <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-6 mb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center text-2xl">
-                {lesson.order_index <= 5 ? ['ð', 'ð§ ', 'ð¤', 'â³', 'ð'][lesson.order_index - 1] || 'ð' : 'ð'}
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">{lesson.title}</h1>
-                <p className="text-gray-400 text-sm">{lesson.duration_minutes} minit â¢ {lesson.xp_reward} XP</p>
-              </div>
-              {isCompleted && (
-                <span className="ml-auto px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-medium">
-                  â Selesai
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Lesson Content */}
-          <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-6 mb-6">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <span className="text-blue-400">ð</span> Belajar
-            </h2>
-            <div className="text-gray-300 leading-relaxed whitespace-pre-line">
-              {lesson.content}
-            </div>
-          </div>
-
-          {/* Video Section (if available) */}
-          {lesson.video_url && (
-            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-6 mb-6">
-              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <span className="text-purple-400">ð¥</span> Video
-              </h2>
-              <div className="bg-gray-700/50 rounded-xl p-8 text-center">
-                <p className="text-gray-400">Video akan datang</p>
-              </div>
-            </div>
-          )}
-
-          {/* Task Section */}
-          {lesson.task_instruction && (
-            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-amber-500/30 p-6 mb-6">
-              <h2 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-                <span>â</span> Tugasan
-              </h2>
-              <p className="text-gray-300 mb-4">{lesson.task_instruction}</p>
-
-              {!isCompleted && (
-                <>
-                  <textarea
-                    value={taskText}
-                    onChange={(e) => setTaskText(e.target.value)}
-                    placeholder="Tulis jawapan kamu di sini..."
-                    className="w-full p-4 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-amber-500 focus:outline-none resize-none"
-                    rows={5}
-                  />
-                  {lesson.requires_upload && (
-                    <div className="mt-3 p-4 rounded-xl border-2 border-dashed border-gray-600 text-center">
-                      <span className="text-gray-400 text-sm">ð¤ Upload gambar/fail (akan datang)</span>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Complete Button */}
-          {!isCompleted && (
-            <button
-              onClick={() => completeLesson(lesson.id)}
-              disabled={submitting}
-              className={
-                'w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/25 ' +
-                (submitting ? 'opacity-50 cursor-not-allowed' : '')
-              }
-            >
-              {submitting ? 'Menyimpan...' : `Selesai & Dapat ${lesson.xp_reward} XP â`}
-            </button>
-          )}
         </div>
       </div>
     );
   }
-
-  // Main path view
-  const nextLesson = lessons.find(l => !progress[l.id] || progress[l.id].status !== 'completed');
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
       <div className="max-w-2xl mx-auto">
-        {/* Header with Progress */}
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-3xl">{learningPath.icon}</span>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-white">{learningPath.title}</h1>
+              <p className="text-gray-400 text-sm">{learningPath.description}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Card */}
         <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5 mb-6">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-white">{learningPath.icon} {learningPath.title}</h1>
-              <p className="text-gray-400 text-sm">{learningPath.description}</p>
+              <div className="text-3xl font-bold text-white">{progressPercent}%</div>
+              <div className="text-gray-400 text-sm">{completedCount}/{lessons.length} selesai</div>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-amber-400">{totalXp}</div>
-              <div className="text-gray-500 text-xs">XP</div>
+              <div className="text-2xl font-bold text-amber-400">{totalXP}</div>
+              <div className="text-gray-400 text-sm">XP Dikumpul</div>
             </div>
           </div>
-          <div className="w-full bg-gray-700/30 rounded-full h-3">
+          <div className="w-full bg-gray-700/50 rounded-full h-3">
             <div
               className="bg-gradient-to-r from-amber-400 to-amber-500 h-3 rounded-full transition-all duration-700"
-              style={{ width: progressPct + '%' }}
+              style={{ width: progressPercent + '%' }}
             />
           </div>
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>{completedCount}/{lessons.length} selesai</span>
-            <span>{progressPct}%</span>
+          {/* Level indicator */}
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-amber-400 text-sm font-medium">
+              Level {Math.floor(totalXP / 50) + 1}
+            </span>
+            <span className="text-gray-600">|</span>
+            <span className="text-gray-400 text-sm">
+              {50 - (totalXP % 50)} XP lagi ke level seterusnya
+            </span>
           </div>
         </div>
 
         {/* Continue Button */}
         {nextLesson && (
           <button
-            onClick={() => startLesson(nextLesson.id)}
-            className="w-full mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold text-lg flex items-center justify-between hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/25"
+            onClick={() => handleLessonClick(nextLesson, lessons.indexOf(nextLesson))}
+            className="w-full mb-6 p-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold text-lg hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2"
           >
-            <span>Sambung: {nextLesson.title}</span>
-            <span>â</span>
+            {nextLesson.status === 'in_progress' ? '📝 Teruskan: ' : '▶️ Mula: '}
+            {nextLesson.title}
           </button>
         )}
 
-        {/* Lessons List */}
+        {/* All completed */}
+        {completedCount === lessons.length && lessons.length > 0 && (
+          <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 text-center">
+            <div className="text-4xl mb-2">🏆</div>
+            <h3 className="text-lg font-bold text-green-400">Tahniah! Level 1 Selesai!</h3>
+            <p className="text-gray-400 text-sm mt-1">Kamu telah menyelesaikan semua {lessons.length} pelajaran. Level seterusnya akan datang!</p>
+          </div>
+        )}
+        {/* Lesson List */}
         <div className="space-y-3">
-          {lessons.map((lesson, idx) => {
-            const lp = progress[lesson.id];
-            const isCompleted = lp?.status === 'completed';
-            const isInProgress = lp?.status === 'in_progress';
-            const isActive = activeLesson === lesson.id;
-
+          <h2 className="text-lg font-bold text-white mb-3">Pelajaran</h2>
+          {lessons.map((lesson, i) => {
+            const accessible = isLessonAccessible(i);
             return (
-              <div
+              <button
                 key={lesson.id}
-                className={
-                  'rounded-2xl border transition-all ' +
-                  (isCompleted
-                    ? 'border-green-500/30 bg-green-500/5'
-                    : isInProgress
-                    ? 'border-amber-500/30 bg-amber-500/5'
-                    : 'border-gray-700/50 bg-gray-800/60')
-                }
+                onClick={() => handleLessonClick(lesson, i)}
+                disabled={!accessible}
+                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
+                  lesson.status === 'completed'
+                    ? 'bg-green-500/5 border-green-500/30 hover:bg-green-500/10'
+                    : lesson.status === 'in_progress'
+                    ? 'bg-amber-500/5 border-amber-500/30 hover:bg-amber-500/10'
+                    : accessible
+                    ? 'bg-gray-800/50 border-gray-700/50 hover:border-gray-600 hover:bg-gray-800'
+                    : 'bg-gray-800/20 border-gray-800/30 opacity-50 cursor-not-allowed'
+                }`}
               >
-                <button
-                  onClick={() => setActiveLesson(isActive ? null : lesson.id)}
-                  className="w-full p-4 flex items-center gap-3 text-left"
-                >
-                  <div className={
-                    'w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold ' +
-                    (isCompleted
-                      ? 'bg-green-500/20 text-green-400'
-                      : isInProgress
-                      ? 'bg-amber-500/20 text-amber-400'
-                      : 'bg-gray-700 text-gray-500')
-                  }>
-                    {isCompleted ? 'â' : idx + 1}
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-700/50 flex items-center justify-center text-lg">
+                    {getStatusIcon(lesson.status, i)}
                   </div>
-                  <div className="flex-1">
-                    <div className={'font-bold ' + (isCompleted ? 'text-green-400' : 'text-white')}>
-                      {lesson.title}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 font-medium">#{lesson.order_index}</span>
+                      <h3 className={`font-medium truncate ${
+                        lesson.status === 'completed' ? 'text-green-400' :
+                        lesson.status === 'in_progress' ? 'text-amber-400' :
+                        accessible ? 'text-white' : 'text-gray-500'
+                      }`}>
+                        {lesson.title}
+                      </h3>
+                    </div>                    <p className="text-gray-500 text-sm mt-0.5 line-clamp-1">{lesson.description}</p>
+                    <div className="flex items-center gap-3 mt-2">
+                      <span className="text-xs text-amber-400/60">⭐ {lesson.xp_reward} XP</span>
+                      {lesson.duration_minutes && (
+                        <span className="text-xs text-gray-600">⏱ {lesson.duration_minutes} min</span>
+                      )}
+                      {lesson.requires_upload && (
+                        <span className="text-xs text-blue-400/50">📸 Upload</span>
+                      )}
+                      {lesson.video_url && (
+                        <span className="text-xs text-red-400/50">🎬 Video</span>
+                      )}
                     </div>
-                    <div className="text-gray-500 text-xs">
-                      {lesson.duration_minutes} minit â¢ {lesson.xp_reward} XP
-                      {isCompleted && ` â¢ â ${lp.xp_earned} XP diperoleh`}
-                    </div>
                   </div>
-                  <span className="text-gray-500">{isActive ? 'â²' : 'â¼'}</span>
-                </button>
-
-                {isActive && (
-                  <div className="px-4 pb-4">
-                    <p className="text-gray-400 text-sm mb-3">{lesson.description}</p>
-                    {lesson.task_instruction && (
-                      <div className="text-xs text-amber-400/70 mb-3">
-                        â Tugasan: {lesson.task_instruction.substring(0, 80)}...
-                      </div>
-                    )}
-                    <button
-                      onClick={() => startLesson(lesson.id)}
-                      className={
-                        'w-full py-2 rounded-xl text-sm font-bold transition-all ' +
-                        (isCompleted
-                          ? 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
-                          : 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 hover:from-amber-400 hover:to-amber-500')
-                      }
-                    >
-                      {isCompleted ? 'Lihat Semula' : isInProgress ? 'Sambung Belajar' : 'Mula Pelajaran'}
-                    </button>
-                  </div>
-                )}
-              </div>
+                  {accessible && lesson.status !== 'completed' && (
+                    <div className="text-gray-500 text-sm">→</div>
+                  )}
+                </div>
+              </button>
             );
           })}
-        </div>
-
-        {/* Badges Section */}
-        <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5 mt-6">
-          <h3 className="text-lg font-bold text-white mb-3">Lencana Kamu</h3>
-          <div className="flex gap-3 flex-wrap">
-            {completedCount >= 1 && (
-              <div className="px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm">
-                ð Pemula
-              </div>
-            )}
-            {completedCount >= 3 && (
-              <div className="px-3 py-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm">
-                â¡ Rajin
-              </div>
-            )}
-            {completedCount >= 5 && (
-              <div className="px-3 py-2 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
-                ð Master Harmoni
-              </div>
-            )}
-            {completedCount === 0 && (
-              <div className="text-gray-500 text-sm">Selesaikan pelajaran untuk dapatkan lencana!</div>
-            )}
-          </div>
         </div>
       </div>
     </div>

@@ -1,325 +1,436 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../../services/supabaseClient';
 import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../supabase/client';
 
 interface ParentDashboardPageProps {
   onNavigate?: (view: string) => void;
 }
 
-interface ChildInfo {
+interface ChildData {
   id: string;
   full_name: string;
   email: string;
-  age_group: string | null;
+  age_group: string;
   onboarding_completed: boolean;
-  lessonsCompleted: number;
-  totalLessons: number;
-  totalXp: number;
+  progress: {
+    total_lessons: number;
+    completed_lessons: number;
+    total_xp: number;
+    current_lesson: string;
+    percent: number;
+  };
+  submissions: Array<{
+    id: string;
+    lesson_title: string;
+    task_response: string;
+    file_url: string | null;
+    status: string;
+    created_at: string;
+  }>;
+  badges: Array<{
+    badge_name: string;
+    badge_icon: string;
+    earned_at: string;
+  }>;
 }
-
 const ParentDashboardPage: React.FC<ParentDashboardPageProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [children, setChildren] = useState<ChildInfo[]>([]);
-  const [isParent, setIsParent] = useState(false);
-  const [linkCode, setLinkCode] = useState('');
-  const [childEmail, setChildEmail] = useState('');
-  const [linking, setLinking] = useState(false);
-  const [linkError, setLinkError] = useState('');
-  const [linkSuccess, setLinkSuccess] = useState('');
+  const [children, setChildren] = useState<ChildData[]>([]);
+  const [selectedChild, setSelectedChild] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'submissions' | 'feedback'>('overview');
+  const [weeklyComment, setWeeklyComment] = useState('');
+  const [weeklyRating, setWeeklyRating] = useState(0);
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
 
   useEffect(() => {
-    loadParentData();
+    if (!user) return;
+    loadChildren();
   }, [user]);
 
-  const loadParentData = async () => {
-    if (!user) { setLoading(false); return; }
-
-    try {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      if (profileData?.role === 'parent') {
-        setIsParent(true);
-
-        const { data: childLinks } = await supabase
-          .from('parent_children')
-          .select('child_id')
-          .eq('parent_id', user.id);
-
-        if (childLinks && childLinks.length > 0) {
-          const childIds = childLinks.map(c => c.child_id);
-
-          const { data: childProfiles } = await supabase
-            .from('profiles')
-            .select('id, full_name, email, age_group, onboarding_completed')
-            .in('id', childIds);
-
-          if (childProfiles) {
-            const childInfos: ChildInfo[] = [];
-
-            for (const child of childProfiles) {
-              const { data: progressData } = await supabase
-                .from('lp_progress')
-                .select('status, xp_earned')
-                .eq('user_id', child.id);
-
-              const lessonsCompleted = progressData?.filter(p => p.status === 'completed').length || 0;
-              const totalXp = progressData?.reduce((acc, p) => acc + (p.xp_earned || 0), 0) || 0;
-
-              const { count } = await supabase
-                .from('lp_lessons')
-                .select('id', { count: 'exact', head: true });
-
-              childInfos.push({
-                id: child.id,
-                full_name: child.full_name || 'Pelajar',
-                email: child.email || '',
-                age_group: child.age_group,
-                onboarding_completed: child.onboarding_completed || false,
-                lessonsCompleted,
-                totalLessons: count || 5,
-                totalXp
-              });
-            }
-
-            setChildren(childInfos);
-          }
-        }
-      }
-    } catch (e) {
-      console.error('Error loading parent data:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const becomeParent = async () => {
+  const loadChildren = async () => {
     if (!user) return;
-    setLinking(true);
+    setLoading(true);
 
-    try {
-      await supabase
-        .from('profiles')
-        .update({ role: 'parent' })
-        .eq('id', user.id);
+    // Get linked children
+    const { data: links } = await supabase
+      .from('parent_children')
+      .select('child_id')
+      .eq('parent_id', user.id);
 
-      setIsParent(true);
-    } catch (e) {
-      console.error('Error setting parent role:', e);
-    } finally {
-      setLinking(false);
+    if (!links || links.length === 0) {
+      // If no linked children, show the parent's own data as demo
+      await loadChildData(user.id);
+      setLoading(false);
+      return;
     }
+
+    for (const link of links) {
+      await loadChildData(link.child_id);
+    }
+    setLoading(false);
+  };
+  const loadChildData = async (childId: string) => {
+    // Get child profile
+    const { data: childProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', childId)
+      .single();
+
+    if (!childProfile) return;
+
+    // Get learning path based on age group
+    const { data: path } = await supabase
+      .from('learning_paths')
+      .select('*, lp_lessons(*)')
+      .eq('age_group', childProfile.age_group || '13-17')
+      .single();
+
+    const totalLessons = path?.lp_lessons?.length || 0;
+
+    // Get progress
+    const { data: progress } = await supabase
+      .from('lp_progress')
+      .select('*')
+      .eq('user_id', childId);
+
+    const completedLessons = (progress || []).filter(p => p.status === 'completed').length;
+    const totalXP = (progress || []).reduce((sum, p) => sum + (p.xp_earned || 0), 0);
+    // Get current lesson (in_progress or next)
+    const inProgress = (progress || []).find(p => p.status === 'in_progress');
+    let currentLessonTitle = 'Belum mula';
+    if (inProgress) {
+      const { data: lessonData } = await supabase
+        .from('lp_lessons')
+        .select('title')
+        .eq('id', inProgress.lesson_id)
+        .single();
+      currentLessonTitle = lessonData?.title || 'Dalam progress';
+    } else if (completedLessons > 0 && completedLessons < totalLessons) {
+      currentLessonTitle = 'Sedia untuk pelajaran seterusnya';
+    } else if (completedLessons === totalLessons && totalLessons > 0) {
+      currentLessonTitle = 'Semua selesai!';
+    }
+
+    // Get submissions
+    const { data: subs } = await supabase
+      .from('lesson_submissions')
+      .select('*, lp_lessons(title)')
+      .eq('user_id', childId)
+      .order('created_at', { ascending: false });
+
+    // Get badges
+    const { data: badges } = await supabase
+      .from('badges_earned')
+      .select('*')
+      .eq('user_id', childId)
+      .order('earned_at', { ascending: false });
+    const childData: ChildData = {
+      id: childId,
+      full_name: childProfile.full_name || childProfile.email || 'Anak',
+      email: childProfile.email || '',
+      age_group: childProfile.age_group || '',
+      onboarding_completed: childProfile.onboarding_completed || false,
+      progress: {
+        total_lessons: totalLessons,
+        completed_lessons: completedLessons,
+        total_xp: totalXP,
+        current_lesson: currentLessonTitle,
+        percent: totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
+      },
+      submissions: (subs || []).map(s => ({
+        id: s.id,
+        lesson_title: (s as any).lp_lessons?.title || 'Pelajaran',
+        task_response: s.task_response || '',
+        file_url: s.file_url,
+        status: s.status,
+        created_at: s.created_at,
+      })),
+      badges: (badges || []).map(b => ({
+        badge_name: b.badge_name,
+        badge_icon: b.badge_icon,
+        earned_at: b.earned_at,
+      })),
+    };
+
+    setChildren(prev => {
+      const existing = prev.findIndex(c => c.id === childId);
+      if (existing >= 0) {
+        const updated = [...prev];
+        updated[existing] = childData;
+        return updated;
+      }
+      return [...prev, childData];
+    });
+
+    if (!selectedChild) setSelectedChild(childId);
+  };
+  const handleSubmitFeedback = async () => {
+    if (!user || !selectedChild || !weeklyRating) return;
+    setSubmittingFeedback(true);
+
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+
+    await supabase.from('weekly_checkins').insert({
+      parent_id: user.id,
+      child_id: selectedChild,
+      week_start: weekStart.toISOString().split('T')[0],
+      rating: weeklyRating,
+      comment: weeklyComment,
+      improved: weeklyRating >= 3,
+    });
+
+    setFeedbackSent(true);
+    setSubmittingFeedback(false);
+    setTimeout(() => setFeedbackSent(false), 3000);
   };
 
-  const linkChild = async () => {
-    if (!user || !childEmail.trim()) return;
-    setLinking(true);
-    setLinkError('');
-    setLinkSuccess('');
-
-    try {
-      const { data: childProfile } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .eq('email', childEmail.trim().toLowerCase())
-        .single();
-
-      if (!childProfile) {
-        setLinkError('Email pelajar tidak dijumpai. Pastikan anak kamu sudah daftar akaun.');
-        setLinking(false);
-        return;
-      }
-
-      const { data: existing } = await supabase
-        .from('parent_children')
-        .select('id')
-        .eq('parent_id', user.id)
-        .eq('child_id', childProfile.id)
-        .single();
-
-      if (existing) {
-        setLinkError('Anak ini sudah dipautkan ke akaun kamu.');
-        setLinking(false);
-        return;
-      }
-
-      await supabase
-        .from('parent_children')
-        .insert({ parent_id: user.id, child_id: childProfile.id });
-
-      setLinkSuccess(`Berjaya! ${childProfile.full_name || childProfile.email} telah dipautkan.`);
-      setChildEmail('');
-      loadParentData();
-    } catch (e) {
-      setLinkError('Ralat semasa memautkan. Sila cuba lagi.');
-    } finally {
-      setLinking(false);
-    }
-  };
+  const currentChild = children.find(c => c.id === selectedChild);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="text-gray-400">Memuatkan...</p>
+          <div className="text-4xl mb-3 animate-pulse">👨‍👩‍👧‍👦</div>
+          <p className="text-gray-400">Memuatkan dashboard ibu bapa...</p>
         </div>
       </div>
     );
   }
-
-  if (!isParent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 flex items-center justify-center">
-        <div className="max-w-md text-center">
-          <div className="text-5xl mb-4">👨‍👩‍👧‍👦</div>
-          <h1 className="text-2xl font-bold text-white mb-3">Mode Ibu Bapa</h1>
-          <p className="text-gray-400 mb-6">
-            Pantau kemajuan anak kamu dalam pembelajaran. Lihat pelajaran yang disiapkan, XP dikumpul, dan pencapaian mereka.
-          </p>
-          <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-6 mb-6 text-left">
-            <h3 className="text-white font-bold mb-3">Apa yang kamu boleh buat:</h3>
-            <div className="space-y-2">
-              {[
-                { icon: '📊', text: 'Lihat kemajuan pembelajaran anak' },
-                { icon: '🏆', text: 'Lihat lencana & pencapaian' },
-                { icon: '📝', text: 'Lihat tugasan yang disiapkan' },
-                { icon: '🔗', text: 'Pautkan akaun anak dengan mudah' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 text-gray-300 text-sm">
-                  <span>{item.icon}</span>
-                  <span>{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={becomeParent}
-            disabled={linking}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 font-bold text-lg hover:from-amber-400 hover:to-amber-500 transition-all"
-          >
-            {linking ? 'Mengaktifkan...' : 'Aktifkan Mode Ibu Bapa'}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5 mb-6">
-          <h1 className="text-xl font-bold text-white mb-1">👨‍👩‍👧‍👦 Dashboard Ibu Bapa</h1>
-          <p className="text-gray-400 text-sm">Pantau kemajuan anak-anak kamu</p>
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <span>👨‍👩‍👧</span> Dashboard Ibu Bapa
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">Pantau perkembangan anak anda</p>
         </div>
 
-        {children.length > 0 ? (
-          <div className="space-y-4 mb-6">
-            {children.map(child => {
-              const pct = child.totalLessons > 0
-                ? Math.round((child.lessonsCompleted / child.totalLessons) * 100)
-                : 0;
-
-              return (
-                <div key={child.id} className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-xl">
-                        👦
-                      </div>
-                      <div>
-                        <div className="text-white font-bold">{child.full_name}</div>
-                        <div className="text-gray-500 text-xs">{child.email}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-amber-400">{child.totalXp}</div>
-                      <div className="text-gray-500 text-xs">XP</div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 mb-3 flex-wrap">
-                    <span className={
-                      'text-xs px-2 py-1 rounded-full ' +
-                      (child.age_group
-                        ? 'bg-blue-500/20 text-blue-400'
-                        : 'bg-gray-700 text-gray-500')
-                    }>
-                      {child.age_group ? `Umur ${child.age_group}` : 'Belum set umur'}
-                    </span>
-                    <span className={
-                      'text-xs px-2 py-1 rounded-full ' +
-                      (child.onboarding_completed
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-yellow-500/20 text-yellow-400')
-                    }>
-                      {child.onboarding_completed ? '✓ Onboarding selesai' : '⏳ Belum onboard'}
-                    </span>
-                  </div>
-
-                  <div className="w-full bg-gray-700/30 rounded-full h-2 mb-2">
-                    <div
-                      className="bg-gradient-to-r from-amber-400 to-amber-500 h-2 rounded-full transition-all"
-                      style={{ width: pct + '%' }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>{child.lessonsCompleted}/{child.totalLessons} pelajaran selesai</span>
-                    <span>{pct}%</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-8 mb-6 text-center">
-            <div className="text-4xl mb-3">👶</div>
-            <p className="text-gray-400 mb-2">Belum ada anak dipautkan</p>
-            <p className="text-gray-500 text-sm">Pautkan akaun anak kamu di bawah</p>
+        {/* Child selector (if multiple) */}
+        {children.length > 1 && (
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {children.map(child => (
+              <button
+                key={child.id}
+                onClick={() => setSelectedChild(child.id)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                  selectedChild === child.id
+                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    : 'bg-gray-800 text-gray-400 border border-gray-700 hover:border-gray-600'
+                }`}
+              >
+                {child.full_name}
+              </button>
+            ))}
           </div>
         )}
+        {currentChild ? (
+          <>
+            {/* Progress Overview Card */}
+            <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white">{currentChild.full_name}</h2>
+                  <p className="text-gray-400 text-sm">
+                    {currentChild.age_group ? `Umur ${currentChild.age_group}` : 'Belum set umur'}
+                    {currentChild.onboarding_completed ? ' — Onboarding selesai' : ' — Belum mula onboarding'}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-amber-400">{currentChild.progress.total_xp}</div>
+                  <div className="text-xs text-gray-500">Total XP</div>
+                </div>
+              </div>
 
-        <div className="bg-gray-800/60 backdrop-blur rounded-2xl border border-gray-700/50 p-5">
-          <h3 className="text-lg font-bold text-white mb-3">🔗 Pautkan Anak</h3>
-          <p className="text-gray-400 text-sm mb-4">Masukkan email akaun anak kamu untuk memautkan</p>
+              {/* Progress bar */}
+              <div className="mb-3">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-400">Progress Keseluruhan</span>
+                  <span className="text-white font-medium">{currentChild.progress.percent}%</span>
+                </div>
+                <div className="w-full bg-gray-700/50 rounded-full h-3">
+                  <div
+                    className="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full transition-all duration-700"
+                    style={{ width: currentChild.progress.percent + '%' }}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="bg-gray-700/30 rounded-xl p-3 text-center">
+                  <div className="text-xl font-bold text-white">{currentChild.progress.completed_lessons}</div>
+                  <div className="text-xs text-gray-400">Selesai</div>
+                </div>
+                <div className="bg-gray-700/30 rounded-xl p-3 text-center">
+                  <div className="text-xl font-bold text-white">{currentChild.progress.total_lessons}</div>
+                  <div className="text-xs text-gray-400">Jumlah</div>
+                </div>
+                <div className="bg-gray-700/30 rounded-xl p-3 text-center">
+                  <div className="text-xl font-bold text-white">{currentChild.badges.length}</div>
+                  <div className="text-xs text-gray-400">Badge</div>
+                </div>
+              </div>
 
-          <div className="flex gap-2">
-            <input
-              type="email"
-              value={childEmail}
-              onChange={(e) => setChildEmail(e.target.value)}
-              placeholder="Email anak (cth: anak@gmail.com)"
-              className="flex-1 px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-amber-500 focus:outline-none"
-            />
-            <button
-              onClick={linkChild}
-              disabled={linking || !childEmail.trim()}
-              className={
-                'px-6 py-3 rounded-xl font-bold transition-all ' +
-                (linking || !childEmail.trim()
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 hover:from-amber-400 hover:to-amber-500')
-              }
-            >
-              {linking ? '...' : 'Paut'}
-            </button>
+              <div className="mt-3 p-3 bg-gray-700/20 rounded-xl">
+                <span className="text-xs text-gray-500">Pelajaran Semasa:</span>
+                <p className="text-sm text-amber-400 font-medium">{currentChild.progress.current_lesson}</p>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-2 mb-4">
+              {[
+                { id: 'overview' as const, label: 'Ringkasan', emoji: '📊' },
+                { id: 'submissions' as const, label: 'Tugasan', emoji: '📝' },
+                { id: 'feedback' as const, label: 'Maklum Balas', emoji: '💬' },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1.5 ${
+                    activeTab === tab.id
+                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                      : 'bg-gray-800/50 text-gray-400 border border-gray-700/50 hover:border-gray-600'
+                  }`}
+                >
+                  <span>{tab.emoji}</span> {tab.label}
+                </button>
+              ))}
+            </div>
+            {/* Tab Content */}
+            {activeTab === 'overview' && (
+              <div className="space-y-4">
+                {/* Badges */}
+                {currentChild.badges.length > 0 && (
+                  <div className="bg-gray-800/60 rounded-2xl border border-gray-700/50 p-5">
+                    <h3 className="text-white font-medium mb-3">Badge Diperoleh</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {currentChild.badges.map((b, i) => (
+                        <span key={i} className="bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1 text-sm text-amber-300">
+                          {b.badge_icon} {b.badge_name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tips for parents */}
+                <div className="bg-gray-800/60 rounded-2xl border border-blue-500/20 p-5">
+                  <h3 className="text-blue-400 font-medium mb-3 flex items-center gap-2">
+                    <span>💡</span> Tips Untuk Ibu Bapa
+                  </h3>
+                  <div className="space-y-2 text-sm text-gray-400">
+                    <p>• Tanya anak tentang pelajaran hari ini — dialog lebih berkesan daripada arahan</p>
+                    <p>• Puji usaha, bukan hasil — "Saya bangga kamu cuba" lebih baik dari "Bagus markah kamu"</p>
+                    <p>• Beri ruang untuk gagal — kegagalan adalah guru terbaik</p>
+                    <p>• Beri maklum balas mingguan untuk bantu kami improve pengalaman anak anda</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === 'submissions' && (
+              <div className="space-y-3">
+                {currentChild.submissions.length === 0 ? (
+                  <div className="text-center py-10 text-gray-500">
+                    <div className="text-3xl mb-2">📭</div>
+                    <p>Belum ada tugasan yang dihantar.</p>
+                  </div>
+                ) : (
+                  currentChild.submissions.map(sub => (
+                    <div key={sub.id} className="bg-gray-800/60 rounded-xl border border-gray-700/50 p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-white font-medium text-sm">{sub.lesson_title}</h4>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          sub.status === 'approved' ? 'bg-green-500/10 text-green-400' :
+                          sub.status === 'needs_revision' ? 'bg-red-500/10 text-red-400' :
+                          'bg-amber-500/10 text-amber-400'
+                        }`}>
+                          {sub.status === 'approved' ? 'Diluluskan' : sub.status === 'needs_revision' ? 'Perlu perbaiki' : 'Dihantar'}
+                        </span>
+                      </div>
+                      {sub.task_response && (
+                        <p className="text-gray-400 text-sm line-clamp-3">{sub.task_response}</p>
+                      )}
+                      {sub.file_url && (
+                        <a href={sub.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 mt-1 inline-block">
+                          📎 Lihat lampiran
+                        </a>
+                      )}
+                      <div className="text-xs text-gray-600 mt-2">
+                        {new Date(sub.created_at).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+            {activeTab === 'feedback' && (
+              <div className="bg-gray-800/60 rounded-2xl border border-gray-700/50 p-5">
+                <h3 className="text-white font-medium mb-4">Maklum Balas Mingguan</h3>
+
+                {feedbackSent ? (
+                  <div className="text-center py-6">
+                    <div className="text-3xl mb-2">✅</div>
+                    <p className="text-green-400 font-medium">Terima kasih! Maklum balas anda telah dihantar.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-4">
+                      <label className="text-sm text-gray-400 mb-2 block">Bagaimana perkembangan anak minggu ini?</label>
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <button
+                            key={star}
+                            onClick={() => setWeeklyRating(star)}
+                            className={`w-12 h-12 rounded-xl text-xl transition-all ${
+                              star <= weeklyRating
+                                ? 'bg-amber-500/20 border-amber-500/50 border'
+                                : 'bg-gray-700/50 border border-gray-600/50 hover:border-gray-500'
+                            }`}
+                          >
+                            {star <= weeklyRating ? '⭐' : '☆'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <label className="text-sm text-gray-400 mb-2 block">Komen tambahan (pilihan)</label>
+                      <textarea
+                        value={weeklyComment}
+                        onChange={(e) => setWeeklyComment(e.target.value)}
+                        placeholder="Contoh: Anak lebih rajin buat kerja rumah minggu ini..."
+                        rows={3}
+                        className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-3 text-white placeholder-gray-600 text-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors resize-none"
+                      />
+                    </div>
+
+                    <button
+                      onClick={handleSubmitFeedback}
+                      disabled={!weeklyRating || submittingFeedback}
+                      className={`w-full py-3 rounded-xl font-medium transition-all ${
+                        !weeklyRating || submittingFeedback
+                          ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 hover:from-amber-400 hover:to-amber-500'
+                      }`}
+                    >
+                      {submittingFeedback ? 'Menghantar...' : 'Hantar Maklum Balas'}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-5xl mb-4">👨‍👩‍👧</div>
+            <h2 className="text-xl font-bold text-white mb-2">Tiada Data Anak</h2>
+            <p className="text-gray-400 text-sm mb-6">Hubungkan akaun anak anda untuk mula melihat perkembangan mereka.</p>
           </div>
-
-          {linkError && (
-            <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-              {linkError}
-            </div>
-          )}
-          {linkSuccess && (
-            <div className="mt-3 p-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
-              {linkSuccess}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
