@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import { supabase } from '../../../supabase/client';
+import { supabase } from '../../../services/supabaseClient';
 
 interface MyPathPageProps {
   onNavigate?: (view: string, params?: any) => void;

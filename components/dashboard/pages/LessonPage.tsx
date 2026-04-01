@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import { supabase } from '../../../supabase/client';
+import { supabase } from '../../../services/supabaseClient';
 
 interface LessonPageProps {
   lessonId?: string;
