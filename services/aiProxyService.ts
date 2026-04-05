@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
 
 /**
  * Secure AI Proxy Service
@@ -38,16 +38,42 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 }
 
 export async function callAI(request: AIProxyRequest): Promise<AIProxyResponse> {
+  if (!isSupabaseConfigured()) {
+    throw new Error(
+      'Server not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
+    );
+  }
+
   const headers = await getAuthHeaders();
-  
-  const response = await fetch(EDGE_FUNCTION_URL, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(request),
-  });
+
+  let response: Response;
+  try {
+    response = await fetch(EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(request),
+    });
+  } catch (networkError: any) {
+    if (networkError?.name === 'TypeError' || networkError?.message?.includes('fetch')) {
+      throw new Error(
+        'Could not reach the server. Please check your internet connection and verify the server URL is correct.'
+      );
+    }
+    throw networkError;
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    if (response.status === 404) {
+      throw new Error(
+        'AI proxy edge function not found. Please deploy the ai-proxy edge function to your Supabase project.'
+      );
+    }
+    if (response.status >= 500) {
+      throw new Error(
+        errorData.error || 'The AI server encountered an error. Please try again in a moment.'
+      );
+    }
     throw new Error(errorData.error || `AI service error: ${response.status}`);
   }
 
