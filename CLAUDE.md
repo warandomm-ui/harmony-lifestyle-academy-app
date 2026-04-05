@@ -7,7 +7,7 @@ Two dashboard modes set at registration: `muslim` (Quran, Sunnah, Doa, Arabic) a
 ## Tech Stack
 
 - **Frontend**: React 18 + TypeScript + Vite
-- **Styling**: Tailwind CSS (dark mode via `class` strategy), Framer Motion animations, Poppins font
+- **Styling**: Tailwind CSS (dark mode via `class` strategy), Framer Motion animations, Poppins font, CSS custom properties (`var(--primary)`, `var(--card)`, etc.)
 - **Forms**: React Hook Form + Zod validation
 - **Charts**: Recharts
 - **Backend**: Supabase (PostgreSQL + Auth + Edge Functions)
@@ -23,7 +23,16 @@ npm run build    # Production build — use to verify TypeScript/build errors
 npm run preview  # Preview production build
 ```
 
-No test framework or linter is currently configured.
+No test framework or linter is currently configured. TypeScript strict mode is off.
+
+## Environment Variables
+
+| Variable | Used In | Purpose |
+|---|---|---|
+| `VITE_SUPABASE_URL` | `supabaseClient.ts`, `aiProxyService.ts` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | `supabaseClient.ts`, `aiProxyService.ts` | Supabase anon/public key |
+| `VITE_ANTHROPIC_API_KEY` | `claudeService.ts` | Claude API key (browser-side) |
+| `VITE_GEMINI_API_KEY` | `HarmonyAIChat.tsx` | Gemini direct calls (legacy, should use proxy) |
 
 ## Architecture
 
@@ -43,7 +52,7 @@ App.tsx adds: `ChatProvider`, `GamificationProvider`, `StudyBuddyProvider`
 
 ### Routing
 
-Hash-based routing via `DashboardView` union type in `types.ts` (40+ views). View switching handled in `MainDashboard.tsx` with `getViewFromHash()`.
+Hash-based routing (NO React Router). `DashboardView` union type in `types.ts` (40+ views). View switching handled in `MainDashboard.tsx` with `getViewFromHash()`. Browser back/forward supported via `hashchange` event listener.
 
 ### App Flow
 
@@ -135,14 +144,20 @@ const content = await generateModuleContent('Physical', 'Nutrition Basics');
 - No prop drilling — use contexts for shared state
 - localStorage for client-side persistence (via `storageUtils.ts`)
 - Supabase for server-side persistence and auth
+- Gold accent palette: `#c9a84c` (gold), `#0d1b2a` / `#0a0f1a` (dark backgrounds)
+- Section dividers use `═══` comment style: `// ═══ Section Name ═══`
+- Components are NOT lazy-loaded (all imported eagerly in MainDashboard.tsx)
+- No Redux/Zustand — state management is local `useState` + Context only
+- Many labels and the deployment guide are in Malay (Bahasa Malaysia) — this is intentional
 
 ## Adding New Features
 
 ### New Dashboard View
 1. Add view name to `DashboardView` type in `types.ts`
 2. Create component in `components/dashboard/pages/`
-3. Add rendering case in `MainDashboard.tsx` switch/conditional
-4. Add navigation entry in `SidebarNav.tsx` if needed
+3. Add to `validViews` array in `MainDashboard.tsx` `getViewFromHash()`
+4. Add `case` in `renderContent()` switch, wrap in `<FullPageWrapper>`
+5. Add navigation entry in `SidebarNav.tsx` if needed
 
 ### New Context Provider
 1. Create file in `contexts/` following existing pattern (createContext + Provider + useHook)
@@ -157,13 +172,23 @@ const content = await generateModuleContent('Physical', 'Nutrition Basics');
 1. Create component in `components/dashboard/pages/dimensions/`
 2. Add to `DashboardView` type and `MainDashboard.tsx` routing
 
-## Important Notes
+## Common Pitfalls
 
-- `constants.ts` is 64KB — always read specific sections, never the whole file
-- `storageUtils.ts` uses Base64 obfuscation, not real encryption
-- Dashboard mode (`muslim` | `universal`) is immutable after registration
-- Environment variables must be prefixed with `VITE_` for client-side access
-- `.env.example` lists required variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-- AI API keys should be stored in Supabase Edge Function secrets (not frontend env vars)
-- No tests or linting configured — verify changes with `npm run build`
-- Deployment: Vercel with SPA rewrite in `vercel.json`
+- **No `src/` directory** — Everything is at the project root. The `@/` alias points to root, not `src/`.
+- **`constants.ts` is 64KB** — Always read specific sections, never the whole file.
+- **`storageUtils.ts` uses Base64 obfuscation**, not real encryption. AI cache uses raw `localStorage` — don't mix them up.
+- **Dashboard mode is immutable** — `muslim` | `universal` set once at registration. Don't add a mode switcher.
+- **Two AI patterns coexist** — `geminiService.ts` uses the secure proxy; `claudeService.ts` uses direct browser calls. Some components use Gemini API key directly (legacy).
+- **Hash routing, not React Router** — Don't import `react-router-dom`. Use `setCurrentView()` and the hash system.
+- **Duplicate switch cases exist** — `MainDashboard.tsx renderContent()` has some duplicated cases (e.g., `my-path`). Be careful when adding new cases.
+- **TypeScript strict mode is off** — `any` types are common. Don't assume full type safety.
+- **No tests or linting** — Verify changes with `npm run build`.
+- **Environment variables** must be prefixed with `VITE_` for client-side access.
+- **AI API keys** should be stored in Supabase Edge Function secrets, not frontend env vars.
+
+## Deployment
+
+- **Platform**: Vercel with SPA rewrite in `vercel.json`
+- **Build**: `npm run build` outputs to `dist/`
+- **Backend**: Supabase project (Singapore region, closest to Malaysia)
+- **Edge Functions**: AI proxy deployed as Supabase Edge Function (`functions/v1/ai-proxy`)
