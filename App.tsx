@@ -10,6 +10,7 @@ import { useAuth } from './contexts/AuthContext';
 import ToastContainer from './components/ToastContainer';
 import { GamificationProvider } from './contexts/GamificationContext';
 import { StudyBuddyProvider } from './contexts/StudyBuddyContext';
+import { HarmonyConnectorProvider } from './contexts/HarmonyConnectorContext';
 import { LinkedInIcon, SpinnerIcon } from './components/dashboard/Icons';
 import { storage } from './utils/storageUtils';
 
@@ -106,6 +107,7 @@ const App: React.FC = () => {
       </div>
 
       {isOnboardingComplete && userProfile && userResults && userStatus && lifeVision ? (
+        <HarmonyConnectorProvider>
         <ChatProvider>
           <GamificationProvider>
             <StudyBuddyProvider>
@@ -122,6 +124,7 @@ const App: React.FC = () => {
             </StudyBuddyProvider>
           </GamificationProvider>
         </ChatProvider>
+        </HarmonyConnectorProvider>
       ) : (
         <div className="flex flex-col min-h-screen">
             <div className="flex-grow flex flex-col items-center justify-center p-4">

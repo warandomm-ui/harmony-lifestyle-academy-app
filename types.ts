@@ -623,6 +623,42 @@ export interface ProfileData {
   dashboardMode: DashboardMode;
 }
 
+// ═══ Harmony Connector Types — Claude AI Integration ═══
+export type HarmonyConnectorAction = 'chat' | 'generateContent' | 'analyze' | 'studyBuddy' | 'spiritualGuidance';
+
+export interface HarmonyConnectorMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface HarmonyConnectorRequest {
+  action: HarmonyConnectorAction;
+  payload: {
+    messages?: HarmonyConnectorMessage[];
+    system?: string;
+    model?: string;
+    max_tokens?: number;
+    temperature?: number;
+    prompt?: string;
+    context?: Record<string, unknown>;
+  };
+}
+
+export interface HarmonyConnectorResponse {
+  text: string;
+  model?: string;
+  usage?: { input_tokens: number; output_tokens: number };
+  stop_reason?: string;
+  error?: string;
+}
+
+export interface HarmonyConnectorStatus {
+  isConnected: boolean;
+  isLoading: boolean;
+  error: string | null;
+  lastAction: HarmonyConnectorAction | null;
+}
+
 // Global type extensions for Vite env
 declare global {
   namespace NodeJS {
