@@ -745,9 +745,10 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
 // âââ MAIN COMPONENT âââ
 interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
+  onNavigate?: (view: string) => void;
 }
 
-const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults }) => {
+const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults, onNavigate }) => {
   const isMuslim = dashboardMode === 'muslim';
   const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
   const [selectedTingkatan, setSelectedTingkatan] = useState<string>('T1');
@@ -909,6 +910,21 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
             );
           })}
         </div>
+
+        {/* Periodic Table shortcut for Chemistry */}
+        {selectedSubject.id === 'chemistry' && onNavigate && (
+          <button
+            onClick={() => onNavigate('periodic-table')}
+            className="w-full flex items-center gap-3 p-3 rounded-xl border border-dashed border-teal-500/60 bg-teal-500/5 hover:bg-teal-500/10 transition-colors text-left"
+          >
+            <span className="text-2xl">⚗</span>
+            <div>
+              <p className="text-sm font-semibold text-teal-400">Interactive Periodic Table</p>
+              <p className="text-xs text-gray-500">KSSM-linked element facts · click to explore</p>
+            </div>
+            <span className="ml-auto text-teal-400 text-xs font-bold">Open →</span>
+          </button>
+        )}
 
         {/* Chapter List */}
         {chapters.length > 0 ? (
