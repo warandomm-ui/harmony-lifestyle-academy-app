@@ -82,8 +82,13 @@ const App: React.FC = () => {
 
   if (loading) {
     return (
-        <div className="h-screen w-full flex flex-col items-center justify-center bg-[var(--background)]">
-            <SpinnerIcon className="h-12 w-12 text-indigo-600 mb-4" />
+        <div
+          className="h-screen w-full flex flex-col items-center justify-center bg-[var(--background)]"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading Harmony Lifestyle Academy"
+        >
+            <SpinnerIcon className="h-12 w-12 text-indigo-600 mb-4" aria-hidden="true" />
             <h2 className="font-black text-xl text-[var(--foreground)] animate-pulse">Syncing Academy Records...</h2>
         </div>
     );
@@ -100,6 +105,12 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-[var(--background)] min-h-screen text-[var(--foreground)] transition-colors duration-300">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:px-4 focus:py-2 focus:bg-[var(--primary)] focus:text-white focus:rounded focus:outline-none"
+      >
+        Skip to main content
+      </a>
       <ToastContainer />
       <div className="absolute top-4 right-4 z-50">
         <ThemeToggle />
@@ -129,7 +140,7 @@ const App: React.FC = () => {
                   <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">Harmony Lifestyle Academy</h1>
                   <p className="text-lg text-[var(--muted)] mt-2">authenticated and ready for your glow up.</p>
               </header>
-              <main className="w-full">
+              <main id="main-content" className="w-full">
                   <OnboardingFlow onOnboardingComplete={handleOnboardingComplete} />
               </main>
             </div>
