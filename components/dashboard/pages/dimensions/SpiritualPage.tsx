@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { SparklesIcon, BookOpenIcon, PlayIcon, ChevronLeftIcon, CheckCircleIcon, TrophyIcon, ArrowUpCircleIcon } from '../../Icons';
 import { SPIRITUAL_PATHWAYS } from '../../../../constants/quranData';
-import type { Surah, SpiritualCategory } from '../../../../types';
+import type { Surah, SpiritualCategory, Course } from '../../../../types';
 import { useToast } from '../../../../contexts/ToastContext';
 import { useGamification } from '../../../../contexts/GamificationContext';
 import AyatCourseViewer from './AyatCourseViewer';
 import AIContentGenerator from '../../shared/AIContentGenerator';
+import CoursePlayer from '../../lms/CoursePlayer';
 
 const islamicSpiritualTopics = [
   { icon: '📿', title: 'Dhikr & Remembrance' },
@@ -507,11 +508,95 @@ const UniversalMindfulnessPage: React.FC = () => {
 // Main Page
 // ─────────────────────────────────────────────────────────────────────────────
 
+const ADAMS_JOURNEY_COURSE: Course = {
+    id: 'adams-journey-spiritual-vulnerability',
+    icon: '🌙',
+    title: "Adam's Journey: Understanding Spiritual Vulnerability",
+    subtitle: 'Story Night Whisper · Part 3 · Bayyinah Institute',
+    description: "A profound exploration of humanity's first encounter with divine test and satanic deception. Learn the timeless blueprint for spiritual resilience from Ustadh Nouman Ali Khan.",
+    progress: 0,
+    modules: [
+        {
+            id: 'aj-mod-1',
+            title: "The Devil's Subtle Strategy",
+            description: 'How Satan works through incremental whispers, not sudden leaps.',
+            lessons: [
+                {
+                    id: 'aj-l1-video',
+                    title: "Video: The Devil's Subtle Strategy",
+                    description: 'Ustadh Nouman Ali Khan explains how satanic deception works through consistency and gradual erosion of spiritual awareness.',
+                    type: 'Video',
+                    content: { type: 'video', url: '' },
+                },
+                {
+                    id: 'aj-l1-reading',
+                    title: 'Study Notes & Reflection',
+                    description: 'Section 1 study guide with key takeaways and reflection questions.',
+                    type: 'Reading',
+                    content: {
+                        type: 'text',
+                        text: `SUMMARY\nSatan's approach is not aggressive confrontation, but gradual seduction through consistent whispers that slowly erode spiritual awareness and divine consciousness.\n\nKEY TAKEAWAYS\n• The devil operates through incremental steps, not sudden leaps.\n• Whispers feel like personal thoughts, making them more dangerous.\n• Consistency is the devil's primary weapon against human faith.\n• Spiritual vulnerability begins with small, seemingly innocent compromises.\n• Recognizing the devil's strategy is the first step to resistance.\n\n"The devil is never going to stop for any of you. Until you die, he will not stop."\n— Ustadh Nouman Ali Khan\n\nREFLECTION QUESTIONS\n1. In what subtle ways do you notice spiritual distractions entering your daily life?\n2. How can you create consistent spiritual practices to counter consistent spiritual threats?`,
+                    },
+                },
+            ],
+        },
+        {
+            id: 'aj-mod-2',
+            title: 'Clothing as Spiritual Metaphor',
+            description: 'Divine clothing represents dignity, modesty, and protection against vulnerability.',
+            lessons: [
+                {
+                    id: 'aj-l2-video',
+                    title: 'Video: Clothing as Spiritual Metaphor',
+                    description: 'How divine clothing symbolises human dignity, modesty, and spiritual protection beyond the physical.',
+                    type: 'Video',
+                    content: { type: 'video', url: '' },
+                },
+                {
+                    id: 'aj-l2-reading',
+                    title: 'Study Notes & Reflection',
+                    description: 'Section 2 study guide with key takeaways and reflection questions.',
+                    type: 'Reading',
+                    content: {
+                        type: 'text',
+                        text: `SUMMARY\nDivine clothing represents more than physical covering — it symbolises human dignity, modesty, and spiritual protection against vulnerability and exposure.\n\nKEY TAKEAWAYS\n• Clothing is a divine gift signifying human honour.\n• Spiritual awareness is the most important 'clothing'.\n• Modesty protects both physical and spiritual dimensions.\n• External appearance reflects internal spiritual state.\n• Clothing represents human beings' unique status among creation.\n\n"The clothing of being aware of Allah, that's even better."\n— Ustadh Nouman Ali Khan\n\nREFLECTION QUESTIONS\n1. How does your understanding of modesty extend beyond physical appearance?\n2. In what ways can spiritual 'clothing' protect you from negative influences?`,
+                    },
+                },
+            ],
+        },
+        {
+            id: 'aj-mod-3',
+            title: 'Internal vs External Stability',
+            description: 'True stability resides within the soul, independent of external chaos.',
+            lessons: [
+                {
+                    id: 'aj-l3-video',
+                    title: 'Video: Internal vs External Stability',
+                    description: 'How believers maintain inner peace through divine connection despite worldly chaos.',
+                    type: 'Video',
+                    content: { type: 'video', url: '' },
+                },
+                {
+                    id: 'aj-l3-reading',
+                    title: 'Study Notes & Reflection',
+                    description: 'Section 3 study guide with key takeaways and reflection questions.',
+                    type: 'Reading',
+                    content: {
+                        type: 'text',
+                        text: `SUMMARY\nTrue stability resides within the soul, independent of external circumstances. Believers maintain inner peace through divine connection despite worldly chaos.\n\nKEY TAKEAWAYS\n• External world can be chaotic, but internal world can remain calm.\n• Divine light provides stability amidst uncertainty.\n• Personal spiritual journey transcends collective experiences.\n• Faith transforms challenges into opportunities for growth.\n• Inner peace is a conscious choice, not a circumstantial outcome.\n\n"There may be an earthquake all around them, but where is their stability? Inside them."\n— Ustadh Nouman Ali Khan\n\nREFLECTION QUESTIONS\n1. When have you experienced inner peace despite external turbulence?\n2. How can you cultivate deeper internal spiritual resilience?`,
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
     const muslim = religion.trim().toLowerCase() === 'islam';
 
     const [activeCategoryId, setActiveCategoryId] = useState('ruh');
     const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
+    const [adamsJourneyCourseActive, setAdamsJourneyCourseActive] = useState(false);
 
     // Non-Muslim path
     if (!muslim) {
@@ -552,6 +637,38 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
                 </div>
             </div>
 
+            {/* Adam's Journey Featured Course */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-teal-900 border border-indigo-700/40 shadow-2xl p-8 flex flex-col md:flex-row items-center gap-8">
+                <div className="absolute inset-0 opacity-10 pointer-events-none select-none">
+                    <div className="absolute top-4 right-4 text-[10rem] leading-none">🌙</div>
+                </div>
+                <div className="relative z-10 flex-1 text-white">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                        <span className="bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full">Featured Course</span>
+                        <span className="text-indigo-300 text-[10px] font-bold uppercase tracking-widest">Bayyinah Institute · Story Night Whisper</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-2 leading-tight">
+                        Adam's Journey
+                        <span className="block text-indigo-300 font-light text-lg md:text-xl normal-case tracking-normal mt-1">Understanding Spiritual Vulnerability</span>
+                    </h2>
+                    <p className="text-indigo-100/80 text-sm leading-relaxed mb-5 max-w-xl">
+                        A profound exploration of humanity's first encounter with divine test and satanic deception — offering a timeless blueprint for spiritual resilience. Delivered by Ustadh Nouman Ali Khan.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        {["3 Modules", "6 Lessons", "Video + Study Notes", "Self-paced"].map(tag => (
+                            <span key={tag} className="bg-white/10 border border-white/15 text-white/70 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">{tag}</span>
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => setAdamsJourneyCourseActive(true)}
+                        className="inline-flex items-center gap-3 bg-indigo-500 hover:bg-indigo-400 text-white font-black text-sm uppercase tracking-widest px-8 py-4 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-105"
+                    >
+                        <PlayIcon className="h-5 w-5" />
+                        Watch &amp; Learn
+                    </button>
+                </div>
+            </div>
+
             {/* Navigation Tabs */}
             <div className="flex gap-4 overflow-x-auto py-4 no-scrollbar border-b border-[var(--border)] scroll-smooth">
                 {SPIRITUAL_PATHWAYS.map(cat => (
@@ -584,6 +701,14 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
                     surah={selectedSurah}
                     category={activeCategory}
                     onClose={() => setSelectedSurah(null)}
+                />
+            )}
+
+            {/* Adam's Journey Course Player */}
+            {adamsJourneyCourseActive && (
+                <CoursePlayer
+                    course={ADAMS_JOURNEY_COURSE}
+                    onExit={() => setAdamsJourneyCourseActive(false)}
                 />
             )}
 
