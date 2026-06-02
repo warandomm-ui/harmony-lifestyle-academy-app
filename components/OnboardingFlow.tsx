@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { SurveyAnswers, AnalysisResult, UserStatus, UserProfile, LifeVision, Goal } from '../types';
+import type { SurveyAnswers, AnalysisResult, UserStatus, UserProfile, LifeVision, Goal, DiagnosticResult } from '../types';
 import { getPersonalityAnalysis } from '../services/geminiService';
 import { DEFAULT_ANALYSIS_RESULT } from '../constants';
 import { supabase } from '../services/supabaseClient';
@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import WelcomeStep from './WelcomeStep';
 import PersonalInfoStep from './PersonalInfoStep';
+import DiagnosticHook from './DiagnosticHook';
 import AssessmentStep from './AssessmentStep';
 import ResultsStep from './ResultsStep';
 import UserStatusStep from './UserStatusStep';
@@ -35,10 +36,11 @@ import LifeGoalsStep from './LifeGoalsStep';
 // ZERO overlap. ZERO toggle. Completely separate experiences.
 // ═══════════════════════════════════════════════════════════
 
-type OnboardingStep = 
-  | 'welcome' 
-  | 'personalInfo' 
-  | 'assessment' 
+type OnboardingStep =
+  | 'welcome'
+  | 'personalInfo'
+  | 'diagnostic'
+  | 'assessment'
   | 'loading' 
   | 'results' 
   | 'lifeGoals' 
@@ -82,6 +84,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [selectedCareers, setSelectedCareers] = useState<string[]>([]);
   const [userSkills, setUserSkills] = useState<string[]>([]);
+  const [diagnostic, setDiagnostic] = useState<DiagnosticResult | null>(null);
 
   // ─── Derived state: is this a Muslim student? ───
   // Available after PersonalInfoStep completes
@@ -100,7 +103,17 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
     //
     // The dashboard component (loaded after onboarding) will also
     // check this same field to load Muslim or Universal dashboard.
-    
+
+    setStep('diagnostic');
+  }, []);
+
+  // ─── Diagnostic Hook handlers (first 15-minute "win") ───
+  const handleDiagnosticComplete = useCallback((result: DiagnosticResult) => {
+    setDiagnostic(result);
+    setStep('assessment');
+  }, []);
+
+  const handleDiagnosticSkip = useCallback(() => {
     setStep('assessment');
   }, []);
 
@@ -117,7 +130,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       state: 'N/A',
       country: 'Malaysia'
     });
-    setStep('assessment');
+    setStep('diagnostic');
   }, [user]);
 
   const handleAssessmentComplete = useCallback(async (finalAnswers: SurveyAnswers) => {
@@ -189,9 +202,10 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
               profile_data: { 
                 profile: userProfile, 
                 results, 
-                status: userStatus, 
-                vision: lifeVision, 
+                status: userStatus,
+                vision: lifeVision,
                 skills: userSkills,
+                diagnostic,
                 dashboardMode: isMuslimStudent(userProfile.religion) ? 'muslim' : 'universal'
               },
               updated_at: new Date().toISOString()
@@ -215,7 +229,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       }
     };
     persistData();
-  }, [step, userProfile, results, userStatus, lifeVision, onOnboardingComplete, userSkills, user, addToast, isMuslim]);
+  }, [step, userProfile, results, userStatus, lifeVision, onOnboardingComplete, userSkills, user, addToast, isMuslim, diagnostic]);
 
   // ─── RENDER ───
   const renderStep = () => {
@@ -231,9 +245,18 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
           />
         );
       
-      case 'assessment': 
+      case 'diagnostic':
         return (
-          <AssessmentStep 
+          <DiagnosticHook
+            studentName={userProfile?.name?.split(' ')[0] || 'Pelajar'}
+            onComplete={handleDiagnosticComplete}
+            onSkip={handleDiagnosticSkip}
+          />
+        );
+
+      case 'assessment':
+        return (
+          <AssessmentStep
             onComplete={handleAssessmentComplete} 
             onSkip={handleSkipAssessment}
             // Pass mode so assessment can show culturally appropriate questions if needed

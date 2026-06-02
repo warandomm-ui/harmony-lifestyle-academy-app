@@ -1,23 +1,14 @@
-import Anthropic from '@anthropic-ai/sdk';
 import type { GeneratedModuleContent } from '../types';
+import { generateWithClaude } from './aiProxyService';
+import { ingestLessonContent } from './lessonLibraryService';
 
-const getClaude = () => new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY || '',
-  dangerouslyAllowBrowser: true,
-});
-
-const retry = async <T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promise<T> => {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      if (i === retries) throw err;
-      const waitTime = err?.status === 429 ? delay * (i + 2) : delay;
-      await new Promise(r => setTimeout(r, waitTime));
-    }
-  }
-  throw new Error('Retry failed');
-};
+// ─────────────────────────────────────────────────────────────
+// Lesson content generation via Claude.
+//
+// SECURITY: this no longer uses the Anthropic browser SDK. All calls go
+// through the `ai-proxy` Supabase Edge Function, so the Anthropic API key
+// stays in server-side secrets and is never shipped to the client.
+// ─────────────────────────────────────────────────────────────
 
 const safeParseJSON = (text: string | undefined): any => {
   if (!text) return null;
@@ -32,6 +23,9 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const getCacheKey = (module: string, topic: string) =>
   `harmony_ai_${module}_${topic.toLowerCase().replace(/\s+/g, '_')}`;
+
+const SYSTEM_PROMPT =
+  'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it.';
 
 export const generateModuleContent = async (
   module: string,
@@ -54,40 +48,39 @@ export const generateModuleContent = async (
     }
   }
 
-  const claude = getClaude();
-
-  const systemPrompt =
-    'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it.';
-
   const userPrompt =
     `Generate a complete learning unit for the topic '${topic}' within '${module} Wellness'. ` +
     (context ? context + ' ' : '') +
     `Return JSON matching exactly: { "lesson": { "title": "", "explanation": "", "keyPoints": [], "practicalTip": "", "deeperInsight": "" }, "quiz": { "question": "", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "" }, "reflection": { "prompt": "", "guidingQuestions": ["", "", ""] } }`;
 
-  const result = await retry(async () => {
-    const response = await claude.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    });
-
-    const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
-    const parsed = safeParseJSON(text);
-    if (!parsed?.lesson || !parsed?.quiz || !parsed?.reflection) {
-      throw new Error('Invalid response structure from Claude');
-    }
-    return parsed;
+  const text = await generateWithClaude({
+    model: 'claude-haiku-4-5-20251001',
+    system: SYSTEM_PROMPT,
+    cacheSystem: true,
+    maxTokens: 1500,
+    messages: [{ role: 'user', content: userPrompt }],
   });
 
+  const parsed = safeParseJSON(text);
+  if (!parsed?.lesson || !parsed?.quiz || !parsed?.reflection) {
+    throw new Error('Invalid response structure from Claude');
+  }
+
   const content: GeneratedModuleContent = {
-    ...result,
+    ...parsed,
     module,
     topic,
     generatedAt: new Date().toISOString(),
   };
 
   localStorage.setItem(cacheKey, JSON.stringify(content));
+
+  // Best-effort: embed this freshly generated lesson into the pgvector library
+  // so the interactive tutor can retrieve it later. Never blocks generation.
+  void ingestLessonContent(content).catch((e) =>
+    console.warn('[claudeService] lesson ingestion skipped:', e?.message ?? e),
+  );
+
   return content;
 };
 
