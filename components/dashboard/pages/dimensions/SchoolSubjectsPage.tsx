@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
+import { supabase } from '../../../../services/supabaseClient';
 
 // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // SCHOOL SUBJECTS PAGE â Akademi Sekolah / School Academy
@@ -775,6 +776,33 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     setIsGenerating(true);
     setLesson(null);
     setShowAnswer(false);
+
+    // 1. Try the pre-generated library first (free, instant)
+    try {
+      const { data: cached } = await supabase
+        .from('lesson_library')
+        .select('title,explanation,key_points,example,practice_question,practice_answer')
+        .eq('chapter_id', chapter.id)
+        .eq('difficulty', difficulty)
+        .maybeSingle();
+
+      if (cached) {
+        setLesson({
+          title: cached.title,
+          explanation: cached.explanation,
+          keyPoints: cached.key_points ?? [],
+          example: cached.example,
+          practiceQuestion: cached.practice_question,
+          practiceAnswer: cached.practice_answer,
+        });
+        setIsGenerating(false);
+        return;
+      }
+    } catch {
+      // Supabase unavailable — fall through to live generation
+    }
+
+    // 2. Fallback: live AI generation
     const result = await generateLesson(
       isMuslim ? subject.nameBM : subject.name,
       isMuslim ? chapter.titleBM : chapter.title,
@@ -782,11 +810,27 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
       isMuslim,
       userProfile,
       userResults,
-    difficulty
-      );
+      difficulty,
+    );
     setLesson(result);
     setIsGenerating(false);
-  }, [isMuslim, selectedTingkatan]);
+
+    // 3. Save to library for future users (best-effort, non-blocking)
+    supabase.from('lesson_library').upsert({
+      chapter_id: chapter.id,
+      subject_id: subject.id,
+      tingkatan: selectedTingkatan,
+      chapter_title: isMuslim ? chapter.titleBM : chapter.title,
+      mode: 'both',
+      difficulty,
+      title: result.title,
+      explanation: result.explanation,
+      key_points: result.keyPoints ?? [],
+      example: result.example ?? '',
+      practice_question: result.practiceQuestion ?? '',
+      practice_answer: result.practiceAnswer ?? '',
+    }, { onConflict: 'chapter_id,mode,difficulty' }).then(() => {});
+  }, [isMuslim, selectedTingkatan, difficulty, userProfile, userResults]);
 
   const handleChapterClick = (chapter: Chapter) => {
     setSelectedChapter(chapter);
