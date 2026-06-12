@@ -11,11 +11,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-
-const PLANS: Record<string, { amount: number; name: string }> = {
-  premium: { amount: 2500, name: 'HLA Premium — 30 Hari' },       // RM25
-  founding: { amount: 1500, name: 'HLA Founding Member — 30 Hari' }, // RM15
-};
+import { PLANS, PlanType } from '../../constants/plans';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -23,23 +19,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { userId, email, name, phone, plan = 'premium' } = req.body;
+    const { name, phone, plan = 'premium' } = req.body || {};
 
-    if (!userId || !email) {
-      return res.status(400).json({ error: 'userId dan email diperlukan' });
-    }
-
-    const selectedPlan = PLANS[plan] || PLANS.premium;
+    const selectedPlan = PLANS[plan as PlanType] || PLANS.premium;
 
     const supabase = createClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // 1. Verify user wujud
-    const { data: userData, error: userErr } = await supabase.auth.admin.getUserById(userId);
+    // 1. Sahkan caller melalui JWT — jangan percaya userId dari body
+    const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    if (!token) {
+      return res.status(401).json({ error: 'Sila log masuk dahulu' });
+    }
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData?.user) {
       return res.status(401).json({ error: 'User tidak sah' });
+    }
+    const userId = userData.user.id;
+    const email = userData.user.email;
+    if (!email) {
+      return res.status(400).json({ error: 'Akaun tiada email' });
     }
 
     // 2. Create pending subscription record
@@ -102,10 +103,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const billCode = tpData[0].BillCode;
 
     // 4. Update subscription dengan bill code
-    await supabase
+    // (kalau gagal, callback masih boleh match melalui order_id = sub.id,
+    //  tapi log supaya reconciliation manual mudah)
+    const { error: updErr } = await supabase
       .from('subscriptions')
       .update({ bill_code: billCode })
       .eq('id', sub.id);
+    if (updErr) {
+      console.error('Failed to store bill_code on subscription:', { subId: sub.id, billCode, updErr });
+    }
 
     // 5. Return payment URL
     return res.status(200).json({

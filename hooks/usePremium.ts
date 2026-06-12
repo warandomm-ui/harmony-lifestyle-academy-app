@@ -7,7 +7,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { subscriptionService, LessonQuota } from '../services/subscriptionService';
 
 export function usePremium(userId: string | undefined) {
-  const [premium, setPremium] = useState(false);
   const [quota, setQuota] = useState<LessonQuota>({ remaining: 0, premium: false });
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,14 +18,18 @@ export function usePremium(userId: string | undefined) {
       return;
     }
     setLoading(true);
-    const [q, sub] = await Promise.all([
-      subscriptionService.getQuota(userId),
-      subscriptionService.getActiveSubscription(userId),
-    ]);
-    setQuota(q);
-    setPremium(q.premium);
-    setExpiresAt(sub?.expires_at ?? null);
-    setLoading(false);
+    try {
+      const [q, sub] = await Promise.all([
+        subscriptionService.getQuota(userId),
+        subscriptionService.getActiveSubscription(userId),
+      ]);
+      setQuota(q);
+      setExpiresAt(sub?.expires_at ?? null);
+    } catch (e) {
+      console.error('usePremium refresh error:', e);
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -44,7 +47,12 @@ export function usePremium(userId: string | undefined) {
     if (!userId) return false;
     const result = await subscriptionService.useLesson(userId);
     if (!result.allowed) {
-      setShowUpgrade(true);
+      // 'forbidden' = permission error, bukan quota habis — jangan tunjuk paywall
+      if (result.error) {
+        console.error('checkAndUseLesson blocked:', result.error);
+      } else {
+        setShowUpgrade(true);
+      }
       return false;
     }
     setQuota({ remaining: result.remaining, premium: result.premium });
@@ -52,8 +60,8 @@ export function usePremium(userId: string | undefined) {
   }, [userId]);
 
   return {
-    premium,
-    quota,           // quota.remaining: -1 = unlimited
+    premium: quota.premium, // derived — satu sumber sahaja, tak boleh stale
+    quota,                  // quota.remaining: -1 = unlimited
     expiresAt,
     loading,
     showUpgrade,

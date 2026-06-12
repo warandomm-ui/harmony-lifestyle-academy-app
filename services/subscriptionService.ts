@@ -4,6 +4,9 @@
 // ═══════════════════════════════════════════════
 
 import { supabase } from './supabaseClient';
+import type { PlanType } from '../constants/plans';
+
+export type { PlanType };
 
 export interface LessonQuota {
   remaining: number; // -1 = unlimited (premium)
@@ -14,9 +17,9 @@ export interface UsageResult {
   allowed: boolean;
   remaining: number;
   premium: boolean;
+  /** 'forbidden' bila caller cuba guna quota user lain */
+  error?: string;
 }
-
-export type PlanType = 'premium' | 'founding';
 
 export const subscriptionService = {
   /** Check status premium user semasa */
@@ -48,26 +51,33 @@ export const subscriptionService = {
     const { data, error } = await supabase.rpc('use_ai_lesson', { p_user_id: userId });
     if (error) {
       console.error('useLesson error:', error);
-      return { allowed: false, remaining: 0, premium: false };
+      return { allowed: false, remaining: 0, premium: false, error: error.message };
     }
     return data as UsageResult;
   },
 
   /** Mula checkout ToyyibPay — redirect ke payment page */
   async startCheckout(opts: {
-    userId: string;
-    email: string;
     name?: string;
     phone?: string;
     plan?: PlanType;
   }): Promise<void> {
+    // API sahkan identity melalui JWT, bukan body
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      throw new Error('Sila log masuk dahulu.');
+    }
+
     const res = await fetch('/api/toyyibpay/create-bill', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
       body: JSON.stringify(opts),
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.paymentUrl) {
       throw new Error(data.error || 'Gagal mula pembayaran. Cuba lagi.');
@@ -79,7 +89,7 @@ export const subscriptionService = {
 
   /** Dapatkan subscription aktif user (untuk papar expiry date) */
   async getActiveSubscription(userId: string) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('subscriptions')
       .select('plan, status, starts_at, expires_at')
       .eq('user_id', userId)
@@ -89,6 +99,9 @@ export const subscriptionService = {
       .limit(1)
       .maybeSingle();
 
-    return data; // null jika tiada
+    if (error) {
+      console.error('getActiveSubscription error:', error);
+    }
+    return data; // null jika tiada (atau jika query gagal — lihat console)
   },
 };

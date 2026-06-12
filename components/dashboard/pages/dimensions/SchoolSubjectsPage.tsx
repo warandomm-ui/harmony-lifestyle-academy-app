@@ -1,6 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
+import { useAuth } from '../../../../contexts/AuthContext';
+import { usePremium } from '../../../../hooks/usePremium';
+import UpgradeModal from '../../../UpgradeModal';
 
 // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // SCHOOL SUBJECTS PAGE â Akademi Sekolah / School Academy
@@ -749,6 +752,8 @@ interface SchoolSubjectsPageProps {
 
 const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults }) => {
   const isMuslim = dashboardMode === 'muslim';
+  const { user } = useAuth();
+  const { showUpgrade, setShowUpgrade, checkAndUseLesson } = usePremium(user?.id);
   const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
   const [selectedTingkatan, setSelectedTingkatan] = useState<string>('T1');
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
@@ -772,21 +777,28 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
   );
 
   const handleGenerateLesson = useCallback(async (subject: SubjectData, chapter: Chapter) => {
+    // Free tier: 3 AI lesson sehari — UpgradeModal muncul bila habis
+    const ok = await checkAndUseLesson();
+    if (!ok) return;
+
     setIsGenerating(true);
     setLesson(null);
     setShowAnswer(false);
-    const result = await generateLesson(
-      isMuslim ? subject.nameBM : subject.name,
-      isMuslim ? chapter.titleBM : chapter.title,
-      selectedTingkatan,
-      isMuslim,
-      userProfile,
-      userResults,
-    difficulty
+    try {
+      const result = await generateLesson(
+        isMuslim ? subject.nameBM : subject.name,
+        isMuslim ? chapter.titleBM : chapter.title,
+        selectedTingkatan,
+        isMuslim,
+        userProfile,
+        userResults,
+        difficulty
       );
-    setLesson(result);
-    setIsGenerating(false);
-  }, [isMuslim, selectedTingkatan]);
+      setLesson(result);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [isMuslim, selectedTingkatan, checkAndUseLesson]);
 
   const handleChapterClick = (chapter: Chapter) => {
     setSelectedChapter(chapter);
@@ -1119,6 +1131,8 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           </div>
         </div>
       )}
+
+      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </div>
   );
 };

@@ -6,12 +6,11 @@
 
 import { useState } from 'react';
 import { subscriptionService, PlanType } from '../services/subscriptionService';
+import { PLANS, FREE_LESSONS_PER_DAY } from '../constants/plans';
 
 interface UpgradeModalProps {
   open: boolean;
   onClose: () => void;
-  userId: string;
-  email: string;
   name?: string;
   /** Set true untuk tunjuk Founding Member offer RM15 */
   foundingOffer?: boolean;
@@ -20,8 +19,6 @@ interface UpgradeModalProps {
 export default function UpgradeModal({
   open,
   onClose,
-  userId,
-  email,
   name,
   foundingOffer = true,
 }: UpgradeModalProps) {
@@ -34,7 +31,7 @@ export default function UpgradeModal({
     setLoading(true);
     setError('');
     try {
-      await subscriptionService.startCheckout({ userId, email, name, plan });
+      await subscriptionService.startCheckout({ name, plan });
       // redirect berlaku dalam startCheckout
     } catch (e: any) {
       setError(e.message || 'Ralat. Cuba lagi.');
@@ -61,8 +58,8 @@ export default function UpgradeModal({
             Quota Hari Ini Habis
           </h2>
           <p className="text-[#8888aa] text-sm">
-            Kamu dah guna 3 AI lesson percuma hari ini. Upgrade untuk akses
-            tanpa had + semua features premium.
+            Kamu dah guna {FREE_LESSONS_PER_DAY} AI lesson percuma hari ini.
+            Upgrade untuk akses tanpa had + semua features premium.
           </p>
         </div>
 
@@ -94,10 +91,10 @@ export default function UpgradeModal({
             className="w-full mb-3 rounded-xl bg-[#C9A84C] py-4 font-bold text-black hover:bg-[#d9b85c] transition disabled:opacity-50"
           >
             <span className="block text-lg">
-              🌟 Founding Member — RM15/30 hari
+              🌟 Founding Member — {PLANS.founding.priceLabel}/{PLANS.founding.durationDays} hari
             </span>
             <span className="block text-xs font-medium opacity-80">
-              Harga istimewa 50 pelajar pertama (biasa RM25)
+              Harga istimewa 50 pelajar pertama (biasa {PLANS.premium.priceLabel})
             </span>
           </button>
         )}
@@ -112,7 +109,7 @@ export default function UpgradeModal({
               : 'bg-[#C9A84C] text-black hover:bg-[#d9b85c]'
           }`}
         >
-          Premium — RM25/30 hari
+          Premium — {PLANS.premium.priceLabel}/{PLANS.premium.durationDays} hari
         </button>
 
         {error && (

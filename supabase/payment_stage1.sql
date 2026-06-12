@@ -19,8 +19,15 @@ create table if not exists public.subscriptions (
 
 create index if not exists idx_subs_user on public.subscriptions(user_id);
 create index if not exists idx_subs_billcode on public.subscriptions(bill_code);
+-- hot path untuk is_premium(): user_id + status='active' + expires_at > now()
+create index if not exists idx_subs_active
+  on public.subscriptions(user_id, expires_at desc)
+  where status = 'active';
 
 -- 2. AI USAGE TABLE (untuk free tier limit: 3 lesson/hari)
+-- NOTA RETENTION: satu row per user per hari — bersihkan secara berkala, cth:
+--   delete from public.ai_usage where usage_date < current_date - interval '90 days';
+-- (boleh jadualkan dengan pg_cron / Supabase scheduled function)
 create table if not exists public.ai_usage (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
