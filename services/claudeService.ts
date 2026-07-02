@@ -57,7 +57,8 @@ export const generateModuleContent = async (
   const claude = getClaude();
 
   const systemPrompt =
-    'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it.';
+    'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it. ' +
+    'If the topic touches Islamic practice (e.g. dhikr, du\'a, tawakkul, salah), never invent, paraphrase, or quote specific Qur\'an ayat or hadith wording from memory — you may reference general themes and encourage the learner to consult the app\'s verified Qur\'an reader or a qualified teacher, but do not present generated text as scripture.';
 
   const userPrompt =
     `Generate a complete learning unit for the topic '${topic}' within '${module} Wellness'. ` +

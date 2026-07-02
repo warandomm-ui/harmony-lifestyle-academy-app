@@ -191,6 +191,12 @@ const AyatCourseViewer: React.FC<AyatCourseViewerProps> = ({ surahNumber, initia
             Apa pengajaran utama dari ayat ini yang boleh kamu amalkan hari ini?
           </p>
         </div>
+
+        {/* Source Attribution */}
+        <p className="text-[10px] text-[var(--muted)] mt-4 text-center leading-relaxed">
+          Teks Arab (Rasm Uthmani) &amp; terjemahan "Tafsir Pimpinan Ar-Rahman" (Abdullah Basmeih, JAKIM) dipaparkan melalui Quran.com API.
+          Bukan pengganti guru bertauliah — sila rujuk ustaz/ustazah untuk bacaan &amp; hukum tajwid.
+        </p>
       </div>
 
       {/* Action Buttons */}
