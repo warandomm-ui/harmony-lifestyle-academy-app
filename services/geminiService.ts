@@ -130,9 +130,9 @@ export const getWeeklyReview = async (emotions: Emotion[]): Promise<WeeklyEmotio
     } catch (error) { return { summary: 'Review unavailable.', reflectionQuestions: [], actionableTip: 'Take a deep breath.' } as any; }
 };
 
-export const getStudyBuddyResponse = async (history: StudyBuddyMessage[], topic: string, mode: StudyMode, userText: string = ''): Promise<string> => {
+export const getStudyBuddyResponse = async (history: StudyBuddyMessage[], topic: string, mode: StudyMode, userText: string = '', personaFlavor: string = ''): Promise<string> => {
     try {
-        const prompt = `Mode: ${mode}. Topic: ${topic}. User: ${userText}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
+        const prompt = `${personaFlavor} Mode: ${mode}. Topic: ${topic}. User: ${userText}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
         return await generateContent(prompt);
     } catch (error) { return "Study buddy is taking a break. Try again in a moment!"; }
 };
