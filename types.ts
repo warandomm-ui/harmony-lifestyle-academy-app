@@ -613,6 +613,31 @@ export interface GeneratedModuleContent {
   generatedAt: string;
 }
 
+// ─── Diagnostic Hook (onboarding "win" in the first 15 minutes) ───
+export interface DiagnosticQuestion {
+  id: string;
+  subtopic: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+}
+
+export interface DiagnosticSubject {
+  subject: string;
+  level: string;
+  questions: DiagnosticQuestion[];
+}
+
+export interface DiagnosticResult {
+  subject: string;
+  level: string;
+  correct: number;
+  total: number;
+  strongest: string; // strongest subtopic
+  weakest: string;   // subtopic needing help
+  perSubtopic: { subtopic: string; correct: number; total: number }[];
+}
+
 // ═══ NEW: Profile data structure for Supabase storage ═══
 export interface ProfileData {
   profile: UserProfile;
