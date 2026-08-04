@@ -3,6 +3,9 @@ import { generateModuleContent, clearModuleContentCache } from '../../../service
 import type { GeneratedModuleContent } from '../../../types';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { useToast } from '../../../contexts/ToastContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { usePremium } from '../../../hooks/usePremium';
+import UpgradeModal from '../../UpgradeModal';
 
 interface AIContentGeneratorProps {
   moduleId: string;
@@ -31,6 +34,8 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 }) => {
   const { addPoints } = useGamification();
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const { showUpgrade, setShowUpgrade, checkAndUseLesson } = usePremium(user?.id);
 
   const [selectedTopic, setSelectedTopic] = useState(topics[0]?.title ?? '');
   const [content, setContent] = useState<GeneratedModuleContent | null>(null);
@@ -60,6 +65,17 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 
   const handleGenerate = async (forceRefresh = false) => {
     if (!selectedTopic) return;
+
+    const cached = !forceRefresh && !!localStorage.getItem(
+      `harmony_ai_${moduleId}_${selectedTopic.toLowerCase().replace(/\s+/g, '_')}`
+    );
+
+    // Quota hanya dikira bila betul-betul hit AI (bukan cache)
+    if (!cached) {
+      const ok = await checkAndUseLesson();
+      if (!ok) return; // UpgradeModal muncul automatik bila quota habis
+    }
+
     setIsLoading(true);
     setError(null);
     setContent(null);
@@ -68,9 +84,6 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       if (forceRefresh) {
         clearModuleContentCache(moduleId, selectedTopic);
       }
-      const cached = !forceRefresh && !!localStorage.getItem(
-        `harmony_ai_${moduleId}_${selectedTopic.toLowerCase().replace(/\s+/g, '_')}`
-      );
       const result = await generateModuleContent(moduleName, selectedTopic, context);
       setContent(result);
       setFromCache(cached && new Date(result.generatedAt).getTime() < Date.now() - 1000);
@@ -381,6 +394,8 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           )}
         </div>
       )}
+
+      <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </section>
   );
 };

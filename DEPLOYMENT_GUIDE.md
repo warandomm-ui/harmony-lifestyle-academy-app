@@ -148,6 +148,52 @@ Di bahagian "Environment Variables", tambah:
 
 ---
 
+## LANGKAH 6: SETUP PAYMENT (ToyyibPay + Premium)
+
+### 6.1 Run SQL migration
+1. Buka Supabase Dashboard → SQL Editor
+2. Copy seluruh kandungan `supabase/payment_stage1.sql` dan Run
+3. Ini akan cipta tables `subscriptions` + `ai_usage` dan RPCs `is_premium`, `use_ai_lesson`, `get_lesson_quota`
+
+### 6.2 Environment Variables tambahan di Vercel
+| Nama | Nilai |
+|------|-------|
+| `TOYYIBPAY_SECRET_KEY` | userSecretKey dari toyyibpay.com (Settings) |
+| `TOYYIBPAY_CATEGORY_CODE` | Create category di dashboard ToyyibPay dulu |
+| `SUPABASE_URL` | Sama dengan VITE_SUPABASE_URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → service_role (RAHSIA — jangan letak di frontend) |
+| `APP_URL` | URL production app (untuk callback & return URL) |
+
+### 6.3 PENTING — Enforce quota di server (ai-proxy edge function)
+Quota check di frontend sahaja boleh di-bypass (user boleh panggil edge function
+terus). Tambah check ini dalam edge function `ai-proxy` SEBELUM panggil Gemini,
+untuk action `generateContent`:
+
+```ts
+// Dalam ai-proxy/index.ts — selepas dapat user dari JWT:
+const { data: usage } = await supabaseAdmin.rpc('use_ai_lesson', {
+  p_user_id: user.id,
+});
+if (!usage?.allowed) {
+  return new Response(
+    JSON.stringify({ error: 'Quota harian habis. Upgrade ke Premium untuk akses tanpa had.' }),
+    { status: 429, headers: { 'Content-Type': 'application/json' } }
+  );
+}
+```
+
+Nota: bila quota dah dikira di server, buang panggilan `checkAndUseLesson()` di
+frontend (atau tukar kepada `getQuota()` sahaja) supaya quota tak dikira dua kali —
+buat masa ini frontend yang increment.
+
+### 6.4 Test payment flow
+1. Login → generate 3 AI lessons → lesson ke-4 patut tunjuk UpgradeModal
+2. Klik plan → redirect ke ToyyibPay → bayar guna FPX test
+3. Selepas bayar → redirect ke `/payment/success` → status jadi premium
+4. Check Supabase: `select * from subscriptions` — status patut `active`
+
+---
+
 ## NEXT STEPS (Lepas Deploy Berjaya)
 
 1. **Custom Domain** — Beli domain (contoh: harmonyacademy.my) dan sambung ke Vercel
