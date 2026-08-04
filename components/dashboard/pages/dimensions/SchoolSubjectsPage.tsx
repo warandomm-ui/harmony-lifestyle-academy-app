@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
+import type { DashboardMode, UserProfile, AnalysisResult } from '../../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
 
 // âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
@@ -746,6 +746,8 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
 interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
   onNavigate?: (view: string) => void;
+  userProfile?: UserProfile;
+  userResults?: AnalysisResult;
 }
 
 const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults, onNavigate }) => {
