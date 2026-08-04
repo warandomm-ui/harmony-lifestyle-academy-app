@@ -47,6 +47,10 @@ import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
 import StudyPlannerPage from '../StudyPlanner/StudyPlannerPage';
+import ParentDashboardPage from './pages/ParentDashboardPage';
+import StartHerePage from './pages/StartHerePage';
+import MyPathPage from './pages/MyPathPage';
+import LessonPage from './pages/LessonPage';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
@@ -268,10 +272,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const renderContent = () => {
     // Admin routes
     if (currentView.startsWith('admin')) {
-      return <AdminPanel currentView={currentView} setCurrentView={setCurrentView} />
-      {showOnboarding && (
-        <OnboardingFlow onComplete={() => { localStorage.setItem('hla_onboarding_done', 'true'); setShowOnboarding(false); }} />
-      )};
+      return <AdminPanel currentView={currentView} setCurrentView={setCurrentView} />;
     }
     // Course player
     if (currentView === 'course-player' && activeCourse) {
@@ -347,19 +348,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             <MyPathPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
           </FullPageWrapper>
         );
-      case 'start-here':
-        return (
-          <FullPageWrapper title="Mula Di Sini">
-            <StartHerePage onNavigate={(view) => setCurrentView(view as DashboardView)} />
-          </FullPageWrapper>
-        );
-      case 'my-path':
-        return (
-          <FullPageWrapper title="Laluan Saya">
-            <MyPathPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
-          </FullPageWrapper>
-        );
-            case 'lesson':
+      case 'lesson':
         return (
           <FullPageWrapper title="Pelajaran">
             <LessonPage onNavigate={(view) => setCurrentView(view as DashboardView)} />
@@ -635,84 +624,3 @@ case 'parent-dashboard':
   );
 };
 export default MainDashboard;
-import React, { useState } from 'react';
-import HeaderBar from './HeaderBar';
-import SidebarNav from './SidebarNav';
-import DashboardContent from './DashboardContent';
-import HarmonyAIChat from './HarmonyAIChat';
-import AdminPanel from './sections/AdminPanel';
-import {
-  AnalysisResult, Course, DashboardView, DashboardMode, Product,
-  UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan,
-  Transaction, UserProfile, LifeVision,
-} from '../../types';
-import { useToast } from '../../contexts/ToastContext';
-import { useChat } from '../../contexts/ChatContext';
-import SupportModal from './SupportModal';
-import LeaderboardSection from './gamification/LeaderboardSection';
-import BadgesSection from './gamification/BadgesSection';
-import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_TRANSACTIONS, MOCK_FULL_COURSE } from '../../constants';
-// Legacy Page Imports
-import WisdomPage from './pages/WisdomPage';
-import KnowledgePage from './pages/KnowledgePage';
-import HealthPage from './pages/HealthPage';
-import FinancialPage from './pages/FinancialPage';
-import BusinessPage from './pages/BusinessPage';
-import FitnessPage from './pages/FitnessPage';
-import CommunicationPage from './pages/CommunicationPage';
-import BehaviourPage from './pages/BehaviourPage';
-import PracticeHubPage from './pages/PracticeHubPage';
-import ProfilePage from './pages/ProfilePage';
-// 7 Dimensions Page Imports
-import PhysicalPage from './pages/dimensions/PhysicalPage';
-import EmotionalPage from './pages/dimensions/EmotionalPage';
-import SocialDimensionPage from './pages/dimensions/SocialPage';
-import IntellectualPage from './pages/dimensions/IntellectualPage';
-import SpiritualPage from './pages/dimensions/SpiritualPage';
-import EnvironmentalPage from './pages/dimensions/EnvironmentalPage';
-import VocationalPage from './pages/dimensions/VocationalPage';
-import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
-import SunnahModulePage from './pages/dimensions/SunnahModulePage';
-import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
-// Other Page Imports
-import LanguageLabPage from './pages/LanguageLabPage';
-import IdeaWallPage from './pages/IdeaWallPage';
-import RealWorldPage from './pages/RealWorldPage';
-import CommunitySpacePage from './pages/CommunitySpacePage';
-import ThePathPage from './pages/ThePathPage';
-import CoursePlayer from './lms/CoursePlayer';
-import StudentDashboard from './pages/StudentDashboard';
-import NotebookPage from './pages/NotebookPage';
-import ParentDashboardPage from './pages/ParentDashboardPage';
-import StartHerePage from './pages/StartHerePage';
-import MyPathPage from './pages/MyPathPage';
-import LessonPage from './pages/LessonPage';
-// Modal Imports
-import CourseCreatorModal from './CourseCreatorModal';
-import PaymentModal from './PaymentModal';
-import CheckoutModal from './CheckoutModal';
-import PlanSelectionModal from './PlanSelectionModal';
-import RequestHelpModal from './RequestHelpModal';
-import DonateModal from './DonateModal';
-import OnboardingFlow from '../OnboardingFlow';
-import StartHerePage from './pages/StartHerePage';
-import MyPathPage from './pages/MyPathPage';
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
-   TYPES
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
-interface MainDashboardProps {
-  userProfile: UserProfile;
-  userResults: AnalysisResult;
-  selectedSkills: string[];
-  userStatus: UserStatus;
-  lifeVision: LifeVision;
-  onProfileUpdate: (profile: UserProfile) => void;
-  dashboardMode: DashboardMode;
-}
-interface FullPageWrapperProps {
-  children: React.ReactNode;
-  title: string;
-}
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
-   HELPER: Dimension titles based on dashboard mode
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
