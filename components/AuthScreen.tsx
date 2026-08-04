@@ -5,7 +5,7 @@ import { GitHubIcon, GoogleIcon } from './dashboard/Icons';
 
 /* ââ Geometric ornament â exact SVG from hla-welcome.html ââ */
 const GeometricOrnament = () => (
-  <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+  <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }} aria-hidden="true">
     <circle cx="250" cy="250" r="200" stroke="#c9a84c" strokeWidth="1"/>
     <circle cx="250" cy="250" r="160" stroke="#c9a84c" strokeWidth="0.5"/>
     <circle cx="250" cy="250" r="120" stroke="#c9a84c" strokeWidth="1"/>
@@ -21,7 +21,7 @@ const GeometricOrnament = () => (
 
 /* ââ Small corner ornament for the form card ââ */
 const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
-  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 60, height: 60, ...style }}>
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 60, height: 60, ...style }} aria-hidden="true">
     <line x1="0" y1="60" x2="60" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.6"/>
     <line x1="0" y1="40" x2="40" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.4"/>
     <line x1="0" y1="20" x2="20" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.3"/>
@@ -31,7 +31,7 @@ const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
 
 /* ââ Spinner ââ */
 const SpinnerIcon = () => (
-  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
   </svg>
@@ -307,19 +307,21 @@ const AuthScreen: React.FC = () => {
           <div className="auth-divider-mb" style={{ height: 1, background: `linear-gradient(90deg, ${C.gold}, transparent)`, marginBottom: '2rem', opacity: 0.5 }}/>
 
           {/* Form */}
-          <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <form onSubmit={handleAuth} aria-label={isForgot ? 'Password recovery' : isLogin ? 'Sign in' : 'Create account'} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
             {/* Full Name â register only */}
             {isRegister && (
               <div>
-                <label style={labelStyle('fullName')}>Full Name</label>
+                <label htmlFor="auth-fullname" style={labelStyle('fullName')}>Full Name</label>
                 <input
+                  id="auth-fullname"
                   type="text"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   onFocus={() => setFocusedField('fullName')}
                   onBlur={() => setFocusedField(null)}
                   placeholder="Your full name"
+                  autoComplete="name"
                   style={inputStyle('fullName')}
                 />
               </div>
@@ -327,8 +329,9 @@ const AuthScreen: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label style={labelStyle('email')}>Email Address</label>
+              <label htmlFor="auth-email" style={labelStyle('email')}>Email Address</label>
               <input
+                id="auth-email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -336,6 +339,7 @@ const AuthScreen: React.FC = () => {
                 onBlur={() => setFocusedField(null)}
                 placeholder="you@example.com"
                 required
+                autoComplete="email"
                 style={inputStyle('email')}
               />
             </div>
@@ -343,14 +347,16 @@ const AuthScreen: React.FC = () => {
             {/* Password â hidden on forgot mode */}
             {!isForgot && (
               <div>
-                <label style={labelStyle('password')}>Password</label>
+                <label htmlFor="auth-password" style={labelStyle('password')}>Password</label>
                 <div style={{ position: 'relative' }}>
                   <input
+                    id="auth-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
+                    autoComplete={isRegister ? 'new-password' : 'current-password'}
                     placeholder={isRegister ? 'Min 6 characters' : 'â¢â¢â¢â¢â¢â¢â¢â¢'}
                     required
                     minLength={6}
