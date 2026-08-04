@@ -300,7 +300,7 @@ const HarmonyAIChat: React.FC = () => {
     setTextInput('');
     setIsSendingText(true);
     // Add user message to transcript
-    setTranscript(prev => [...prev, { role: 'user', text: userMsg }]);
+    setTranscripts(prev => [...prev, { speaker: 'user', text: userMsg, isFinal: true }]);
     try {
       const response = await generateContent(
         'You are Harmony AI, a friendly and knowledgeable assistant for Harmony Lifestyle Academy (HLA). ' +
@@ -309,9 +309,9 @@ const HarmonyAIChat: React.FC = () => {
         'Respond in a warm, encouraging tone. Use Bahasa Malaysia if the student writes in BM. ' +
         'User message: ' + userMsg
       );
-      setTranscript(prev => [...prev, { role: 'model', text: response }]);
+      setTranscripts(prev => [...prev, { speaker: 'model', text: response, isFinal: true }]);
     } catch (error) {
-      setTranscript(prev => [...prev, { role: 'model', text: 'Maaf, saya tidak dapat memproses mesej anda. Sila cuba lagi.' }]);
+      setTranscripts(prev => [...prev, { speaker: 'model', text: 'Maaf, saya tidak dapat memproses mesej anda. Sila cuba lagi.', isFinal: true }]);
     }
     setIsSendingText(false);
   };
