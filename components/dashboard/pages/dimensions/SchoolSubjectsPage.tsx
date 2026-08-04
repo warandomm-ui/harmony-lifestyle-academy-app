@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import type { DashboardMode, UserProfile, AnalysisResult } from '../../../types';
+import type { DashboardMode, UserProfile, AnalysisResult } from '../../../../types';
 import { generateContent } from '../../../../services/aiProxyService';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { usePremium } from '../../../../hooks/usePremium';
@@ -748,6 +748,8 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
 // âââ MAIN COMPONENT âââ
 interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
+  userProfile?: UserProfile;
+  userResults?: AnalysisResult;
 }
 
 const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, userProfile, userResults }) => {
