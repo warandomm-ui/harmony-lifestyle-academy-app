@@ -136,11 +136,12 @@ export const translations = {
 } as const;
 
 export type TranslationKey = keyof typeof translations['en'];
+type TranslationDict = { [K in TranslationKey]: string };
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: typeof translations['en'];
+  t: TranslationDict;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
