@@ -46,6 +46,7 @@ import ThePathPage from './pages/ThePathPage';
 import CoursePlayer from './lms/CoursePlayer';
 import StudentDashboard from './pages/StudentDashboard';
 import NotebookPage from './pages/NotebookPage';
+import StudyPlannerPage from '../StudyPlanner/StudyPlannerPage';
 import ParentDashboardPage from './pages/ParentDashboardPage';
 import StartHerePage from './pages/StartHerePage';
 import MyPathPage from './pages/MyPathPage';
@@ -148,7 +149,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     const validViews: string[] = [
       'dashboard','leaderboard','badges','profile','practice-hub','language-lab',
       'idea-wall','notebook','real-world','community-space','the-path','start-here',
-      'my-path','lesson','parent-dashboard','student-dashboard',
+      'my-path','lesson','parent-dashboard','student-dashboard','study-planner',
       'physical','emotional','social','social-impact','intellectual','spiritual',
       'environmental','vocational','sunnah-module','school-subjects','wellness-module',
       'wisdom','knowledge','health','financial','business','fitness','communication','behaviour'
@@ -369,6 +370,13 @@ case 'parent-dashboard':
             />
           </FullPageWrapper>
         );
+      // --- Study Planner ---
+      case 'study-planner':
+        return (
+          <FullPageWrapper title={isMuslim ? 'Perancang Ulangkaji AI' : 'AI Study Planner'}>
+            <StudyPlannerPage dashboardMode={dashboardMode} />
+          </FullPageWrapper>
+        );
       // âââ 7 Dimensions âââ
       case 'physical':
         return (
@@ -515,6 +523,8 @@ case 'parent-dashboard':
             selectedSkills={selectedSkills}
             onQuickAction={handleQuickAction}
             activeCourses={activeCourses}
+            dashboardMode={dashboardMode}
+            onNavigate={(view) => setCurrentView(view as DashboardView)}
           />
         );
     }

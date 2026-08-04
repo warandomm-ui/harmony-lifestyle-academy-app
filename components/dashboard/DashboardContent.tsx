@@ -3,7 +3,7 @@ import React from 'react';
 import HeroSection from './HeroSection';
 import QuickActions from './QuickActions';
 import CommunityHighlightsSection from './CommunityHighlightsSection';
-import { AnalysisResult, Course, UserProfile } from '../../types';
+import { AnalysisResult, Course, DashboardMode, UserProfile } from '../../types';
 import EmotionTrackerSection from './sections/EmotionTrackerSection';
 import TodoListSection from './sections/TodoListSection';
 import GamificationWidget from './gamification/GamificationWidget';
@@ -11,6 +11,7 @@ import LifeBalanceWheel from './widgets/LifeBalanceWheel';
 import DailyCheckIn from './widgets/DailyCheckIn';
 import HabitTrackerWidget from './widgets/HabitTrackerWidget';
 import DailyRoutineTable from './widgets/DailyRoutineTable';
+import TodayTasksWidget from '../StudyPlanner/TodayTasksWidget';
 
 interface DashboardContentProps {
   userProfile: UserProfile;
@@ -18,6 +19,8 @@ interface DashboardContentProps {
   selectedSkills: string[];
   onQuickAction: (action: string) => void;
   activeCourses: Course[];
+  dashboardMode: DashboardMode;
+  onNavigate: (view: string) => void;
 }
 
 const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -38,6 +41,8 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
     userProfile,
     userResults,
     onQuickAction,
+    dashboardMode,
+    onNavigate,
   } = props;
 
   return (
@@ -61,6 +66,13 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
             <GamificationWidget />
           </div>
         </div>
+
+        {/* Study Planner Widget */}
+        <SectionHeading>Study Planner</SectionHeading>
+        <TodayTasksWidget
+          dashboardMode={dashboardMode}
+          onOpenPlanner={() => onNavigate('study-planner')}
+        />
 
         {/* Daily Routine */}
         <SectionHeading>Daily Schedule</SectionHeading>
