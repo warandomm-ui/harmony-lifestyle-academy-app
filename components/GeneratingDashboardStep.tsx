@@ -8,7 +8,11 @@ const messages = [
     "Finalizing your personalized plan..."
 ];
 
-const GeneratingDashboardStep: React.FC = () => {
+interface GeneratingDashboardStepProps {
+    isMuslim?: boolean | null;
+}
+
+const GeneratingDashboardStep: React.FC<GeneratingDashboardStepProps> = ({ isMuslim }) => {
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
     useEffect(() => {
@@ -22,7 +26,7 @@ const GeneratingDashboardStep: React.FC = () => {
     return (
         <div className="text-center py-20 flex flex-col items-center justify-center animate-fade-in">
             <div className="text-5xl mb-6">✨</div>
-            <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">Creating your personalized Harmony path...</h2>
+            <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">{isMuslim ? 'Membina laluan Harmony anda...' : 'Creating your personalized Harmony path...'}</h2>
             
             <div className="relative h-6 w-full max-w-sm mt-4 overflow-hidden">
                 {messages.map((message, index) => (
