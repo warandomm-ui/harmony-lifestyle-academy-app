@@ -131,4 +131,3 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
 };
 
 export default HeaderBar;
-import React, { useState } from 'react';
