@@ -4,6 +4,7 @@ import MoneyMattersSection from '../sections/MoneyMattersSection';
 import BillingSection from '../sections/BillingSection';
 import StoreSection from '../sections/StoreSection';
 import DealsHubSection from '../sections/DealsHubSection';
+import RecommendedProductsSection from '../sections/RecommendedProductsSection';
 import type { PaymentMethod, Product, SubscriptionPlan, Transaction } from '../../../types';
 
 interface FinancialPageProps {
@@ -40,6 +41,7 @@ const FinancialPage: React.FC<FinancialPageProps> = (props) => {
         </div>
       </div>
       <StoreSection onAddToCart={props.onAddToCart} />
+      <RecommendedProductsSection />
     </div>
   );
 };

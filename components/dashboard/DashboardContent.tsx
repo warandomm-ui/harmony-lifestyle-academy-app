@@ -11,6 +11,7 @@ import LifeBalanceWheel from './widgets/LifeBalanceWheel';
 import DailyCheckIn from './widgets/DailyCheckIn';
 import HabitTrackerWidget from './widgets/HabitTrackerWidget';
 import DailyRoutineTable from './widgets/DailyRoutineTable';
+import RecommendedProductsSection from './sections/RecommendedProductsSection';
 
 interface DashboardContentProps {
   userProfile: UserProfile;
@@ -86,6 +87,10 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
           <EmotionTrackerSection />
           <TodoListSection />
         </div>
+
+        {/* Recommended Products */}
+        <SectionHeading>Curated Picks</SectionHeading>
+        <RecommendedProductsSection />
 
         {/* Community */}
         <SectionHeading>Community</SectionHeading>
