@@ -428,7 +428,7 @@ case 'parent-dashboard':
       case 'school-subjects':
         return (
           <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}>
-            <SchoolSubjectsPage dashboardMode={dashboardMode} userProfile={userProfile} userResults={userResults} />
+            <SchoolSubjectsPage dashboardMode={dashboardMode} userProfile={userProfile} userResults={userResults} onNavigate={setCurrentView} />
           </FullPageWrapper>
         );
       case 'wellness-module':

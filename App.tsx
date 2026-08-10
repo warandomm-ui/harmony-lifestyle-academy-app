@@ -4,6 +4,7 @@ import { isMuslimStudent } from './components/OnboardingFlow';
 import ThemeToggle from './components/ThemeToggle';
 import MainDashboard from './components/dashboard/MainDashboard';
 import AuthScreen from './components/AuthScreen';
+import LandingPage from './components/landing/LandingPage';
 import type { AnalysisResult, UserStatus, UserProfile, LifeVision, DashboardMode } from './types';
 import { ChatProvider } from './contexts/ChatContext';
 import { useAuth } from './contexts/AuthContext';
@@ -26,6 +27,27 @@ const App: React.FC = () => {
   // Determined by religion selection during registration
   // Stored in localStorage and Supabase for persistence
   const [dashboardMode, setDashboardMode] = useState<DashboardMode>('universal');
+
+  // ═══ Logged-out routing: public landing page ⇄ auth screen ═══
+  // #login and #register stay deep-linkable, so existing links and
+  // password-reset redirects land straight on the form.
+  const initialHash = typeof window !== 'undefined' ? window.location.hash : '';
+  const [authMode, setAuthMode] = useState<'login' | 'register' | null>(
+    initialHash === '#login' ? 'login' : initialHash === '#register' ? 'register' : null
+  );
+
+  const openAuth = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    window.location.hash = mode;
+    window.scrollTo(0, 0);
+  };
+
+  const closeAuth = () => {
+    setAuthMode(null);
+    if (window.location.hash === '#login' || window.location.hash === '#register') {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
 
   // Load existing data for the authenticated user
   useEffect(() => {
@@ -93,7 +115,14 @@ const App: React.FC = () => {
     return (
         <>
             <ToastContainer />
-            <AuthScreen />
+            {authMode ? (
+                <AuthScreen initialMode={authMode} onBack={closeAuth} />
+            ) : (
+                <LandingPage
+                    onGetStarted={() => openAuth('register')}
+                    onLogIn={() => openAuth('login')}
+                />
+            )}
         </>
     );
   }

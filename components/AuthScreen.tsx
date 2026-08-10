@@ -52,8 +52,15 @@ const EyeOffIcon = () => (
   </svg>
 );
 
-const AuthScreen: React.FC = () => {
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
+interface AuthScreenProps {
+  /** Which form to open on. Defaults to login, as before. */
+  initialMode?: 'login' | 'register' | 'forgot';
+  /** When provided, renders a link back to the public landing page. */
+  onBack?: () => void;
+}
+
+const AuthScreen: React.FC<AuthScreenProps> = ({ initialMode = 'login', onBack }) => {
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -196,6 +203,23 @@ const AuthScreen: React.FC = () => {
       minHeight: '100vh', display: 'flex', background: C.deep,
       fontFamily: font.dmSans, color: C.cream, overflowX: 'hidden',
     }}>
+
+      {/* Back to the public landing page (only when mounted from it) */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          style={{
+            position: 'absolute', top: '1.25rem', left: '1.25rem', zIndex: 10,
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            background: 'rgba(10,10,15,0.6)', border: `1px solid ${C.borderDim}`,
+            borderRadius: '999px', padding: '0.5rem 1rem',
+            color: C.gold, fontFamily: font.dmSans, fontSize: '0.8rem',
+            fontWeight: 500, cursor: 'pointer',
+          }}
+        >
+          ← Kembali
+        </button>
+      )}
 
       {/* ââ Left panel â hero / branding ââ */}
       <div style={{
