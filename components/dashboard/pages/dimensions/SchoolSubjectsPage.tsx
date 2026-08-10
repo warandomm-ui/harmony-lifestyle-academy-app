@@ -35,7 +35,7 @@ interface GeneratedLesson {
 }
 
 
-// ââ AI Lesson Generator ââ
+// ── AI Lesson Generator ──
 const generateLesson = async (subject: string, chapter: string, tingkatan: string, isMuslim: boolean, userProfile: any, userResults: any, difficulty: string): Promise<GeneratedLesson> => {
   const lang = isMuslim ? "Bahasa Malaysia" : "English";
 
@@ -89,7 +89,7 @@ const generateLesson = async (subject: string, chapter: string, tingkatan: strin
   }
 };
 
-// âââ MAIN COMPONENT âââ
+// ═══ MAIN COMPONENT ═══
 interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
   userProfile?: UserProfile;
@@ -159,7 +159,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     }
   };
 
-  // ââ SUBJECT GRID VIEW ââ
+  // ── SUBJECT GRID VIEW ──
   if (!selectedSubject) {
     return (
       <div className="space-y-8">
@@ -243,7 +243,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     );
   }
 
-  // ââ CHAPTER LIST VIEW ââ
+  // ── CHAPTER LIST VIEW ──
   if (!selectedChapter) {
     const chapters = selectedSubject.chapters[selectedTingkatan] || [];
     
@@ -335,7 +335,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
         ) : (
           <div className="text-center py-12 text-[var(--muted)]">
             <p className="text-lg mb-2">
-              {isMuslim ? 'ð Tiada bab untuk tingkatan ini' : 'ð No chapters for this form level'}
+              {isMuslim ? '📚 Tiada bab untuk tingkatan ini' : '📚 No chapters for this form level'}
             </p>
             <p className="text-sm">
               {isMuslim 
@@ -348,7 +348,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
     );
   }
 
-  // ââ LESSON VIEW (AI-generated) ââ
+  // ── LESSON VIEW (AI-generated) ──
   return (
     <div className="space-y-6">
       {/* Back + Chapter Header */}
@@ -366,7 +366,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
             {isMuslim ? selectedChapter.titleBM : selectedChapter.title}
           </h2>
           <p className="text-xs text-[var(--muted)]">
-            {selectedSubject.icon} {isMuslim ? selectedSubject.nameBM : selectedSubject.name} Â· {TINGKATAN_LABELS[dashboardMode][selectedTingkatan]}
+            {selectedSubject.icon} {isMuslim ? selectedSubject.nameBM : selectedSubject.name} · {TINGKATAN_LABELS[dashboardMode][selectedTingkatan]}
           </p>
         </div>
       </div>
@@ -392,7 +392,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {/* Explanation */}
           <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)]">
             <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-              <span className="text-lg">ð</span>
+              <span className="text-lg">📖</span>
               {isMuslim ? 'Penerangan' : 'Explanation'}
             </h3>
             <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap">
@@ -404,7 +404,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.keyPoints && lesson.keyPoints.length > 0 && (
             <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)]">
               <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-                <span className="text-lg">â­</span>
+                <span className="text-lg">⭐</span>
                 {isMuslim ? 'Poin Penting' : 'Key Points'}
               </h3>
               <ul className="space-y-2">
@@ -422,7 +422,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.example && (
             <div className="p-5 rounded-2xl border border-[var(--border)]" style={{ background: `${selectedSubject.color}08` }}>
               <h3 className="font-bold mb-3 flex items-center gap-2" style={{ color: selectedSubject.color }}>
-                <span className="text-lg">âï¸</span>
+                <span className="text-lg">✏️</span>
                 {isMuslim ? 'Contoh' : 'Worked Example'}
               </h3>
               <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap">
@@ -435,7 +435,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
           {lesson.practiceQuestion && (
             <div className="p-5 rounded-2xl border-2 border-dashed border-[var(--border)] bg-[var(--card)]">
               <h3 className="font-bold text-[var(--foreground)] mb-3 flex items-center gap-2">
-                <span className="text-lg">ð§ </span>
+                <span className="text-lg">🧠</span>
                 {isMuslim ? 'Soalan Latihan' : 'Practice Question'}
               </h3>
               <div className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap mb-4">
@@ -480,7 +480,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
                             : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400'
                         }`}
                       >
-                        {level === 'easy' ? 'ð Easy' : level === 'medium' ? 'ð Medium' : 'ð¥ Hard'}
+                        {level === 'easy' ? '😊 Easy' : level === 'medium' ? '📚 Medium' : '🔥 Hard'}
                       </button>
                     ))}
                   </div>
@@ -489,7 +489,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
               onClick={() => handleGenerateLesson(selectedSubject, selectedChapter)}
               className="px-6 py-2.5 rounded-full text-sm font-semibold border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--foreground)] transition-all"
             >
-              {isMuslim ? 'ð Jana Pelajaran Baru' : 'ð Generate New Lesson'}
+              {isMuslim ? '🔄 Jana Pelajaran Baru' : '🔄 Generate New Lesson'}
             </button>
                 <button
                   onClick={() => {
@@ -499,7 +499,7 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
                   }}
                   className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
                 >
-                  â Mark Chapter Complete
+                  ✅ Mark Chapter Complete
                 </button>
           </div>
         </div>

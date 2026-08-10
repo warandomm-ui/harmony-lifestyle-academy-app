@@ -1,0 +1,16 @@
+; Keeps source files UTF-8. The repo previously accumulated double-encoded
+; UTF-8 (mojibake) — em dashes and emoji saved as Latin-1 then re-saved as
+; UTF-8 — which corrupted user-visible UI strings as well as comments.
+; https://editorconfig.org
+;
+; Deliberately scoped to encoding only. Whitespace and line-ending rules
+; (trim_trailing_whitespace, insert_final_newline, end_of_line) are omitted
+; on purpose: 70 files currently carry trailing whitespace, 44 lack a final
+; newline, and index.html uses CRLF. Enabling those here would make editors
+; rewrite unrelated lines on save and bury real changes in churn. Worth doing
+; as its own deliberate cleanup, not as a side effect of this fix.
+
+root = true
+
+[*]
+charset = utf-8
