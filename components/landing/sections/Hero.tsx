@@ -54,14 +54,14 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
           </span>
 
           <h1 className="font-playfair text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--foreground)] mt-6 leading-[1.1]">
-            Tuition that adapts to how you actually learn
+            Shape Your Heart, Mind, Body, and Akhlak for Tomorrow
           </h1>
           <p
             lang="ms"
             className="font-playfair text-2xl sm:text-3xl lg:text-4xl mt-2 leading-tight"
             style={{ color: 'var(--muted)' }}
           >
-            Tuisyen yang menyesuaikan cara anda belajar
+            Bentuk Hati, Minda, Jasad, dan Akhlak Anda untuk Masa Depan
           </p>
 
           <p className="mt-7 text-lg text-[var(--foreground)] opacity-85 max-w-2xl">
