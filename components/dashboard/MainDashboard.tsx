@@ -37,6 +37,7 @@ import VocationalPage from './pages/dimensions/VocationalPage';
 import SocialImpactProjectsPage from './pages/dimensions/SocialImpactProjectsPage';
 import SunnahModulePage from './pages/dimensions/SunnahModulePage';
 import SchoolSubjectsPage from './pages/dimensions/SchoolSubjectsPage';
+import PeriodicTablePage from './pages/PeriodicTablePage';
 // Other Page Imports
 import LanguageLabPage from './pages/LanguageLabPage';
 import IdeaWallPage from './pages/IdeaWallPage';
@@ -151,7 +152,8 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       'my-path','lesson','parent-dashboard','student-dashboard',
       'physical','emotional','social','social-impact','intellectual','spiritual',
       'environmental','vocational','sunnah-module','school-subjects','wellness-module',
-      'wisdom','knowledge','health','financial','business','fitness','communication','behaviour'
+      'wisdom','knowledge','health','financial','business','fitness','communication','behaviour',
+      'periodic-table'
     ];
     return validViews.includes(hash) ? (hash as DashboardView) : 'dashboard';
   }, []);
@@ -430,6 +432,10 @@ case 'parent-dashboard':
           <FullPageWrapper title={getDimensionTitle('school-subjects', dashboardMode)}>
             <SchoolSubjectsPage dashboardMode={dashboardMode} userProfile={userProfile} userResults={userResults} onNavigate={setCurrentView} />
           </FullPageWrapper>
+        );
+      case 'periodic-table':
+        return (
+          <PeriodicTablePage onNavigate={(view) => setCurrentView(view as DashboardView)} />
         );
       case 'wellness-module':
         return (

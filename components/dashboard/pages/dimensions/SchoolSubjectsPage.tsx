@@ -94,7 +94,10 @@ interface SchoolSubjectsPageProps {
   dashboardMode: DashboardMode;
   userProfile?: UserProfile;
   userResults?: AnalysisResult;
-  /** Lets subjects with a `linkedView` open their dedicated in-app module. */
+  /**
+   * Opens a dedicated in-app module: subjects carrying a `linkedView`
+   * (Tilawah, Hadis) and the Chemistry periodic-table shortcut.
+   */
   onNavigate?: (view: DashboardView) => void;
 }
 
@@ -294,6 +297,21 @@ const SchoolSubjectsPage: React.FC<SchoolSubjectsPageProps> = ({ dashboardMode, 
             );
           })}
         </div>
+
+        {/* Periodic Table shortcut for Chemistry */}
+        {selectedSubject.id === 'chemistry' && onNavigate && (
+          <button
+            onClick={() => onNavigate('periodic-table')}
+            className="w-full flex items-center gap-3 p-3 rounded-xl border border-dashed border-teal-500/60 bg-teal-500/5 hover:bg-teal-500/10 transition-colors text-left"
+          >
+            <span className="text-2xl">⚗</span>
+            <div>
+              <p className="text-sm font-semibold text-teal-400">Interactive Periodic Table</p>
+              <p className="text-xs text-gray-500">KSSM-linked element facts · click to explore</p>
+            </div>
+            <span className="ml-auto text-teal-400 text-xs font-bold">Open →</span>
+          </button>
+        )}
 
         {/* Chapter List */}
         {chapters.length > 0 ? (
