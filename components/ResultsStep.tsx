@@ -6,8 +6,9 @@
 
 
 import React, { useState } from 'react';
-import type { AnalysisResult, StartupIdea } from '../types';
+import type { AnalysisResult, StartupIdea, SurveyAnswers, UserProfile } from '../types';
 import { ProgressBar } from './dashboard/shared/ProgressBar';
+import HarmonyProfileSection from './dashboard/sections/HarmonyProfileSection';
 import {
   DISC_COLORS,
   MBTI_COLORS,
@@ -21,17 +22,29 @@ interface ResultsStepProps {
   results: AnalysisResult;
   onRestart: () => void;
   onNext: () => void;
+  /** Raw survey answers, used for the SQ/IQ/EQ analysis. */
+  surveyAnswers?: SurveyAnswers | null;
+  userProfile?: UserProfile | null;
 }
 
-type Tab = 'summary' | 'disc' | 'mbti' | 'enneagram' | 'bigFive' | 'hexaco' | 'temperament' | 'socialStyles' | 'intelligences' | 'careers' | 'lifePath';
+type Tab = 'summary' | 'harmony' | 'disc' | 'mbti' | 'enneagram' | 'bigFive' | 'hexaco' | 'temperament' | 'socialStyles' | 'intelligences' | 'careers' | 'lifePath';
 
-const ResultsStep: React.FC<ResultsStepProps> = ({ results, onRestart, onNext }) => {
+const ResultsStep: React.FC<ResultsStepProps> = ({ results, onRestart, onNext, surveyAnswers, userProfile }) => {
   const [activeTab, setActiveTab] = useState<Tab>('summary');
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'summary':
         return <SummaryTab results={results} />;
+      case 'harmony':
+        return (
+          <HarmonyProfileSection
+            bare
+            userResults={results}
+            surveyAnswers={surveyAnswers}
+            userProfile={userProfile}
+          />
+        );
       case 'disc':
         return <FrameworkTab title="DISC - Behavior Style" data={results.studentProfile.disc} colorMapping={DISC_COLORS} />;
       case 'mbti':
@@ -68,6 +81,7 @@ const ResultsStep: React.FC<ResultsStepProps> = ({ results, onRestart, onNext })
       <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-2 sm:space-x-4 overflow-x-auto" aria-label="Tabs">
           <TabButton name="Summary" tab="summary" activeTab={activeTab} setActiveTab={setActiveTab} />
+          <TabButton name="SQ · IQ · EQ" tab="harmony" activeTab={activeTab} setActiveTab={setActiveTab} />
           <TabButton name="Life Path" tab="lifePath" activeTab={activeTab} setActiveTab={setActiveTab} />
           <TabButton name="Careers" tab="careers" activeTab={activeTab} setActiveTab={setActiveTab} />
           <TabButton name="DISC" tab="disc" activeTab={activeTab} setActiveTab={setActiveTab} />

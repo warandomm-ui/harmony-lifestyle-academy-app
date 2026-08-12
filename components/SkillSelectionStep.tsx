@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import type { Goal, SkillSuggestion } from '../types';
+import type { AnalysisResult, Goal, SkillSuggestion, SurveyAnswers, UserProfile } from '../types';
 import { getSkillRecommendations } from '../services/geminiService';
 import { SKILLS } from '../constants';
+import { analyzeHarmonyProfile, getDimensionMeta } from '../utils/harmonyProfile';
+import { isMuslim } from '../utils/religionUtils';
 import SkillPill from './SkillPill';
 import { useToast } from '../contexts/ToastContext';
 
@@ -10,14 +12,42 @@ interface SkillSelectionStepProps {
   personalityType: string;
   goal: Goal;
   selectedCareers: string[];
+  /** Survey output — drives the SQ/IQ/EQ/kinetic/akhlak recommendations. */
+  results?: AnalysisResult | null;
+  surveyAnswers?: SurveyAnswers | null;
+  userProfile?: UserProfile | null;
 }
 
-const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, personalityType, goal, selectedCareers }) => {
+const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({
+  onComplete,
+  personalityType,
+  goal,
+  selectedCareers,
+  results,
+  surveyAnswers,
+  userProfile,
+}) => {
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
   const [recommendations, setRecommendations] = useState<SkillSuggestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const { addToast } = useToast();
+
+  // Deterministic recommendations from the survey. These are available
+  // immediately and stand on their own if the AI call fails.
+  const analysis = useMemo(
+    () => analyzeHarmonyProfile({ results, answers: surveyAnswers, profile: userProfile, perCategory: 3 }),
+    [results, surveyAnswers, userProfile],
+  );
+  const muslimFraming = isMuslim(userProfile?.religion || '');
+
+  const harmonyReasons = useMemo(() => {
+    const map = new Map<string, string>();
+    (Object.values(analysis.skillsByCategory) as { skill: string; reason: string }[][]).forEach(list => {
+      list.forEach(item => map.set(item.skill.toLowerCase(), item.reason));
+    });
+    return map;
+  }, [analysis]);
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -52,11 +82,15 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
   };
 
   const isRecommended = (skill: string) => {
+    if (harmonyReasons.has(skill.toLowerCase())) return true;
     return recommendations?.recommendedSkills?.some(rec => rec.skill?.toLowerCase() === skill.toLowerCase()) ?? false;
   };
-  
+
   const getRecommendationReason = (skill: string) => {
-    return recommendations?.recommendedSkills?.find(rec => rec.skill?.toLowerCase() === skill.toLowerCase())?.reason;
+    return (
+      harmonyReasons.get(skill.toLowerCase()) ??
+      recommendations?.recommendedSkills?.find(rec => rec.skill?.toLowerCase() === skill.toLowerCase())?.reason
+    );
   };
 
   const skillCategoriesToDisplay = useMemo(() => {
@@ -124,6 +158,47 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         </div>
       </div>
 
+      {/* Survey-driven guidance: which dimensions are strong, which need work,
+          and the single best pick from each of the four catalogues. */}
+      <div className="mb-6 rounded-2xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+        <h3 className="font-bold text-gray-800 dark:text-gray-100">🧭 Cadangan Berdasarkan Profil Anda</h3>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {analysis.dimensions.map(dimension => {
+            const meta = getDimensionMeta(dimension.id, muslimFraming);
+            const isStrength = analysis.strengths.includes(dimension.id);
+            const isGrowth = analysis.growthAreas.includes(dimension.id);
+            return (
+              <span
+                key={dimension.id}
+                title={`${meta.label} — ${dimension.band}`}
+                className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                  isStrength
+                    ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
+                    : isGrowth
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                    : 'bg-white/70 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                }`}
+              >
+                {meta.icon} {meta.code} {dimension.score}
+              </span>
+            );
+          })}
+        </div>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mt-3">{analysis.summary}</p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {analysis.topSkills.slice(0, 4).map(skill => (
+            <SkillPill
+              key={`top-${skill.skill}`}
+              skillName={skill.skill}
+              isSelected={selectedSkills.has(skill.skill)}
+              onSelect={() => handleSelectSkill(skill.skill)}
+              isRecommended
+              recommendationReason={skill.reason}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className="mb-6">
         <input
           type="text"
@@ -135,9 +210,12 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         />
       </div>
 
-      {isLoading ? (
-        <div className="text-center py-10">Loading recommendations...</div>
-      ) : (
+      {isLoading && (
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Memuatkan cadangan tambahan AI...
+        </p>
+      )}
+
         <div className="space-y-6">
           {filteredSkillCategories.length > 0 ? (
             filteredSkillCategories.map(category => (
@@ -185,7 +263,6 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
             </div>
           )}
         </div>
-      )}
 
       <div className="text-center mt-10 pt-6 border-t dark:border-gray-700">
         <button

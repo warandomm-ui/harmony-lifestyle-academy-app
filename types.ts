@@ -577,6 +577,68 @@ export interface SkillSuggestion {
     smartSuggestions?: { context: string; skills: string[] }[];
 }
 
+// ═══ Harmony 5-Dimension Profile (SQ / IQ / EQ / Kinetic / Akhlak) ═══
+// The Student 360° survey is scored into five human-readable dimensions
+// so students see *why* a skill was recommended, not just *what*.
+export type HarmonyDimensionId = 'sq' | 'iq' | 'eq' | 'kinetic' | 'akhlak';
+
+export type HarmonyBand = 'Perlu Dibina' | 'Sedang Berkembang' | 'Kukuh' | 'Cemerlang';
+
+export interface HarmonyDimensionMeta {
+  id: HarmonyDimensionId;
+  /** Short label, e.g. "IQ" */
+  code: string;
+  /** Bahasa Malaysia label — the primary label in the UI */
+  label: string;
+  /** English label, shown as a secondary line */
+  labelEn: string;
+  icon: string;
+  description: string;
+  descriptionEn: string;
+}
+
+export interface HarmonyDimensionScore {
+  id: HarmonyDimensionId;
+  /** 0-100 */
+  score: number;
+  band: HarmonyBand;
+  /** 0-1 — how much of the survey actually fed this dimension */
+  confidence: number;
+  /** Human-readable drivers behind the score, strongest first */
+  evidence: string[];
+}
+
+export type SkillCategoryId = 'technical' | 'professional' | 'life' | 'creative';
+
+export interface RecommendedSkill {
+  skill: string;
+  category: SkillCategoryId;
+  /** 0-100 overall suitability */
+  score: number;
+  /** Dimensions this skill leans on (the student is already strong here) */
+  leverages: HarmonyDimensionId[];
+  /** Dimensions this skill will grow (the student is weaker here) */
+  builds: HarmonyDimensionId[];
+  /** Bahasa Malaysia explanation shown to the student */
+  reason: string;
+}
+
+export interface HarmonyProfileAnalysis {
+  dimensions: HarmonyDimensionScore[];
+  /** Two highest-scoring dimensions */
+  strengths: HarmonyDimensionId[];
+  /** Two lowest-scoring dimensions — the growth focus */
+  growthAreas: HarmonyDimensionId[];
+  /** Narrative summary in Bahasa Malaysia */
+  summary: string;
+  /** Top picks across every category, highest score first */
+  topSkills: RecommendedSkill[];
+  /** Ranked picks grouped by the four skill catalogues */
+  skillsByCategory: Record<SkillCategoryId, RecommendedSkill[]>;
+  /** True when too little survey signal was available to be confident */
+  isFallback: boolean;
+}
+
 export interface GroundedCareerDetail {
     groundedExplanation: string;
     groundedSalaryRange: string;
