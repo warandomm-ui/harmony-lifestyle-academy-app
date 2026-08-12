@@ -246,10 +246,12 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       
       case 'results': 
         return results ? (
-          <ResultsStep 
-            results={results} 
-            onRestart={() => setStep('welcome')} 
-            onNext={() => setStep('lifeGoals')} 
+          <ResultsStep
+            results={results}
+            onRestart={() => setStep('welcome')}
+            onNext={() => setStep('lifeGoals')}
+            surveyAnswers={answers}
+            userProfile={userProfile}
           />
         ) : (
           <LoadingComponent isMuslim={isMuslim} />
@@ -278,11 +280,14 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       
       case 'skillSelection': 
         return (results && goal) ? (
-          <SkillSelectionStep 
-            onComplete={handleSkillSelectionComplete} 
-            personalityType={results.personalityType} 
-            goal={goal} 
-            selectedCareers={selectedCareers} 
+          <SkillSelectionStep
+            onComplete={handleSkillSelectionComplete}
+            personalityType={results.personalityType}
+            goal={goal}
+            selectedCareers={selectedCareers}
+            results={results}
+            surveyAnswers={answers}
+            userProfile={userProfile}
           />
         ) : (
           <LoadingComponent isMuslim={isMuslim} />

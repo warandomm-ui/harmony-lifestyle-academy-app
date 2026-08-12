@@ -69,12 +69,19 @@ Return ONLY valid JSON. Use Malaysian context (RM for salary). Keep tone fun and
   }
 };
 
+const EMPTY_SKILL_SUGGESTION: SkillSuggestion = { recommendedSkills: [], smartSuggestions: [] };
+
 export const getSkillRecommendations = async (personalityType: string, goal: Goal, careerPaths: string[]): Promise<SkillSuggestion> => {
     try {
-        const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return JSON with keys: skills (array of {name, description, relevance}).`;
+        const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return ONLY valid JSON with EXACTLY this structure: {"recommendedSkills": [{"skill": "skill name", "reason": "one short sentence"}], "smartSuggestions": [{"context": "short heading", "skills": ["skill name"]}]}`;
         const text = await generateContent(prompt, { jsonMode: true });
-        return safeParseJSON(text) || { skills: [] };
-    } catch (error) { console.error("Skill recommendations failed:", error); return { skills: [] } as any; }
+        const parsed = safeParseJSON(text);
+        if (!parsed || !Array.isArray(parsed.recommendedSkills)) return EMPTY_SKILL_SUGGESTION;
+        return {
+            recommendedSkills: parsed.recommendedSkills.filter((rec: any) => rec && typeof rec.skill === 'string'),
+            smartSuggestions: Array.isArray(parsed.smartSuggestions) ? parsed.smartSuggestions : [],
+        };
+    } catch (error) { console.error("Skill recommendations failed:", error); return EMPTY_SKILL_SUGGESTION; }
 };
 
 export const generateCourseOutline = async (topic: string, difficulty: CourseDifficulty): Promise<CourseOutline> => {

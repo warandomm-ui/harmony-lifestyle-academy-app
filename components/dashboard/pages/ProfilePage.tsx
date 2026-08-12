@@ -5,11 +5,13 @@ import { useToast } from '../../../contexts/ToastContext';
 import * as Icons from '../Icons';
 import { GENDERS, RACES, RELIGIONS, STATES } from '../../../constants';
 import { getCareerIcon } from '../../../constants';
+import HarmonyProfileSection from '../sections/HarmonyProfileSection';
 
 interface ProfilePageProps {
   userProfile: UserProfile;
   userResults: AnalysisResult;
   onProfileUpdate: (profile: UserProfile) => void;
+  selectedSkills?: string[];
 }
 
 // Helper components for form fields (scoped to this file)
@@ -96,7 +98,7 @@ const TraitItem: React.FC<{ icon: string; label: string; value: string; }> = ({ 
 );
 
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onProfileUpdate }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onProfileUpdate, selectedSkills }) => {
     const { profile: gamificationProfile } = useGamification();
     const { addToast } = useToast();
 
@@ -213,6 +215,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onP
                     </div>
                 </section>
                 
+                {/* SQ / IQ / EQ / Kinetic / Akhlak analysis + skill recommendations */}
+                <HarmonyProfileSection
+                    userProfile={userProfile}
+                    userResults={userResults}
+                    selectedSkills={selectedSkills}
+                />
+
                 {/* Account Settings */}
                  <section className="bento-card">
                     <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Account Settings</h2>

@@ -292,6 +292,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             userProfile={userProfile}
             userResults={userResults}
             onProfileUpdate={onProfileUpdate}
+            selectedSkills={selectedSkills}
           />
         );
       // âââ Tools & Features âââ
