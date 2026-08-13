@@ -11,9 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # jsdom 30 requires Node ^22.22.2 || ^24.15.0 || >=26.0.0. On Node 20 it
+      # fails at import with "webidl.util.markAsUncloneable is not a function",
+      # which surfaces as "no tests" rather than a test failure.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci

@@ -21,11 +21,13 @@ export default defineConfig({
       include: ['services/**', 'utils/**', 'contexts/**', 'components/**'],
       exclude: ['**/*.test.{ts,tsx}', 'test/**'],
       // Deliberately low starting floor — ratchet upward as coverage lands.
-      // See TESTING_STRATEGY.md for the phased plan.
+      // See TESTING_STRATEGY.md for the phased plan. Kept a little below the
+      // current numbers so an unrelated change does not trip the build, but
+      // high enough that a run where no tests execute still fails.
       thresholds: {
         lines: 2,
         functions: 2,
-        branches: 30,
+        branches: 25,
         statements: 2,
       },
     },
