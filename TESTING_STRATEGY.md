@@ -7,7 +7,15 @@
 
 ## 1. Current state
 
-**There is no test coverage, because there is no test infrastructure.**
+> **Update:** Phase 1 (harness + CI) and Phase 2 (P1 pure-logic tests) have
+> since landed. 87 tests across 6 files now cover `religionUtils`,
+> `exportUtils`, `storageUtils`, `GamificationContext` and `ToastContext`.
+> `npm test`, `npm run coverage` and `npm run typecheck` all pass, and CI runs
+> them on every PR. The audit below is preserved as written; §3 marks what is
+> done.
+
+**At the time of the audit there was no test coverage, because there was no
+test infrastructure.**
 
 | Check | Result |
 | --- | --- |
@@ -46,7 +54,7 @@ likelihood of silent breakage):
 
 ## 3. Proposed priorities
 
-### P0 — Stand up the harness
+### P0 — Stand up the harness ✅ done
 
 Nothing below is actionable until this exists. Concretely:
 
@@ -65,7 +73,7 @@ share of the logic risk.
 
 ---
 
-### P1 — Pure logic (highest value per hour, no DOM needed)
+### P1 — Pure logic (highest value per hour, no DOM needed) ✅ done
 
 #### 3.1 Religion classification — a real inconsistency
 
@@ -111,9 +119,32 @@ Proposed tests:
   should pin the intended behaviour and the fix.
 
 Separate issue worth fixing while testing: `addToast` is called *inside* the
-`setProfile` updater. Updaters must be pure — under `React.StrictMode` (enabled
-in `index.tsx`) dev builds double-invoke them, firing duplicate toasts. Moving
-the toast into an effect makes the reducer trivially unit-testable.
+`setProfile` updater. Updaters must be pure, and React confirms the violation —
+a second award into a mounted tree logs *"Cannot update a component
+(`ToastProvider`) while rendering a different component
+(`GamificationProvider`)"*. (An earlier draft of this document predicted
+duplicate toasts under `StrictMode`; that does not happen — the toasts and the
+resulting profile are identical with and without `StrictMode`. Both behaviours
+are now pinned in `contexts/GamificationContext.purity.test.tsx` and
+`contexts/GamificationContext.test.tsx`.) Moving the toast into an effect makes
+the reducer trivially unit-testable.
+
+#### 3.2b Toast identity — found while testing the above
+
+`ToastContext.addToast` uses `Date.now()` as the toast id. `addPoints` can raise
+three toasts in one tick on a multi-level award, so they collide on a single id.
+Two consequences, both user-visible:
+
+- `ToastContainer` keys its list on `toast.id`, so React logs duplicate-key
+  warnings and may mis-reconcile the list.
+- `removeToast` filters by id, so dismissing one toast removes every toast
+  sharing its timestamp. `Toast.tsx` calls `onClose` after a 5s timer, so the
+  first expiry wipes the whole batch at once.
+
+It is timing-dependent — with the real clock a batch sometimes straddles a
+millisecond and behaves correctly — which is exactly why it would be hard to
+reproduce from a bug report. A monotonic counter or `crypto.randomUUID()` fixes
+it. Covered in `contexts/ToastContext.test.tsx`.
 
 #### 3.3 CSV export
 
@@ -270,13 +301,34 @@ and are worth fixing alongside:
 
 ## 5. Suggested sequencing
 
-| Phase | Work | Rough size |
+| Phase | Work | Rough size | Status |
+| --- | --- | --- | --- |
+| 1 | Vitest + jsdom + RTL setup, `test`/`typecheck` scripts, CI workflow | half a day | ✅ done |
+| 2 | P1 pure-logic tests (religion, gamification, CSV, storage) | 1 day | ✅ done |
+| 3 | P2 service tests with mocked `fetch`/Supabase | 1–2 days | next |
+| 4 | P3 onboarding + validation + modal component tests | 2 days | |
+| 5 | Fix the cross-cutting issues in §4, each landing with its test | ongoing | |
+
+### What phase 1–2 actually produced
+
+87 tests, 1 `todo`, across 6 files:
+
+| File | Tests | Covers |
 | --- | --- | --- |
-| 1 | Vitest + jsdom + RTL setup, `test`/`typecheck` scripts, CI workflow | half a day |
-| 2 | P1 pure-logic tests (religion, gamification, CSV, storage) | 1 day |
-| 3 | P2 service tests with mocked `fetch`/Supabase | 1–2 days |
-| 4 | P3 onboarding + validation + modal component tests | 2 days |
-| 5 | Fix the cross-cutting issues in §4, each landing with its test | ongoing |
+| `utils/religionUtils.test.ts` | 21 | Both religion implementations and their divergence |
+| `utils/exportUtils.test.ts` | 24 | CSV structure, formula-injection escaping, quoting, coercion |
+| `utils/storageUtils.test.ts` | 15 | Round-trip, corrupt-data recovery, quota behaviour |
+| `contexts/GamificationContext.test.tsx` | 18 | XP arithmetic, multi-level ups, toasts, StrictMode parity |
+| `contexts/GamificationContext.purity.test.tsx` | 2 | The impure-updater React warning (isolated for warning dedupe) |
+| `contexts/ToastContext.test.tsx` | 9 | Queue behaviour, auto-dismiss, id collisions |
+
+Coverage after phase 2: `utils/` 54% lines / 100% branches, `contexts/` 29%
+lines / 80% branches. Thresholds in `vitest.config.ts` are set at the current
+floor so they ratchet rather than block.
+
+Tests marked as documenting a bug — rather than asserting desired behaviour —
+are commented as such inline, so the intent is clear when someone fixes the
+underlying issue and the test starts failing.
 
 The unifying theme: **most of the highest-risk logic in this codebase is pure
 functions that happen to live inside components.** Extracting them (date keys,

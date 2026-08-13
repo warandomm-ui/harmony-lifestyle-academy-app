@@ -5,6 +5,9 @@ node_modules/
 dist/
 build/
 
+# Test output
+coverage/
+
 # Environment variables — NEVER commit these
 .env
 .env.local
