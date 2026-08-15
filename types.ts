@@ -624,6 +624,24 @@ export interface ProfileData {
   dashboardMode: DashboardMode;
 }
 
+// ═══ HLA Connectors — MCP-based tool integrations ═══
+export type ConnectorCategory = 'calendar' | 'email' | 'project-tracker' | 'knowledge-base' | 'office-suite' | 'team-chat';
+
+export type ConnectorStatus = 'connected' | 'disconnected' | 'error';
+
+export interface ConnectorConfig {
+  id: string;
+  category: ConnectorCategory;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  mcpServer: string | null;
+  status: ConnectorStatus;
+  lastSynced: string | null;
+  capabilities: string[];
+}
+
 // Global type extensions for Vite env
 declare global {
   namespace NodeJS {
