@@ -1,4 +1,4 @@
-import type { SurveySection, EducationLevel, SchoolType, TimeAvailability, LearningPreference, AnalysisResult, StudentDataItem, EmotionEntry, Emotion, TimeTableEntry, EducationCountry, LearningMethod, Product, SupportHotline, AnonymousPost, ChatGroup, SubscriptionPlan, Transaction, GamificationProfile, Badge, LeaderboardEntry, IncomeEntry, SecurityAlert, CybersecurityChallenge, CulinaryChallenge, AIProject, MartialArtTechnique, StudentRewardInfo, ProfitPoolInfo, ProfitSharingCycle, SocialImpactProject, Course } from './types';
+import type { SurveySection, EducationLevel, SchoolType, TimeAvailability, LearningPreference, AnalysisResult, StudentDataItem, EmotionEntry, Emotion, TimeTableEntry, EducationCountry, LearningMethod, Product, SupportHotline, AnonymousPost, ChatGroup, SubscriptionPlan, Transaction, GamificationProfile, Badge, LeaderboardEntry, IncomeEntry, SecurityAlert, CybersecurityChallenge, CulinaryChallenge, AIProject, MartialArtTechnique, StudentRewardInfo, ProfitPoolInfo, ProfitSharingCycle, SocialImpactProject, Course, RecommendedProduct } from './types';
 
 export const STUDENT_360_SURVEY: SurveySection[] = [
   {
@@ -757,6 +757,75 @@ export const MOCK_PRODUCTS: Product[] = [
     { id: 'prod_4', name: 'Focus Pomodoro Timer App', category: 'Digital Tool', price: 5.00, description: 'A minimal and beautiful timer to boost your focus sessions.', imageUrl: 'https://placehold.co/400x300/F8F7FF/1B1B1F?text=Pomodoro+App' },
     { id: 'prod_5', name: 'Aesthetic Sticker Pack', category: 'Merch', price: 12.00, description: 'High-quality vinyl stickers for your laptop, water bottle, etc.', imageUrl: 'https://placehold.co/400x300/FF6B6B/FFFFFF?text=Stickers' },
     { id: 'prod_6', name: 'Python for Beginners Video Course', category: 'E-Book', price: 50.00, description: 'A comprehensive video course to start your coding journey.', imageUrl: 'https://placehold.co/400x300/4ECDC4/FFFFFF?text=Python+Course' },
+];
+
+// ═══ Recommended Products — curated picks on partner retailer sites ═══
+// Unlike MOCK_PRODUCTS (sold directly through the Harmony Store), these link
+// out to third-party retailers. Every `destinationUrl` is run through
+// utils/affiliateLinks.ts at render time so the outbound link always carries
+// the correct affiliate/tracking parameters — never link to `destinationUrl` directly.
+export const MOCK_RECOMMENDED_PRODUCTS: RecommendedProduct[] = [
+  {
+    id: 'rec_1',
+    name: 'Performance Training Shoes',
+    brand: 'JD Sports',
+    retailer: 'JD Sports Malaysia',
+    category: 'Fitness & Sportswear',
+    description: 'Breathable, supportive trainers for daily workouts, sports practice, and active recovery days.',
+    price: 'From RM 199.00',
+    rating: 4.5,
+    imageUrl: 'https://placehold.co/400x300/1B1B1F/FFFFFF?text=JD+Sports',
+    destinationUrl: 'https://www.jdsports.my',
+    affiliateNetwork: 'rakuten',
+    rakuten: {
+      affiliateId: 'zErSluD8o3g',
+      merchantId: '43158',
+      subId: '1028805',
+      u1: '019fe861bfe37d15aff6452e23794f65',
+    },
+  },
+  {
+    id: 'rec_2',
+    name: 'Atomic Habits',
+    brand: 'James Clear',
+    retailer: 'Book Depository',
+    category: 'Books & Learning',
+    description: 'A practical guide to building good habits and breaking bad ones — a favourite among Harmony students.',
+    price: 'From RM 55.00',
+    rating: 4.8,
+    imageUrl: 'https://placehold.co/400x300/D9CEFF/1B1B1F?text=Atomic+Habits',
+    destinationUrl: 'https://www.bookdepository.com/Atomic-Habits-James-Clear',
+    affiliateNetwork: 'generic',
+    generic: { affiliateTag: 'harmony-academy-20', campaign: 'recommended-products' },
+  },
+  {
+    id: 'rec_3',
+    name: 'Guided Meditation & Sleep App (Annual Plan)',
+    brand: 'Calm',
+    retailer: 'Calm.com',
+    category: 'Wellness',
+    description: 'Daily guided meditations, breathing exercises, and sleep stories to support emotional wellbeing.',
+    price: 'From RM 259.00/yr',
+    rating: 4.7,
+    imageUrl: 'https://placehold.co/400x300/00F5D4/1B1B1F?text=Calm+App',
+    destinationUrl: 'https://www.calm.com/',
+    affiliateNetwork: 'generic',
+    generic: { affiliateTag: 'harmony-academy-20', campaign: 'recommended-products' },
+  },
+  {
+    id: 'rec_4',
+    name: 'Ergonomic Study Chair',
+    brand: 'IKEA',
+    retailer: 'IKEA Malaysia',
+    category: 'Tech & Productivity',
+    description: 'Comfortable, adjustable seating for long study sessions — good posture, better focus.',
+    price: 'From RM 399.00',
+    rating: 4.4,
+    imageUrl: 'https://placehold.co/400x300/F8F7FF/1B1B1F?text=Study+Chair',
+    destinationUrl: 'https://www.ikea.com/my/en/',
+    affiliateNetwork: 'generic',
+    generic: { affiliateTag: 'harmony-academy-20', campaign: 'recommended-products' },
+  },
 ];
 
 export const SUPPORT_HOTLINES: SupportHotline[] = [

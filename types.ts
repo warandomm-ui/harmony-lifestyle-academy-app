@@ -331,6 +331,47 @@ export interface Product {
   imageUrl: string;
 }
 
+// --- Recommended Products (external, affiliate-linked) ---
+// Distinct from `Product` above: these live on a third-party retailer's site,
+// not in the Harmony Store, so every outbound link is run through
+// utils/affiliateLinks.ts to attach the correct tracking parameters.
+export type AffiliateNetwork = 'rakuten' | 'generic';
+
+export interface RakutenAffiliateParams {
+  /** Rakuten Advertising (LinkSynergy) publisher/affiliate id — the `id` query param. */
+  affiliateId: string;
+  /** Rakuten merchant/advertiser id — the `mid` query param. */
+  merchantId: string;
+  /** Optional sub-affiliate/campaign tracking id — the `subid` query param. */
+  subId?: string;
+  /** Optional custom tracking value — the `u1` query param. */
+  u1?: string;
+}
+
+export interface GenericAffiliateParams {
+  /** Our own affiliate/referral tag, appended as a `ref` query param. */
+  affiliateTag: string;
+  /** Campaign label for the `utm_campaign` query param. Defaults to 'recommended-products'. */
+  campaign?: string;
+}
+
+export interface RecommendedProduct {
+  id: string;
+  name: string;
+  brand: string;
+  retailer: string;
+  category: 'Fitness & Sportswear' | 'Wellness' | 'Books & Learning' | 'Tech & Productivity';
+  description: string;
+  price?: string;
+  rating?: number;
+  imageUrl: string;
+  /** The retailer's own, un-tracked product/destination page. */
+  destinationUrl: string;
+  affiliateNetwork: AffiliateNetwork;
+  rakuten?: RakutenAffiliateParams;
+  generic?: GenericAffiliateParams;
+}
+
 export interface SupportHotline {
   name: string;
   phone: string;
