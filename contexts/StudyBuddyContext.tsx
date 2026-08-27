@@ -1,40 +1,52 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
-import type { StudyBuddyMessage, StudyMode } from '../types';
+import type { StudyBuddyMessage, StudyMode, StudyBuddyPersona } from '../types';
 import { getStudyBuddyResponse } from '../services/geminiService';
 import { useToast } from './ToastContext';
 
 interface StudyBuddyContextType {
+  persona: StudyBuddyPersona | null;
+  setPersona: (persona: StudyBuddyPersona | null) => void;
   topic: string | null;
   setTopic: (topic: string | null) => void;
   messages: StudyBuddyMessage[];
   sendMessage: (text: string, mode?: StudyMode) => Promise<void>;
   isLoading: boolean;
   clearSession: () => void;
+  clearTopic: () => void;
 }
 
 const StudyBuddyContext = createContext<StudyBuddyContextType | undefined>(undefined);
 
 export const StudyBuddyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [persona, setPersona] = useState<StudyBuddyPersona | null>(null);
   const [topic, setTopic] = useState<string | null>(null);
   const [messages, setMessages] = useState<StudyBuddyMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { addToast } = useToast();
 
   const clearSession = useCallback(() => {
+    setPersona(null);
+    setTopic(null);
+    setMessages([]);
+    setIsLoading(false);
+  }, []);
+
+  const clearTopic = useCallback(() => {
     setTopic(null);
     setMessages([]);
     setIsLoading(false);
   }, []);
 
   const sendMessage = useCallback(async (text: string, mode: StudyMode = 'explain') => {
-    if (!topic) return;
+    if (persona?.requiresTopic && !topic) return;
 
+    const effectiveTopic = topic || persona?.role || 'general life skills';
     const userMessage: StudyBuddyMessage = { id: Date.now().toString(), role: 'user', text };
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
     try {
-      const response = await getStudyBuddyResponse([...messages, userMessage], topic, mode, text);
+      const response = await getStudyBuddyResponse([...messages, userMessage], effectiveTopic, mode, text, persona?.systemFlavor || '');
       
       let modelMessage: StudyBuddyMessage;
       
@@ -73,10 +85,10 @@ export const StudyBuddyProvider: React.FC<{ children: ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, [topic, messages, addToast]);
+  }, [persona, topic, messages, addToast]);
 
   return (
-    <StudyBuddyContext.Provider value={{ topic, setTopic, messages, sendMessage, isLoading, clearSession }}>
+    <StudyBuddyContext.Provider value={{ persona, setPersona, topic, setTopic, messages, sendMessage, isLoading, clearSession, clearTopic }}>
       {children}
     </StudyBuddyContext.Provider>
   );

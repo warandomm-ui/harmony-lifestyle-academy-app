@@ -392,6 +392,19 @@ export interface StudyBuddyMessage {
   isCorrect?: boolean;
 }
 
+// ═══ AI Study Buddy Team — specialized coach personas, organized like a team org chart ═══
+export interface StudyBuddyPersona {
+  id: string;
+  name: string;
+  role: string;
+  department: string;
+  emoji: string;
+  description: string;
+  colorClass: string; // tailwind gradient classes for the card accent
+  systemFlavor: string; // instruction injected into the AI prompt to flavor its tone/focus
+  requiresTopic: boolean; // whether this persona needs a skill/topic selected before chatting
+}
+
 export interface IncomeEntry {
   id: string;
   source: string;

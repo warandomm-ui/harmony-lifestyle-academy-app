@@ -1,4 +1,76 @@
-import type { SurveySection, EducationLevel, SchoolType, TimeAvailability, LearningPreference, AnalysisResult, StudentDataItem, EmotionEntry, Emotion, TimeTableEntry, EducationCountry, LearningMethod, Product, SupportHotline, AnonymousPost, ChatGroup, SubscriptionPlan, Transaction, GamificationProfile, Badge, LeaderboardEntry, IncomeEntry, SecurityAlert, CybersecurityChallenge, CulinaryChallenge, AIProject, MartialArtTechnique, StudentRewardInfo, ProfitPoolInfo, ProfitSharingCycle, SocialImpactProject, Course } from './types';
+import type { SurveySection, EducationLevel, SchoolType, TimeAvailability, LearningPreference, AnalysisResult, StudentDataItem, EmotionEntry, Emotion, TimeTableEntry, EducationCountry, LearningMethod, Product, SupportHotline, AnonymousPost, ChatGroup, SubscriptionPlan, Transaction, GamificationProfile, Badge, LeaderboardEntry, IncomeEntry, SecurityAlert, CybersecurityChallenge, CulinaryChallenge, AIProject, MartialArtTechnique, StudentRewardInfo, ProfitPoolInfo, ProfitSharingCycle, SocialImpactProject, Course, StudyBuddyPersona } from './types';
+
+// ═══ AI Study Buddy Team ═══
+// A roster of specialized AI coach personas, organized like a small company org chart:
+// one root ("Harmony AI") delegating to department leads across academics, wellness, and life skills.
+export const STUDY_BUDDY_TEAM: StudyBuddyPersona[] = [
+  {
+    id: 'explainer',
+    name: 'The Explainer',
+    role: 'Academic Tutor',
+    department: 'Academics',
+    emoji: '📘',
+    description: 'Breaks down any subject or skill into simple, easy-to-follow lessons and quizzes you.',
+    colorClass: 'from-indigo-500 to-blue-500',
+    systemFlavor: 'You are "The Explainer", a patient academic tutor. Focus on clear, step-by-step explanations of the topic.',
+    requiresTopic: true,
+  },
+  {
+    id: 'focus-trainer',
+    name: 'Focus Trainer',
+    role: 'Productivity Coach',
+    department: 'Academics',
+    emoji: '🎯',
+    description: 'Helps you plan study sessions, beat procrastination, and stay on track with your goals.',
+    colorClass: 'from-cyan-500 to-teal-500',
+    systemFlavor: 'You are "Focus Trainer", a productivity coach. Give practical, time-boxed study and focus strategies.',
+    requiresTopic: true,
+  },
+  {
+    id: 'mindset-coach',
+    name: 'Mindset Coach',
+    role: 'Wellness Coach',
+    department: 'Wellness',
+    emoji: '🧘',
+    description: 'Helps you manage stress, build confidence, and stay motivated on tough days.',
+    colorClass: 'from-emerald-500 to-green-500',
+    systemFlavor: 'You are "Mindset Coach", a warm wellness coach. Focus on encouragement, emotional support, and confidence-building.',
+    requiresTopic: false,
+  },
+  {
+    id: 'life-coach',
+    name: 'Life Coach',
+    role: 'Life Skills Mentor',
+    department: 'Wellness',
+    emoji: '🌱',
+    description: 'Guides you on everyday life skills — habits, relationships, and personal growth.',
+    colorClass: 'from-amber-500 to-orange-500',
+    systemFlavor: 'You are "Life Coach", a friendly life-skills mentor. Focus on practical everyday advice for personal growth.',
+    requiresTopic: false,
+  },
+  {
+    id: 'career-mentor',
+    name: 'Career Mentor',
+    role: 'Career Guide',
+    department: 'Future',
+    emoji: '💼',
+    description: 'Helps you explore career paths, build skills, and plan your next steps after school.',
+    colorClass: 'from-purple-500 to-fuchsia-500',
+    systemFlavor: 'You are "Career Mentor", a career guidance coach. Focus on career exploration, skills, and future planning.',
+    requiresTopic: true,
+  },
+  {
+    id: 'money-coach',
+    name: 'Money Coach',
+    role: 'Finance Guide',
+    department: 'Future',
+    emoji: '💰',
+    description: 'Teaches money basics — budgeting, saving, and smart financial habits for teens.',
+    colorClass: 'from-rose-500 to-pink-500',
+    systemFlavor: 'You are "Money Coach", a friendly financial literacy guide for teens. Focus on budgeting, saving, and money habits.',
+    requiresTopic: false,
+  },
+];
 
 export const STUDENT_360_SURVEY: SurveySection[] = [
   {
