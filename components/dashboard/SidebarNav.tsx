@@ -96,7 +96,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
         />
       )}
 
-      <nav className={`
+      <nav aria-label="Main navigation" className={`
         fixed inset-y-0 left-0 z-50 flex flex-col w-72 bg-[var(--card)] border-r border-[var(--border)] flex-shrink-0
         transform transition-transform duration-300 ease-in-out
         md:relative md:w-64 md:z-auto md:translate-x-0
@@ -128,18 +128,10 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             <button
               onClick={signOut}
               className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Log out"
               title="Log Out"
             >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-            <button
-              onClick={signOut}
-              className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              title="Log Out"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </button>
@@ -295,6 +287,8 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             <button
               onClick={toggleChat}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-full transition-all transform hover:scale-[1.02]"
+              aria-label={isChatOpen ? 'Close Harmony AI chat' : 'Open Harmony AI chat'}
+              aria-expanded={isChatOpen}
               style={{
                 background: isChatOpen
                   ? 'linear-gradient(135deg, #a8873a, #c9a84c)'
@@ -304,8 +298,8 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
                 boxShadow: '0 4px 20px rgba(201,168,76,0.3)',
               }}
             >
-              <Icons.ChatAltIcon />
-              <span className="font-bold">Harmony AI</span>
+              <Icons.ChatAltIcon aria-hidden="true" />
+              <span className="font-bold" aria-hidden="true">Harmony AI</span>
             </button>
           </div>
         </div>
@@ -339,10 +333,16 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
 
         <div className="p-4 mt-auto space-y-3" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
           <div className="flex items-center justify-between">
-            <label className="font-bold text-sm text-[var(--foreground)] flex items-center gap-2 cursor-pointer">
-              <Icons.ShieldCheckIcon className="h-5 w-5" /> Admin Mode
-            </label>
-            <button role="switch" aria-checked={isAdminMode} onClick={toggleAdminMode} className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out ${isAdminMode ? 'bg-[var(--primary)]' : 'bg-gray-200 dark:bg-gray-600'}`}>
+            <span className="font-bold text-sm text-[var(--foreground)] flex items-center gap-2">
+              <Icons.ShieldCheckIcon className="h-5 w-5" aria-hidden="true" /> Admin Mode
+            </span>
+            <button
+              role="switch"
+              aria-checked={isAdminMode}
+              aria-label="Toggle admin mode"
+              onClick={toggleAdminMode}
+              className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out ${isAdminMode ? 'bg-[var(--primary)]' : 'bg-gray-200 dark:bg-gray-600'}`}
+            >
               <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out ${isAdminMode ? 'translate-x-6' : 'translate-x-1'}`} />
             </button>
           </div>
