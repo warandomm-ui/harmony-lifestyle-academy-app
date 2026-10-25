@@ -4,8 +4,12 @@ import { SPIRITUAL_PATHWAYS } from '../../../../constants/quranData';
 import type { Surah, SpiritualCategory } from '../../../../types';
 import { useToast } from '../../../../contexts/ToastContext';
 import { useGamification } from '../../../../contexts/GamificationContext';
-import AyatCourseViewer from './AyatCourseViewer';
 import AIContentGenerator from '../../shared/AIContentGenerator';
+import { QuranReader } from '../../../quran/QuranReader';
+import { HafazanTracker } from '../../../quran/HafazanTracker';
+import { QuranCurriculum } from '../../../quran/QuranCurriculum';
+import { supabase } from '../../../../services/supabaseClient';
+import { getSurahByNumber } from '../../../../constants/surahIndex';
 
 const islamicSpiritualTopics = [
   { icon: '📿', title: 'Dhikr & Remembrance' },
@@ -67,8 +71,14 @@ const SurahFolder: React.FC<{ surah: Surah; onClick: () => void }> = ({ surah, o
     </div>
 );
 
-const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; onClose: () => void }> = ({ surah, category, onClose }) => {
-    const [activeTab, setActiveTab] = useState<'video' | 'reading' | 'ayat'>('ayat');
+const SurahPlayerOverlay: React.FC<{
+    surah: Surah;
+    category: SpiritualCategory;
+    onClose: () => void;
+    initialFrom?: number;
+    initialTo?: number;
+}> = ({ surah, category, onClose, initialFrom, initialTo }) => {
+    const [activeTab, setActiveTab] = useState<'video' | 'reading' | 'ayat' | 'hafazan'>('ayat');
     const [isCompleted, setIsCompleted] = useState(false);
     const { addToast } = useToast();
     const { addPoints } = useGamification();
@@ -80,13 +90,53 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
 
     const handleComplete = () => {
         if (isCompleted) return;
-        
+
         const key = `completed_surah_${surah.number}`;
         localStorage.setItem(key, 'true');
         setIsCompleted(true);
-        
+
         addPoints(50, `mastering ${surah.name}`);
         addToast(`MashaAllah! You've completed the lesson on ${surah.name}.`, 'success');
+    };
+
+    const handleMarkForHafazan = async (ref: string) => {
+        const [surahId, ayahNumber] = ref.split(':').map(Number);
+        const { data: ayah, error } = await supabase
+            .schema('quran')
+            .from('ayahs')
+            .select('id')
+            .eq('surah_id', surahId)
+            .eq('ayah_number', ayahNumber)
+            .maybeSingle();
+
+        if (error || !ayah) {
+            addToast('Ayat ini belum tersedia untuk hafazan (teks belum diimport lagi).', 'info');
+            return;
+        }
+
+        const { data: auth } = await supabase.auth.getUser();
+        const userId = auth?.user?.id;
+        if (!userId) {
+            addToast('Log masuk diperlukan untuk menjejak hafazan.', 'error');
+            return;
+        }
+
+        const { error: upsertError } = await supabase
+            .schema('quran')
+            .from('progress')
+            .upsert({ user_id: userId, ayah_id: ayah.id }, { onConflict: 'user_id,ayah_id', ignoreDuplicates: true });
+
+        if (upsertError) {
+            addToast('Gagal menambah ke hafazan. Cuba lagi.', 'error');
+            return;
+        }
+
+        addPoints(5, `menambah ${ref} ke hafazan`);
+        addToast(`Ayat ${ref} ditambah ke senarai hafazan.`, 'success');
+    };
+
+    const handleAskTutor = () => {
+        addToast('Pembantu AI untuk ayat akan dibuka selepas red-teaming guardrail selesai (Fasa 3).', 'info');
     };
 
     return (
@@ -107,29 +157,35 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
                 </div>
                 
                 <div className="flex items-center gap-4">
-                    {/* Tab Switcher - 3 tabs with Ayat as default */}
+                    {/* Tab Switcher */}
                     <div className="flex bg-[var(--secondary)]/50 rounded-xl p-1.5 border border-[var(--border)] mr-4">
-                        <button 
+                        <button
                             onClick={() => setActiveTab('ayat')}
                             className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'ayat' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
                         >
                             📖 Ayat
                         </button>
-                        <button 
+                        <button
+                            onClick={() => setActiveTab('hafazan')}
+                            className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'hafazan' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
+                        >
+                            🕋 Hafazan
+                        </button>
+                        <button
                             onClick={() => setActiveTab('video')}
                             className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'video' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
                         >
                             <PlayIcon className="h-4 w-4" /> Video
                         </button>
-                        <button 
+                        <button
                             onClick={() => setActiveTab('reading')}
                             className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reading' ? 'bg-[var(--card)] text-indigo-600 shadow-sm border border-[var(--border)]' : 'text-[var(--muted)] hover:text-indigo-600'}`}
                         >
                             <BookOpenIcon className="h-4 w-4" /> Reading
                         </button>
                     </div>
-                    
-                    {activeTab !== 'ayat' && (
+
+                    {activeTab !== 'ayat' && activeTab !== 'hafazan' && (
                         <button 
                             onClick={handleComplete}
                             disabled={isCompleted}
@@ -150,12 +206,21 @@ const SurahPlayerOverlay: React.FC<{ surah: Surah; category: SpiritualCategory; 
             <main className="flex-1 overflow-hidden flex flex-col md:flex-row bg-[var(--background)]">
                 <div className="flex-1 overflow-y-auto p-6 md:p-12">
                     <div className="max-w-4xl mx-auto">
-                        {/* Ayat Tab - Quran Course Viewer */}
+                        {/* Ayat Tab - gated by quran.compliance (locked by default) */}
                         {activeTab === 'ayat' && (
-                            <AyatCourseViewer
-                                surahNumber={surah.number}
-                                onBack={onClose}
+                            <QuranReader
+                                surah={surah.number}
+                                from={initialFrom}
+                                to={initialTo}
+                                onMarkForHafazan={handleMarkForHafazan}
+                                onAskTutor={handleAskTutor}
                             />
+                        )}
+
+                        {activeTab === 'hafazan' && (
+                            <div className="animate-fade-in-fast">
+                                <HafazanTracker />
+                            </div>
                         )}
 
                         {activeTab === 'video' && (
@@ -512,6 +577,8 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
 
     const [activeCategoryId, setActiveCategoryId] = useState('ruh');
     const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
+    const [selectedRange, setSelectedRange] = useState<{ from?: number; to?: number }>({});
+    const [mainView, setMainView] = useState<'pathways' | 'curriculum'>('pathways');
 
     // Non-Muslim path
     if (!muslim) {
@@ -519,6 +586,20 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
     }
 
     const activeCategory = SPIRITUAL_PATHWAYS.find(c => c.id === activeCategoryId) || SPIRITUAL_PATHWAYS[0];
+
+    const openModule = (module: { surahId: number; ayahFrom: number; ayahTo: number }) => {
+        const fromPathways = SPIRITUAL_PATHWAYS.flatMap(c => c.surahs).find(s => s.number === module.surahId);
+        const meta = getSurahByNumber(module.surahId);
+        const surah: Surah = fromPathways ?? {
+            number: module.surahId,
+            name: meta?.nameMalay ?? `Surah ${module.surahId}`,
+            englishName: meta?.nameEnglish ?? `Surah ${module.surahId}`,
+            description: meta?.meaning ?? '',
+            tags: meta ? [meta.revelationType] : [],
+        };
+        setSelectedRange({ from: module.ayahFrom, to: module.ayahTo });
+        setSelectedSurah(surah);
+    };
 
     return (
         <div className="space-y-8 animate-fade-in pb-20">
@@ -552,38 +633,77 @@ const SpiritualPage: React.FC<{ religion?: string }> = ({ religion = '' }) => {
                 </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex gap-4 overflow-x-auto py-4 no-scrollbar border-b border-[var(--border)] scroll-smooth">
-                {SPIRITUAL_PATHWAYS.map(cat => (
-                    <CategoryTab
-                        key={cat.id}
-                        id={cat.id}
-                        label={cat.arabicTitle}
-                        icon={cat.icon}
-                        isActive={activeCategoryId === cat.id}
-                        onClick={() => setActiveCategoryId(cat.id)}
-                    />
-                ))}
+            {/* Main View Toggle: curated pathways vs. HLA Quran curriculum + hafazan */}
+            <div className="flex gap-3">
+                <button
+                    onClick={() => setMainView('pathways')}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-2 transition-all whitespace-nowrap ${
+                        mainView === 'pathways'
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
+                            : 'bg-[var(--card)] border-transparent hover:border-indigo-300 text-[var(--foreground)]'
+                    }`}
+                >
+                    <span className="text-xl">🗺️</span>
+                    <span className="font-bold text-sm uppercase tracking-wide">Laluan Pembelajaran</span>
+                </button>
+                <button
+                    onClick={() => setMainView('curriculum')}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-2 transition-all whitespace-nowrap ${
+                        mainView === 'curriculum'
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
+                            : 'bg-[var(--card)] border-transparent hover:border-indigo-300 text-[var(--foreground)]'
+                    }`}
+                >
+                    <span className="text-xl">🕋</span>
+                    <span className="font-bold text-sm uppercase tracking-wide">Kurikulum & Hafazan</span>
+                </button>
             </div>
 
-            {/* Folders Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {activeCategory.surahs.map((surah, idx) => (
-                    <div key={`${surah.number}-${idx}`} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.03}s` }}>
-                        <SurahFolder
-                            surah={surah}
-                            onClick={() => setSelectedSurah(surah)}
-                        />
+            {mainView === 'curriculum' && (
+                <div className="space-y-8 animate-fade-in">
+                    <HafazanTracker />
+                    <QuranCurriculum onOpenModule={openModule} />
+                </div>
+            )}
+
+            {mainView === 'pathways' && (
+                <>
+                    {/* Navigation Tabs */}
+                    <div className="flex gap-4 overflow-x-auto py-4 no-scrollbar border-b border-[var(--border)] scroll-smooth">
+                        {SPIRITUAL_PATHWAYS.map(cat => (
+                            <CategoryTab
+                                key={cat.id}
+                                id={cat.id}
+                                label={cat.arabicTitle}
+                                icon={cat.icon}
+                                isActive={activeCategoryId === cat.id}
+                                onClick={() => setActiveCategoryId(cat.id)}
+                            />
+                        ))}
                     </div>
-                ))}
-            </div>
+
+                    {/* Folders Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {activeCategory.surahs.map((surah, idx) => (
+                            <div key={`${surah.number}-${idx}`} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.03}s` }}>
+                                <SurahFolder
+                                    surah={surah}
+                                    onClick={() => { setSelectedRange({}); setSelectedSurah(surah); }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
 
             {/* Academy Course Player Overlay */}
             {selectedSurah && (
                 <SurahPlayerOverlay
                     surah={selectedSurah}
                     category={activeCategory}
-                    onClose={() => setSelectedSurah(null)}
+                    initialFrom={selectedRange.from}
+                    initialTo={selectedRange.to}
+                    onClose={() => { setSelectedSurah(null); setSelectedRange({}); }}
                 />
             )}
 
