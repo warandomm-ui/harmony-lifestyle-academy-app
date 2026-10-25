@@ -4,9 +4,11 @@ import { isMuslimStudent } from './components/OnboardingFlow';
 import ThemeToggle from './components/ThemeToggle';
 import MainDashboard from './components/dashboard/MainDashboard';
 import AuthScreen from './components/AuthScreen';
+import LanguageSelector from './components/LanguageSelector';
 import type { AnalysisResult, UserStatus, UserProfile, LifeVision, DashboardMode } from './types';
 import { ChatProvider } from './contexts/ChatContext';
 import { useAuth } from './contexts/AuthContext';
+import { useLanguage } from './contexts/LanguageContext';
 import ToastContainer from './components/ToastContainer';
 import { GamificationProvider } from './contexts/GamificationContext';
 import { StudyBuddyProvider } from './contexts/StudyBuddyContext';
@@ -15,6 +17,8 @@ import { storage } from './utils/storageUtils';
 
 const App: React.FC = () => {
   const { user, loading } = useAuth();
+  const { lang, t } = useLanguage();
+  const [langSelected, setLangSelected] = useState(() => !!localStorage.getItem('hla_lang'));
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [userResults, setUserResults] = useState<AnalysisResult | null>(null);
   const [userSkills, setUserSkills] = useState<string[]>([]);
@@ -80,11 +84,15 @@ const App: React.FC = () => {
     }
   };
 
+  if (!langSelected) {
+    return <LanguageSelector onSelect={() => setLangSelected(true)} />;
+  }
+
   if (loading) {
     return (
         <div className="h-screen w-full flex flex-col items-center justify-center bg-[var(--background)]">
             <SpinnerIcon className="h-12 w-12 text-indigo-600 mb-4" />
-            <h2 className="font-black text-xl text-[var(--foreground)] animate-pulse">Syncing Academy Records...</h2>
+            <h2 className="font-black text-xl text-[var(--foreground)] animate-pulse">{t.syncingRecords}</h2>
         </div>
     );
   }
@@ -127,7 +135,7 @@ const App: React.FC = () => {
             <div className="flex-grow flex flex-col items-center justify-center p-4">
               <header className="w-full max-w-4xl mx-auto mb-8 text-center">
                   <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">Harmony Lifestyle Academy</h1>
-                  <p className="text-lg text-[var(--muted)] mt-2">authenticated and ready for your glow up.</p>
+                  <p className="text-lg text-[var(--muted)] mt-2">{t.authenticatedReady}</p>
               </header>
               <main className="w-full">
                   <OnboardingFlow onOnboardingComplete={handleOnboardingComplete} />
@@ -140,7 +148,7 @@ const App: React.FC = () => {
                         <LinkedInIcon className="h-6 w-6" />
                     </a>
                 </div>
-                <p className="text-sm text-[var(--muted)] mt-4">&copy; {new Date().getFullYear()} Harmony Lifestyle Academy. All rights reserved.</p>
+                <p className="text-sm text-[var(--muted)] mt-4">&copy; {new Date().getFullYear()} Harmony Lifestyle Academy. {t.allRightsReserved}</p>
               </div>
             </footer>
         </div>
