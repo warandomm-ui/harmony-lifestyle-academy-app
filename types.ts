@@ -325,7 +325,7 @@ export interface SubscriptionPlan {
 export interface Product {
   id: string;
   name: string;
-  category: 'Study Template' | 'Merch' | 'E-Book' | 'Digital Tool';
+  category: 'Study Template' | 'Merch' | 'E-Book' | 'Digital Tool' | 'Physical Product';
   price: number;
   description: string;
   imageUrl: string;

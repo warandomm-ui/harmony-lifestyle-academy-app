@@ -14,7 +14,7 @@ interface StoreSectionProps {
 const StoreSection: React.FC<StoreSectionProps> = ({ onAddToCart }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
 
-  const categories: Category[] = ['All', 'Study Template', 'Merch', 'E-Book', 'Digital Tool'];
+  const categories: Category[] = ['All', 'Study Template', 'Merch', 'E-Book', 'Digital Tool', 'Physical Product'];
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === 'All') {
