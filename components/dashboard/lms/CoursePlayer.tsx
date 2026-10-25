@@ -200,6 +200,53 @@ const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onExit }) => {
                     </div>
                 );
             }
+            case 'text': {
+                const raw = currentLesson.content.text || '';
+                const lines = raw.split('\n');
+                return (
+                    <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 space-y-6">
+                        {lines.map((line, i) => {
+                            if (!line.trim()) return null;
+                            if (/^(SUMMARY|KEY TAKEAWAYS|REFLECTION QUESTIONS)$/.test(line.trim())) {
+                                return (
+                                    <h3 key={i} className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400 pt-2 border-t border-[var(--border)]">
+                                        {line.trim()}
+                                    </h3>
+                                );
+                            }
+                            if (line.trim().startsWith('"') || line.trim().startsWith('“')) {
+                                return (
+                                    <blockquote key={i} className="border-l-4 border-indigo-500 pl-5 py-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-r-xl">
+                                        <p className="text-lg font-semibold italic text-indigo-900 dark:text-indigo-100 leading-relaxed">{line.trim()}</p>
+                                        {lines[i + 1]?.trim().startsWith('—') && (
+                                            <p className="mt-2 text-xs font-bold text-indigo-400 uppercase tracking-widest">{lines[i + 1].trim()}</p>
+                                        )}
+                                    </blockquote>
+                                );
+                            }
+                            if (line.trim().startsWith('—')) return null;
+                            if (line.trim().startsWith('•')) {
+                                return (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <span className="text-indigo-500 font-black mt-0.5 flex-shrink-0">•</span>
+                                        <p className="text-sm text-[var(--foreground)] leading-relaxed">{line.trim().slice(1).trim()}</p>
+                                    </div>
+                                );
+                            }
+                            if (/^\d+\./.test(line.trim())) {
+                                const [num, ...rest] = line.trim().split(/\.\s+/);
+                                return (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <span className="text-indigo-500 font-black text-sm flex-shrink-0">{num}.</span>
+                                        <p className="text-sm text-[var(--foreground)] leading-relaxed italic">{rest.join('. ')}</p>
+                                    </div>
+                                );
+                            }
+                            return <p key={i} className="text-sm text-[var(--muted)] leading-relaxed">{line.trim()}</p>;
+                        })}
+                    </div>
+                );
+            }
             default:
                 return <div className="p-10 text-center">Lesson type "{currentLesson.content.type}" ready to view.</div>;
         }

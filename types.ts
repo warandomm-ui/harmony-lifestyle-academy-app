@@ -118,7 +118,7 @@ export type ContentType = 'video' | 'audio' | 'pdf' | 'text' | 'quiz';
 
 export interface LessonContent {
   type: ContentType;
-  url: string;
+  url?: string;
   text?: string;
   duration?: number;
   filename?: string;
