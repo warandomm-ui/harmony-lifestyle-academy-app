@@ -9,18 +9,30 @@ import { supabase, isSupabaseConfigured } from './supabaseClient';
 const EDGE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-proxy`;
 
 interface AIProxyRequest {
-  action: 'generateContent' | 'chat' | 'tts';
+  action: 'generateContent' | 'chat' | 'tts' | 'anthropic' | 'embed';
   payload: {
     contents?: any;
     model?: string;
     config?: Record<string, any>;
     history?: any[];
+    // Anthropic
+    system?: string;
+    cacheSystem?: boolean;
+    messages?: { role: 'user' | 'assistant'; content: string }[];
+    max_tokens?: number;
+    temperature?: number;
+    // Embeddings
+    text?: string;
+    texts?: string[];
   };
 }
 
 interface AIProxyResponse {
   text: string;
   inlineData?: { data: string; mimeType: string } | null;
+  embedding?: number[] | null;
+  embeddings?: number[][];
+  usage?: any;
   raw?: any;
   error?: string;
 }
@@ -128,6 +140,46 @@ export async function generateContentWithImage(
     },
   }));
   return result.text;
+}
+
+/**
+ * Generate content with Claude (Anthropic) through the secure proxy.
+ * The Anthropic key never touches the browser. Pass cacheSystem:true for
+ * a stable system prompt so repeat calls hit the prompt-cache read discount.
+ */
+export async function generateWithClaude(opts: {
+  system?: string;
+  cacheSystem?: boolean;
+  messages: { role: 'user' | 'assistant'; content: string }[];
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+}): Promise<string> {
+  const result = await retry(() => callAI({
+    action: 'anthropic',
+    payload: {
+      model: opts.model || 'claude-haiku-4-5-20251001',
+      system: opts.system,
+      cacheSystem: opts.cacheSystem,
+      messages: opts.messages,
+      max_tokens: opts.maxTokens ?? 1500,
+      temperature: opts.temperature,
+    },
+  }));
+  return result.text;
+}
+
+/**
+ * Embed text via the proxy (Gemini text-embedding-004, 768 dimensions).
+ */
+export async function embedText(text: string): Promise<number[]> {
+  const result = await callAI({ action: 'embed', payload: { text } });
+  return result.embedding ?? [];
+}
+
+export async function embedTexts(texts: string[]): Promise<number[][]> {
+  const result = await callAI({ action: 'embed', payload: { texts } });
+  return result.embeddings ?? [];
 }
 
 /**
