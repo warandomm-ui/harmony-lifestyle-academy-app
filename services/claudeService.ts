@@ -1,32 +1,8 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { supabase } from './supabaseClient';
 import type { GeneratedModuleContent } from '../types';
 
-const getClaude = () => new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY || '',
-  dangerouslyAllowBrowser: true,
-});
-
-const retry = async <T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promise<T> => {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      if (i === retries) throw err;
-      const waitTime = err?.status === 429 ? delay * (i + 2) : delay;
-      await new Promise(r => setTimeout(r, waitTime));
-    }
-  }
-  throw new Error('Retry failed');
-};
-
-const safeParseJSON = (text: string | undefined): any => {
-  if (!text) return null;
-  let cleaned = text.trim();
-  if (cleaned.startsWith('```')) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
-  }
-  return JSON.parse(cleaned);
-};
+/** Dilempar bila server tolak kerana quota free tier harian dah habis. */
+export class QuotaExceededError extends Error {}
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -40,7 +16,7 @@ export const generateModuleContent = async (
 ): Promise<GeneratedModuleContent> => {
   const cacheKey = getCacheKey(module, topic);
 
-  // Check localStorage cache
+  // Check localStorage cache (cache hit tak guna quota)
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
@@ -54,34 +30,34 @@ export const generateModuleContent = async (
     }
   }
 
-  const claude = getClaude();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) {
+    throw new Error('Sila log masuk dahulu.');
+  }
 
-  const systemPrompt =
-    'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it.';
-
-  const userPrompt =
-    `Generate a complete learning unit for the topic '${topic}' within '${module} Wellness'. ` +
-    (context ? context + ' ' : '') +
-    `Return JSON matching exactly: { "lesson": { "title": "", "explanation": "", "keyPoints": [], "practicalTip": "", "deeperInsight": "" }, "quiz": { "question": "", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "" }, "reflection": { "prompt": "", "guidingQuestions": ["", "", ""] } }`;
-
-  const result = await retry(async () => {
-    const response = await claude.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    });
-
-    const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
-    const parsed = safeParseJSON(text);
-    if (!parsed?.lesson || !parsed?.quiz || !parsed?.reflection) {
-      throw new Error('Invalid response structure from Claude');
-    }
-    return parsed;
+  // Claude dipanggil di server (api/ai/module-content) — API key tak pernah ke browser
+  const res = await fetch('/api/ai/module-content', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ module, topic, context }),
   });
 
+  const data = await res.json().catch(() => ({}));
+
+  if (res.status === 429 && data.quotaExceeded) {
+    throw new QuotaExceededError(data.error);
+  }
+  if (!res.ok) {
+    throw new Error(data.error || 'Gagal jana lesson. Cuba lagi.');
+  }
+
   const content: GeneratedModuleContent = {
-    ...result,
+    lesson: data.lesson,
+    quiz: data.quiz,
+    reflection: data.reflection,
     module,
     topic,
     generatedAt: new Date().toISOString(),

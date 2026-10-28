@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { generateModuleContent, clearModuleContentCache } from '../../../services/claudeService';
+import { generateModuleContent, clearModuleContentCache, QuotaExceededError } from '../../../services/claudeService';
 import type { GeneratedModuleContent } from '../../../types';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { useToast } from '../../../contexts/ToastContext';
@@ -35,7 +35,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   const { addPoints } = useGamification();
   const { addToast } = useToast();
   const { user } = useAuth();
-  const { showUpgrade, setShowUpgrade, checkAndUseLesson } = usePremium(user?.id);
+  const { showUpgrade, setShowUpgrade } = usePremium(user?.id);
 
   const [selectedTopic, setSelectedTopic] = useState(topics[0]?.title ?? '');
   const [content, setContent] = useState<GeneratedModuleContent | null>(null);
@@ -70,12 +70,6 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       `harmony_ai_${moduleId}_${selectedTopic.toLowerCase().replace(/\s+/g, '_')}`
     );
 
-    // Quota hanya dikira bila betul-betul hit AI (bukan cache)
-    if (!cached) {
-      const ok = await checkAndUseLesson();
-      if (!ok) return; // UpgradeModal muncul automatik bila quota habis
-    }
-
     setIsLoading(true);
     setError(null);
     setContent(null);
@@ -88,7 +82,11 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       setContent(result);
       setFromCache(cached && new Date(result.generatedAt).getTime() < Date.now() - 1000);
     } catch (err: any) {
-      setError(err?.message ?? 'Something went wrong. Please try again.');
+      if (err instanceof QuotaExceededError) {
+        setShowUpgrade(true);
+      } else {
+        setError(err?.message ?? 'Something went wrong. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
