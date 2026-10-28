@@ -70,6 +70,10 @@ Supabase). Never call an AI provider from browser code.
 - **Never put secrets in `VITE_*` env vars.** Vite inlines every `VITE_*` value into the
   public JS bundle. Server secrets belong in `api/` functions (`process.env.X`) or edge
   function secrets. Only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are public by design.
+- `api/` functions run as **native ESM on Node** (`"type": "module"`): relative imports
+  inside `api/` MUST end in `.js` (e.g. `'../../constants/plans.js'`), or the function
+  crashes at load with `ERR_MODULE_NOT_FOUND`. `npm run build` / `tsc` won't catch this —
+  only a deployed request will. Use `import { type X }` for type-only imports.
 - `api/` functions read secrets with `process.env.X!`; a missing var surfaces as a generic 500.
   Required vars are listed in DEPLOYMENT_GUIDE.md §6.2.
 - Writes to `subscriptions` / `ai_usage` happen only via the service role (RLS allows

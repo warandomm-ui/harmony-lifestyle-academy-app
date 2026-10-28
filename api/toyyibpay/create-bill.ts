@@ -11,7 +11,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { PLANS, PlanType } from '../../constants/plans';
+import { PLANS, type PlanType } from '../../constants/plans.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
