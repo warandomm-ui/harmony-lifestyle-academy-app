@@ -148,6 +148,62 @@ Di bahagian "Environment Variables", tambah:
 
 ---
 
+## LANGKAH 6: SETUP PAYMENT (ToyyibPay + Premium)
+
+### 6.1 Run SQL migration
+1. Buka Supabase Dashboard → SQL Editor
+2. Copy seluruh kandungan `supabase/payment_stage1.sql` dan Run
+3. Ini akan cipta tables `subscriptions` + `ai_usage` dan RPCs `is_premium`, `use_ai_lesson`, `get_lesson_quota`
+
+### 6.2 Environment Variables tambahan di Vercel
+| Nama | Nilai |
+|------|-------|
+| `TOYYIBPAY_SECRET_KEY` | userSecretKey dari toyyibpay.com (Settings) |
+| `TOYYIBPAY_CATEGORY_CODE` | Create category di dashboard ToyyibPay dulu |
+| `SUPABASE_URL` | Sama dengan VITE_SUPABASE_URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → service_role (RAHSIA — jangan letak di frontend) |
+| `APP_URL` | URL production app (untuk callback & return URL) |
+| `ANTHROPIC_API_KEY` | Key dari console.anthropic.com — untuk AI lesson Claude (`api/ai/module-content`) |
+
+> ⚠️ **JANGAN** guna `VITE_ANTHROPIC_API_KEY` (atau apa-apa rahsia dengan prefix `VITE_`).
+> Vite masukkan semua `VITE_*` ke dalam JavaScript awam — sesiapa boleh baca key itu.
+> Kalau `VITE_ANTHROPIC_API_KEY` pernah diset: (1) **revoke key tu** di
+> console.anthropic.com → API Keys, (2) buang variable tu dari Vercel,
+> (3) cipta key baru dan simpan sebagai `ANTHROPIC_API_KEY` (tanpa `VITE_`), (4) redeploy.
+
+### 6.3 PENTING — Enforce quota di server (ai-proxy edge function)
+AI lesson Claude (`AIContentGenerator`) dah enforce quota di server melalui
+`api/ai/module-content`. Tapi lesson Gemini (`SchoolSubjectsPage`) masih melalui
+edge function `ai-proxy`, dan quota check di frontend sahaja boleh di-bypass (user
+boleh panggil edge function terus). Tambah check ini dalam edge function `ai-proxy`
+SEBELUM panggil Gemini, untuk action `generateContent`:
+
+```ts
+// Dalam ai-proxy/index.ts — selepas dapat user dari JWT:
+const { data: usage } = await supabaseAdmin.rpc('use_ai_lesson', {
+  p_user_id: user.id,
+});
+if (!usage?.allowed) {
+  return new Response(
+    JSON.stringify({ error: 'Quota harian habis. Upgrade ke Premium untuk akses tanpa had.' }),
+    { status: 429, headers: { 'Content-Type': 'application/json' } }
+  );
+}
+```
+
+Nota: bila quota dah dikira di edge function, buang panggilan `checkAndUseLesson()`
+dalam `SchoolSubjectsPage` dan tangkap respons 429 untuk tunjuk UpgradeModal (macam
+`AIContentGenerator`) supaya quota tak dikira dua kali. Hati-hati: `ai-proxy` juga
+dipakai oleh chat & features lain — hadkan check kepada request lesson sahaja.
+
+### 6.4 Test payment flow
+1. Login → generate 3 AI lessons → lesson ke-4 patut tunjuk UpgradeModal
+2. Klik plan → redirect ke ToyyibPay → bayar guna FPX test
+3. Selepas bayar → redirect ke `/payment/success` → status jadi premium
+4. Check Supabase: `select * from subscriptions` — status patut `active`
+
+---
+
 ## NEXT STEPS (Lepas Deploy Berjaya)
 
 1. **Custom Domain** — Beli domain (contoh: harmonyacademy.my) dan sambung ke Vercel

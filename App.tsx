@@ -12,8 +12,15 @@ import { GamificationProvider } from './contexts/GamificationContext';
 import { StudyBuddyProvider } from './contexts/StudyBuddyContext';
 import { LinkedInIcon, SpinnerIcon } from './components/dashboard/Icons';
 import { storage } from './utils/storageUtils';
+import PaymentSuccessPage from './components/PaymentSuccessPage';
 
 const App: React.FC = () => {
+  // ToyyibPay billReturnUrl landing — tiada router, jadi check pathname terus.
+  // (Sebelum semua hooks; pathname tak berubah sepanjang hayat render.)
+  if (window.location.pathname === '/payment/success') {
+    return <PaymentSuccessPage />;
+  }
+
   const { user, loading } = useAuth();
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [userResults, setUserResults] = useState<AnalysisResult | null>(null);
