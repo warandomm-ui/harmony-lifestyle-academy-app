@@ -68,11 +68,11 @@ export default function PaymentSuccessPage() {
     });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0d0d1a] p-4">
-      <div className="w-full max-w-md rounded-2xl border border-[#2a2a3e] bg-[#161625] p-10 text-center">
+    <main lang="ms" className="min-h-screen flex items-center justify-center bg-[#0d0d1a] p-4">
+      <div role="status" aria-live="polite" className="w-full max-w-md rounded-2xl border border-[#2a2a3e] bg-[#161625] p-10 text-center">
         {checking ? (
           <>
-            <div className="text-5xl mb-4 animate-pulse">⏳</div>
+            <div className="text-5xl mb-4 motion-safe:animate-pulse" aria-hidden="true">⏳</div>
             <h1 className="text-xl font-bold text-white mb-2">
               Mengesahkan pembayaran...
             </h1>
@@ -82,7 +82,7 @@ export default function PaymentSuccessPage() {
           </>
         ) : active ? (
           <>
-            <div className="text-5xl mb-4">🎉</div>
+            <div className="text-5xl mb-4" aria-hidden="true">🎉</div>
             <h1 className="text-2xl font-bold text-[#C9A84C] mb-2">
               Selamat Datang, Premium Member!
             </h1>
@@ -96,14 +96,14 @@ export default function PaymentSuccessPage() {
             )}
             <a
               href="/"
-              className="inline-block w-full rounded-xl bg-[#C9A84C] py-4 font-bold text-black hover:bg-[#d9b85c] transition"
+              className="inline-block w-full rounded-xl bg-[#C9A84C] py-4 font-bold text-black hover:bg-[#d9b85c] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A84C]"
             >
-              Mula Belajar Sekarang →
+              Mula Belajar Sekarang <span aria-hidden="true">→</span>
             </a>
           </>
         ) : statusId === '3' ? (
           <>
-            <div className="text-5xl mb-4">😔</div>
+            <div className="text-5xl mb-4" aria-hidden="true">😔</div>
             <h1 className="text-xl font-bold text-white mb-2">
               Pembayaran Tidak Berjaya
             </h1>
@@ -112,14 +112,14 @@ export default function PaymentSuccessPage() {
             </p>
             <a
               href="/"
-              className="inline-block w-full rounded-xl border border-[#2a2a3e] py-4 font-bold text-[#e0e0e0] hover:border-[#C9A84C] transition"
+              className="inline-block w-full rounded-xl border border-[#8888aa] py-4 font-bold text-[#e0e0e0] hover:border-[#C9A84C] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A84C]"
             >
               Kembali ke Dashboard
             </a>
           </>
         ) : (
           <>
-            <div className="text-5xl mb-4">⏳</div>
+            <div className="text-5xl mb-4" aria-hidden="true">⏳</div>
             <h1 className="text-xl font-bold text-white mb-2">
               Pembayaran Sedang Diproses
             </h1>
@@ -129,13 +129,13 @@ export default function PaymentSuccessPage() {
             </p>
             <a
               href="/"
-              className="inline-block w-full rounded-xl border border-[#2a2a3e] py-4 font-bold text-[#e0e0e0] hover:border-[#C9A84C] transition"
+              className="inline-block w-full rounded-xl border border-[#8888aa] py-4 font-bold text-[#e0e0e0] hover:border-[#C9A84C] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A84C]"
             >
               Kembali ke Dashboard
             </a>
           </>
         )}
       </div>
-    </div>
+    </main>
   );
 }
