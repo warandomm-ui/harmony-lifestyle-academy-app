@@ -28,7 +28,7 @@ Skop: projek Vercel `harmony-lifestyle-academy-app` (pasukan `warans-projects-a2
 
 | Keutamaan | Tindakan |
 |---|---|
-| P0 | **Putar (rotate) kunci Gemini & Anthropic sekarang**, kemudian buang `VITE_GEMINI_API_KEY` dan `VITE_ANTHROPIC_API_KEY` dari Vercel. Apa-apa `VITE_*` dibakar ke dalam JS awam. Pindahkan panggilan dalam `HarmonyAIChat.tsx`, `GeneralTextChatbotSection.tsx`, `services/claudeService.ts` ke `aiProxyService` / Edge Function. |
+| P0 | **Putar (rotate) kunci Gemini & Anthropic sekarang**, simpan kunci baharu dalam Supabase secrets, `supabase functions deploy ai-proxy`, kemudian buang `VITE_GEMINI_API_KEY` dan `VITE_ANTHROPIC_API_KEY` dari Vercel. (Kod klien sudah dipindahkan ke `supabase/functions/ai-proxy` dalam PR ini.) |
 | P0 | Tetapkan `SUPABASE_URL` (+ service role key) untuk persekitaran **Preview** juga, bukan Produksi sahaja, sebelum cawangan pembayaran ToyyibPay digabungkan. |
 | P1 | Tambah folder `public/` dengan `og-image.png`, `favicon.ico`, `robots.txt`. |
 | P1 | `npm audit fix` (tanpa `--force`; `zod` v4 ialah perubahan besar). |
