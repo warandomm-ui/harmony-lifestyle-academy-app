@@ -30,7 +30,7 @@ Skop: projek Vercel `harmony-lifestyle-academy-app` (pasukan `warans-projects-a2
 |---|---|
 | P0 | **Putar (rotate) kunci Gemini & Anthropic sekarang**, simpan kunci baharu dalam Supabase secrets, `supabase functions deploy ai-proxy`, kemudian buang `VITE_GEMINI_API_KEY` dan `VITE_ANTHROPIC_API_KEY` dari Vercel. (Kod klien sudah dipindahkan ke `supabase/functions/ai-proxy` dalam PR ini.) |
 | P0 | Tetapkan `SUPABASE_URL` (+ service role key) untuk persekitaran **Preview** juga, bukan Produksi sahaja, sebelum cawangan pembayaran ToyyibPay digabungkan. |
-| P1 | Tambah folder `public/` dengan `og-image.png`, `favicon.ico`, `robots.txt`. |
+| P1 | ~~Tambah folder `public/` dengan `og-image.png`, `favicon.ico`~~ (selesai). `robots.txt` masih tiada. |
 | P1 | `npm audit fix` (tanpa `--force`; `zod` v4 ialah perubahan besar). |
 | P2 | Code-split halaman dashboard dengan `React.lazy` untuk kurangkan muatan awal. |
 | P2 | Tambah Content-Security-Policy selepas inventori domain luar (Supabase, Google Fonts, Gemini). |
