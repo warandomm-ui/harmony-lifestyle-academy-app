@@ -16,14 +16,9 @@ const StatCard: React.FC<{ title: string; value: string; trend: string; positive
 );
 
 const AdminRevenuePage: React.FC = () => {
-    // Mock transaction data
-    const transactions = [
-        { id: 'tx1', user: 'Ali B.', email: 'ali@test.com', item: 'Pro Plan (Monthly)', amount: 25.00, date: '2024-08-24 14:30' },
-        { id: 'tx2', user: 'Sarah T.', email: 'sarah@test.com', item: 'Harmony Hoodie', amount: 120.00, date: '2024-08-24 14:15' },
-        { id: 'tx3', user: 'Ken L.', email: 'ken@test.com', item: 'Python Course', amount: 50.00, date: '2024-08-24 13:00' },
-        { id: 'tx4', user: 'Mei Ling', email: 'mei@test.com', item: 'Pro Plan (Yearly)', amount: 250.00, date: '2024-08-24 11:00' },
-        { id: 'tx5', user: 'Raj P.', email: 'raj@test.com', item: 'E-Book: Sejarah', amount: 15.00, date: '2024-08-24 09:30' },
-    ];
+    // No payment provider is connected yet, so there are no transactions to show.
+    // Replace with real records once payments are live.
+    const transactions: { id: string; user: string; email: string; item: string; amount: number; date: string }[] = [];
 
     const handleExport = () => {
         exportToCSV(transactions, `harmony_revenue_report_${new Date().toISOString().split('T')[0]}.csv`);
@@ -41,7 +36,8 @@ const AdminRevenuePage: React.FC = () => {
                 </div>
                 <button 
                     onClick={handleExport}
-                    className="bg-gray-800 dark:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition flex items-center gap-2"
+                    disabled={transactions.length === 0}
+                    className="bg-gray-800 dark:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <DownloadIcon className="h-5 w-5" />
                     Export to CSV
@@ -49,27 +45,17 @@ const AdminRevenuePage: React.FC = () => {
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <StatCard title="Total Revenue (YTD)" value="RM 124,500" trend="+18.2%" positive={true} />
-                <StatCard title="Monthly Recurring (MRR)" value="RM 12,400" trend="+5.4%" positive={true} />
-                <StatCard title="Avg. Revenue Per User" value="RM 45.00" trend="-1.2%" positive={false} />
+                <StatCard title="Total Revenue (YTD)" value="—" trend="Tiada data" positive={true} />
+                <StatCard title="Monthly Recurring (MRR)" value="—" trend="Tiada data" positive={true} />
+                <StatCard title="Avg. Revenue Per User" value="—" trend="Tiada data" positive={true} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Revenue Chart Placeholder */}
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 h-80 flex flex-col">
                     <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-4">Revenue Growth (6 Months)</h3>
-                    <div className="flex-1 flex items-end justify-between gap-2 px-4">
-                        {[40, 55, 45, 70, 65, 85].map((h, i) => (
-                            <div key={i} className="w-full bg-green-500/20 hover:bg-green-500/40 rounded-t-lg relative group transition-all" style={{ height: `${h}%` }}>
-                                <div className="absolute bottom-0 w-full bg-green-500 rounded-t-lg" style={{ height: '20%' }}></div>
-                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                                    RM {(h * 150).toLocaleString()}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500 mt-2 px-4">
-                        <span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span>
+                    <div className="flex-1 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+                        Carta akan dipaparkan apabila ada data jualan sebenar.
                     </div>
                 </div>
 
@@ -77,6 +63,9 @@ const AdminRevenuePage: React.FC = () => {
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 h-80 overflow-hidden flex flex-col">
                     <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-4">Real-time Sales Feed</h3>
                     <div className="overflow-y-auto pr-2 space-y-3 flex-1">
+                        {transactions.length === 0 && (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">Belum ada jualan.</p>
+                        )}
                         {transactions.map(tx => (
                             <div key={tx.id} className="flex justify-between items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg transition border-b border-gray-100 dark:border-gray-700 last:border-0">
                                 <div>

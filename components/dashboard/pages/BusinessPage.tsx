@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useToast } from '../../../contexts/ToastContext';
 import { TrendingUpIcon, DocumentTextIcon, LightBulbIcon } from '../Icons';
 import type { AnalysisResult } from '../../../types';
 import CareerPathCard from '../../CareerPathCard';
@@ -10,6 +11,7 @@ interface BusinessPageProps {
 }
 
 const BusinessPage: React.FC<BusinessPageProps> = ({ userResults }) => {
+  const { addToast } = useToast();
   const topCareers = userResults.careerRecommendations.slice(0, 3);
 
   const toolkitItems = [
@@ -53,7 +55,7 @@ const BusinessPage: React.FC<BusinessPageProps> = ({ userResults }) => {
                     <div key={item.title} className="bento-card flex flex-col items-center text-center">
                         <div className="mb-4">{item.icon}</div>
                         <h4 className="font-bold text-lg text-[var(--foreground)]">{item.title}</h4>
-                        <button className="mt-4 w-full bg-[var(--primary)]/10 text-[var(--primary)] font-bold py-2 px-4 rounded-full hover:bg-[var(--primary)]/20 transition">
+                        <button type="button" onClick={() => addToast(`"${item.title}" belum tersedia untuk dimuat turun.`, 'info')} className="mt-4 w-full bg-[var(--primary)]/10 text-[var(--primary)] font-bold py-2 px-4 rounded-full hover:bg-[var(--primary)]/20 transition">
                             Download
                         </button>
                     </div>

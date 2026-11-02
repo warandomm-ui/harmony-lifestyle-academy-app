@@ -210,7 +210,21 @@ const RoleplaySection: React.FC<{ language: Language }> = ({ language }) => {
 };
 
 // --- Immersion Section ---
+const SPEECH_LANG: Record<Language, string> = { Arabic: 'ar-SA', Mandarin: 'zh-CN', English: 'en-GB', Hindi: 'hi-IN' };
+
 const ImmersionSection: React.FC<{ language: Language }> = ({ language }) => {
+    const { addToast } = useToast();
+    const speak = (text: string) => {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+            addToast('Pelayar anda tidak menyokong sebutan suara.', 'error');
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = SPEECH_LANG[language];
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    };
     // Mock data - in a real app, this could be fetched or extensive
     const PHRASES: Record<Language, { text: string; trans: string; roman: string }[]> = {
         Arabic: [
@@ -243,7 +257,11 @@ const ImmersionSection: React.FC<{ language: Language }> = ({ language }) => {
                         <div className="text-4xl mb-4 font-bold text-[var(--primary)]">{phrase.text}</div>
                         <div className="text-lg font-semibold text-[var(--foreground)]">{phrase.roman}</div>
                         <div className="text-sm text-[var(--muted)] mt-1">{phrase.trans}</div>
-                        <button className="mt-4 p-3 rounded-full bg-[var(--primary)] text-white opacity-0 group-hover:opacity-100 transition-opacity transform hover:scale-110">
+                        <button
+                            type="button"
+                            onClick={() => speak(phrase.text)}
+                            aria-label={`Dengar sebutan: ${phrase.roman !== '-' ? phrase.roman : phrase.text}`}
+                            className="mt-4 p-3 rounded-full bg-[var(--primary)] text-white opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 transition-opacity transform hover:scale-110">
                             <PlayIcon className="h-6 w-6" />
                         </button>
                     </div>

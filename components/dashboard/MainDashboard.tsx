@@ -58,9 +58,9 @@ import CheckoutModal from './CheckoutModal';
 import PlanSelectionModal from './PlanSelectionModal';
 import RequestHelpModal from './RequestHelpModal';
 import DonateModal from './DonateModal';
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════
    TYPES
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════ */
 interface MainDashboardProps {
   userProfile: UserProfile;
   userResults: AnalysisResult;
@@ -74,28 +74,28 @@ interface FullPageWrapperProps {
   children: React.ReactNode;
   title: string;
 }
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════
    HELPER: Dimension titles based on dashboard mode
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════ */
 const MUSLIM_TITLES: Partial<Record<DashboardView, string>> = {
-  'physical': 'Jasad â Kekuatan Fizikal',
-  'emotional': 'Qalb â Pengurusan Emosi',
-  'social': 'Suhbah â Hubungan Sosial',
-  'intellectual': 'Aql â Kecerdasan & Ilmu',
-  'spiritual': 'Ruh â Kesedaran Spiritual',
-  'environmental': "Bi'ah â Kelestarian Alam",
-  'vocational': 'Rizq â Kemahiran & Kerjaya',
-  'sunnah-module': 'Modul Sunnah Nabi ï·º',
+  'physical': 'Jasad — Kekuatan Fizikal',
+  'emotional': 'Qalb — Pengurusan Emosi',
+  'social': 'Suhbah — Hubungan Sosial',
+  'intellectual': 'Aql — Kecerdasan & Ilmu',
+  'spiritual': 'Ruh — Kesedaran Spiritual',
+  'environmental': "Bi'ah — Kelestarian Alam",
+  'vocational': 'Rizq — Kemahiran & Kerjaya',
+  'sunnah-module': 'Modul Sunnah Nabi ﷺ',
   'school-subjects': 'Akademi Sekolah',
 };
 const UNIVERSAL_TITLES: Partial<Record<DashboardView, string>> = {
-  'physical': 'Body â Physical Wellness',
-  'emotional': 'Heart â Emotional Intelligence',
-  'social': 'Tribe â Social Wellness',
-  'intellectual': 'Mind â Intellectual Growth',
-  'spiritual': 'Spirit â Inner Awareness',
-  'environmental': 'Planet â Environmental Awareness',
-  'vocational': 'Wealth â Skills & Career',
+  'physical': 'Body — Physical Wellness',
+  'emotional': 'Heart — Emotional Intelligence',
+  'social': 'Tribe — Social Wellness',
+  'intellectual': 'Mind — Intellectual Growth',
+  'spiritual': 'Spirit — Inner Awareness',
+  'environmental': 'Planet — Environmental Awareness',
+  'vocational': 'Wealth — Skills & Career',
   'wellness-module': 'Wellness & Mindfulness',
   'school-subjects': 'School Academy',
 };
@@ -103,9 +103,9 @@ const getDimensionTitle = (view: DashboardView, mode: DashboardMode): string => 
   const titles = mode === 'muslim' ? MUSLIM_TITLES : UNIVERSAL_TITLES;
   return titles[view] || '';
 };
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════
    REUSABLE WRAPPER
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════ */
 const FullPageWrapper: React.FC<FullPageWrapperProps> = ({ children, title }) => (
   <main className="flex-1 p-3 sm:p-5 md:p-8 pb-20 md:pb-8 overflow-y-auto bg-[var(--background)] min-w-0">
     <div className="max-w-7xl mx-auto">
@@ -118,18 +118,19 @@ const FullPageWrapper: React.FC<FullPageWrapperProps> = ({ children, title }) =>
     </div>
   </main>
 );
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════
    DEFAULT COURSES
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════ */
+// Starter courses begin at 0% — progress only moves when the user actually studies.
 const DEFAULT_COURSES: Course[] = [
-  { id: 'c_1', icon: 'ð', title: 'Matematik', subtitle: 'Tingkatan 3', progress: 45 },
-  { id: 'c_2', icon: 'ð»', title: 'Python', subtitle: 'for Beginners', progress: 30 },
-  { id: 'c_3', icon: 'ð¨', title: 'Web Design', subtitle: 'Basics', progress: 15 },
-  { id: 'c_4', icon: 'ð¬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 55 },
+  { id: 'c_1', icon: '📐', title: 'Matematik', subtitle: 'Tingkatan 3', progress: 0 },
+  { id: 'c_2', icon: '💻', title: 'Python', subtitle: 'for Beginners', progress: 0 },
+  { id: 'c_3', icon: '🎨', title: 'Web Design', subtitle: 'Basics', progress: 0 },
+  { id: 'c_4', icon: '🔬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 0 },
 ];
-/* âââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════
    MAIN COMPONENT
-   âââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════ */
 const MainDashboard: React.FC<MainDashboardProps> = ({
   userProfile,
   userResults,
@@ -142,7 +143,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const { addToast } = useToast();
   const { toggleChat } = useChat();
   const isMuslim = dashboardMode === 'muslim';
-  // âââ Navigation State âââ
+  // ─── Navigation State ───
   // ——— Hash-based URL Routing ———
   const getViewFromHash = useCallback((): DashboardView => {
     const hash = window.location.hash.replace('#', '').replace('/', '');
@@ -180,7 +181,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   }, [getViewFromHash]);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('hla_onboarding_done'));
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
-  // âââ Data State âââ
+  // ─── Data State ───
   const [cart, setCart] = useState<Product[]>([]);
   const [activeCourses, setActiveCourses] = useState<Course[]>(DEFAULT_COURSES);
   const [anonymousPosts, setAnonymousPosts] = useState<AnonymousPost[]>(MOCK_ANONYMOUS_POSTS);
@@ -189,7 +190,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   ]);
   const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan>(SUBSCRIPTION_PLANS[0]);
   const [transactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
-  // âââ Modal State âââ
+  // ─── Modal State ───
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isCourseCreatorOpen, setIsCourseCreatorOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -198,7 +199,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const [isRequestHelpModalOpen, setIsRequestHelpModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
-  // âââ Handlers âââ
+  // ─── Handlers ───
   const handleInitiateCheckout = (product: Product) => {
     setCheckoutProduct(product);
     setIsCheckoutOpen(true);
@@ -213,7 +214,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
         id: `purchased_${Date.now()}`,
         title: checkoutProduct.name,
         subtitle: 'Enrolled via Purchase',
-        icon: 'ð',
+        icon: '🎓',
         progress: 0,
       };
       setActiveCourses((prev) => [newCourse, ...prev]);
@@ -269,7 +270,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     setActiveCourse(course);
     setCurrentView('course-player');
   };
-  // âââ Content Router âââ
+  // ─── Content Router ───
   const renderContent = () => {
     // Admin routes
     if (currentView.startsWith('admin')) {
@@ -280,12 +281,12 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       return <CoursePlayer course={activeCourse} onExit={() => setCurrentView('dashboard')} />;
     }
     switch (currentView) {
-      // âââ Gamification âââ
+      // ─── Gamification ───
       case 'leaderboard':
         return <LeaderboardSection />;
       case 'badges':
         return <BadgesSection />;
-      // âââ Profile âââ
+      // ─── Profile ───
       case 'profile':
         return (
           <ProfilePage
@@ -294,7 +295,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
             onProfileUpdate={onProfileUpdate}
           />
         );
-      // âââ Tools & Features âââ
+      // ─── Tools & Features ───
       case 'practice-hub':
         return (
           <FullPageWrapper title="Practice Hub">
@@ -371,7 +372,7 @@ case 'parent-dashboard':
             />
           </FullPageWrapper>
         );
-      // âââ 7 Dimensions âââ
+      // ─── 7 Dimensions ───
       case 'physical':
         return (
           <FullPageWrapper title={getDimensionTitle('physical', dashboardMode)}>
@@ -420,7 +421,7 @@ case 'parent-dashboard':
             <VocationalPage />
           </FullPageWrapper>
         );
-      // âââ Mode-Specific Routes âââ
+      // ─── Mode-Specific Routes ───
       case 'sunnah-module':
         return (
           <FullPageWrapper title={getDimensionTitle('sunnah-module', dashboardMode)}>
@@ -443,7 +444,7 @@ case 'parent-dashboard':
             <SpiritualPage religion={userProfile.religion} />
           </FullPageWrapper>
         );
-      // âââ Legacy Pages âââ
+      // ─── Legacy Pages ───
       case 'wisdom':
         return (
           <FullPageWrapper title={isMuslim ? 'Hikmah (Ruh)' : 'Wisdom (Soul)'}>
@@ -511,7 +512,7 @@ case 'parent-dashboard':
             <BehaviourPage userResults={userResults} />
           </FullPageWrapper>
         );
-      // âââ Default: Dashboard Home âââ
+      // ─── Default: Dashboard Home ───
       case 'dashboard':
       default:
         return (
@@ -525,7 +526,7 @@ case 'parent-dashboard':
         );
     }
   };
-  // âââ Layout âââ
+  // ─── Layout ───
   const isInCoursePlayer = currentView === 'course-player';
   return (
     <div className="hla-dashboard flex h-screen bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
@@ -545,6 +546,7 @@ case 'parent-dashboard':
             userProfile={userProfile}
             cartItemCount={cart.length}
             onMobileMenuToggle={() => setIsMobileMenuOpen((prev) => !prev)}
+            onProfileClick={() => setCurrentView('profile')}
           />
         )}
         {renderContent()}
@@ -553,7 +555,7 @@ case 'parent-dashboard':
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-t border-amber-900/30 z-50 safe-area-bottom">
           <div className="flex justify-around items-center h-16 px-1">
             {[
-              { view: 'home', label: 'Utama', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>) },
+              { view: 'dashboard', label: 'Utama', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>) },
               { view: 'start-here', label: 'Mula Sini', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>) },
               { view: 'my-path', label: 'Laluan', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>) },
               { view: 'community-space', label: 'Komuniti', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>) },
@@ -561,6 +563,9 @@ case 'parent-dashboard':
             ].map((item) => (
               <button
                 key={item.view}
+                type="button"
+                aria-label={item.label}
+                aria-current={currentView === item.view ? 'page' : undefined}
                 onClick={() => setCurrentView(item.view as DashboardView)}
                 className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all duration-200 min-w-[56px] ${
                   currentView === item.view
@@ -579,7 +584,7 @@ case 'parent-dashboard':
             ))}
           </div>
         </nav>      </div>
-      {/* âââ Modals âââ */}
+      {/* ─── Modals ─── */}
       {isSupportModalOpen && (
         <SupportModal onClose={() => setIsSupportModalOpen(false)} />
       )}

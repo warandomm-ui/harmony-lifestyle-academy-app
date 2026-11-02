@@ -3,7 +3,7 @@ import { supabase } from '../services/supabaseClient';
 import { useToast } from '../contexts/ToastContext';
 import { GitHubIcon, GoogleIcon } from './dashboard/Icons';
 
-/* ââ Geometric ornament â exact SVG from hla-welcome.html ââ */
+/* ── Geometric ornament — exact SVG from hla-welcome.html ── */
 const GeometricOrnament = () => (
   <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
     <circle cx="250" cy="250" r="200" stroke="#c9a84c" strokeWidth="1"/>
@@ -19,7 +19,7 @@ const GeometricOrnament = () => (
   </svg>
 );
 
-/* ââ Small corner ornament for the form card ââ */
+/* ── Small corner ornament for the form card ── */
 const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 60, height: 60, ...style }}>
     <line x1="0" y1="60" x2="60" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.6"/>
@@ -29,7 +29,7 @@ const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   </svg>
 );
 
-/* ââ Spinner ââ */
+/* ── Spinner ── */
 const SpinnerIcon = () => (
   <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -37,7 +37,7 @@ const SpinnerIcon = () => (
   </svg>
 );
 
-/* ââ Eye icons for password visibility toggle ââ */
+/* ── Eye icons for password visibility toggle ── */
 const EyeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -135,7 +135,7 @@ const AuthScreen: React.FC = () => {
     }
   };
 
-  /* ââ inline style tokens ââ */
+  /* ── inline style tokens ── */
   const C = {
     deep: '#0a0a0f',
     navy: '#0d1b2a',
@@ -154,7 +154,7 @@ const AuthScreen: React.FC = () => {
     dmSans: "'DM Sans', system-ui, sans-serif",
   };
 
-  /* ââ Shared input style ââ */
+  /* ── Shared input style ── */
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
     background: 'rgba(255,255,255,0.04)',
@@ -178,7 +178,7 @@ const AuthScreen: React.FC = () => {
     transition: 'color 0.3s',
   });
 
-  /* ââ Header text based on mode ââ */
+  /* ── Header text based on mode ── */
   const headerTag = isForgot ? 'Password Recovery' : isLogin ? 'Member Portal' : 'Join the Academy';
   const headerTitle = isForgot
     ? <>Reset Your <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Password</em></>
@@ -197,7 +197,7 @@ const AuthScreen: React.FC = () => {
       fontFamily: font.dmSans, color: C.cream, overflowX: 'hidden',
     }}>
 
-      {/* ââ Left panel â hero / branding ââ */}
+      {/* ── Left panel — hero / branding ── */}
       <div style={{
         flex: '0 0 55%', position: 'relative', display: 'flex', flexDirection: 'column',
         justifyContent: 'space-between', padding: '3rem 4rem',
@@ -214,14 +214,14 @@ const AuthScreen: React.FC = () => {
           <GeometricOrnament />
         </div>
 
-        {/* Top â wordmark */}
+        {/* Top — wordmark */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ fontFamily: font.playfair, fontSize: '1.35rem', fontWeight: 700, color: C.gold, letterSpacing: '0.04em' }}>
             Harmony<span style={{ color: C.cream, fontWeight: 300 }}> Lifestyle Academy</span>
           </div>
         </div>
 
-        {/* Middle â hero copy */}
+        {/* Middle — hero copy */}
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '560px' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -248,20 +248,21 @@ const AuthScreen: React.FC = () => {
             fontSize: '1rem', color: C.muted, lineHeight: 1.75, fontWeight: 300,
             maxWidth: '460px', animation: 'hla-fadeUp 0.6s ease 0.6s both',
           }}>
-            A holistic transformation programme for students â combining self-awareness, life values, and practical skills for the modern world.
+            A holistic transformation programme for students — combining self-awareness, life values, and practical skills for the modern world.
           </p>
         </div>
 
-        {/* Bottom â stats */}
+        {/* Bottom — stats */}
         <div style={{
           position: 'relative', zIndex: 2, display: 'flex', gap: '3rem',
           borderTop: `1px solid rgba(201,168,76,0.2)`,
           paddingTop: '1.75rem', animation: 'hla-fadeUp 0.6s ease 0.8s both',
         }}>
+          {/* Only facts that describe the platform itself — no enrolment or satisfaction
+              figures until there are real students and survey data to back them. */}
           {[
-            { num: '500+', label: 'Students Enrolled' },
-            { num: '5', label: 'Life Pillars' },
-            { num: '98%', label: 'Parent Satisfaction' },
+            { num: '7', label: 'Life Dimensions' },
+            { num: 'AI', label: 'Study Assistant' },
           ].map(s => (
             <div key={s.label}>
               <div style={{ fontFamily: font.playfair, fontSize: '2rem', fontWeight: 700, color: C.gold, lineHeight: 1 }}>{s.num}</div>
@@ -271,7 +272,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Right panel â auth form ââ */}
+      {/* ── Right panel — auth form ── */}
       <div className="auth-right-panel" style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 'clamp(1.25rem, 5vw, 2.5rem)', background: C.deep,
@@ -309,7 +310,7 @@ const AuthScreen: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-            {/* Full Name â register only */}
+            {/* Full Name — register only */}
             {isRegister && (
               <div>
                 <label style={labelStyle('fullName')}>Full Name</label>
@@ -340,7 +341,7 @@ const AuthScreen: React.FC = () => {
               />
             </div>
 
-            {/* Password â hidden on forgot mode */}
+            {/* Password — hidden on forgot mode */}
             {!isForgot && (
               <div>
                 <label style={labelStyle('password')}>Password</label>
@@ -351,7 +352,7 @@ const AuthScreen: React.FC = () => {
                     onChange={e => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
-                    placeholder={isRegister ? 'Min 6 characters' : 'â¢â¢â¢â¢â¢â¢â¢â¢'}
+                    placeholder={isRegister ? 'Min 6 characters' : '••••••••'}
                     required
                     minLength={6}
                     style={{ ...inputStyle('password'), paddingRight: '3rem' }}
@@ -372,7 +373,7 @@ const AuthScreen: React.FC = () => {
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 </div>
-                {/* Forgot password link â login mode only */}
+                {/* Forgot password link — login mode only */}
                 {isLogin && (
                   <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
                     <button
@@ -418,7 +419,7 @@ const AuthScreen: React.FC = () => {
             </button>
           </form>
 
-          {/* Social login â not on forgot mode */}
+          {/* Social login — not on forgot mode */}
           {!isForgot && (
             <>
               <div className="auth-social-mt" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.75rem 0' }}>
@@ -489,7 +490,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Keyframe animations ââ */}
+      {/* ── Keyframe animations ── */}
       <style>{`
         @keyframes hla-fadeUp {
           from { opacity: 0; transform: translateY(28px); }

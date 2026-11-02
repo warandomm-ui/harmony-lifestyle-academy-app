@@ -14,14 +14,15 @@ interface BalanceData {
 
 const LifeBalanceWheel: React.FC = () => {
   const [data, setData] = useState<BalanceData>({
-    Health: 7,
-    Career: 6,
-    Relationships: 8,
-    Growth: 7,
+    // Neutral midpoint until the user rates each area themselves.
+    Health: 5,
+    Career: 5,
+    Relationships: 5,
+    Growth: 5,
     Finance: 5,
-    Recreation: 6,
-    Environment: 7,
-    Spirituality: 6,
+    Recreation: 5,
+    Environment: 5,
+    Spirituality: 5,
   });
 
   const [activeCategory, setActiveCategory] = useState<keyof BalanceData | null>(null);

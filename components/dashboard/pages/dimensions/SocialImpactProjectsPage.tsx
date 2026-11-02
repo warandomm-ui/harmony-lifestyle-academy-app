@@ -1,10 +1,13 @@
 import React from 'react';
+import { useToast } from '../../../../contexts/ToastContext';
 import { MOCK_SOCIAL_PROJECTS } from '../../../../constants';
+import EmptyState from '../../shared/EmptyState';
 import type { SocialImpactProject } from '../../../../types';
 import { LightBulbIcon, UsersIcon, GlobeAltIcon, CashIcon } from '../../Icons';
 
 // --- Project Card Component ---
 const ProjectCard: React.FC<{ project: SocialImpactProject }> = ({ project }) => {
+    const { addToast } = useToast();
     const statusStyles: { [key in typeof project.status]: string } = {
         Open: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
         'In Progress': 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
@@ -35,7 +38,7 @@ const ProjectCard: React.FC<{ project: SocialImpactProject }> = ({ project }) =>
                         </div>
                     )}
                 </div>
-                <button className="w-full mt-4 bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105">
+                <button type="button" onClick={() => addToast('Ciri ini akan datang tidak lama lagi.', 'info')} className="w-full mt-4 bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105">
                     View Project & Join
                 </button>
             </div>
@@ -46,6 +49,7 @@ const ProjectCard: React.FC<{ project: SocialImpactProject }> = ({ project }) =>
 
 // --- Main Page Component ---
 const SocialImpactProjectsPage: React.FC = () => {
+    const { addToast } = useToast();
     return (
         <div className="space-y-8 animate-fade-in">
             <section className="bento-card text-center bg-gradient-to-br from-purple-50 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50">
@@ -54,7 +58,7 @@ const SocialImpactProjectsPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 mt-2 max-w-3xl mx-auto">
                     Turn your skills into solutions. Join a team to solve real social problems in your community, develop new skills, and even earn an income.
                 </p>
-                <button className="mt-6 bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105 flex items-center gap-2 mx-auto">
+                <button type="button" onClick={() => addToast('Ciri ini akan datang tidak lama lagi.', 'info')} className="mt-6 bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105 flex items-center gap-2 mx-auto">
                     <LightBulbIcon className="h-5 w-5" />
                     Propose a New Project
                 </button>
@@ -62,6 +66,9 @@ const SocialImpactProjectsPage: React.FC = () => {
 
             <section>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Project Board</h3>
+                {MOCK_SOCIAL_PROJECTS.length === 0 && (
+                    <EmptyState icon="🌱" title="Belum ada projek" description="Projek komuniti akan disenaraikan apabila ada projek sebenar yang disahkan." />
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {MOCK_SOCIAL_PROJECTS.map(project => (
                         <ProjectCard key={project.id} project={project} />

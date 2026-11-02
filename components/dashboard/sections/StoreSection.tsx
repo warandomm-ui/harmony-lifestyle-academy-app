@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { ShoppingCartIcon } from '../Icons';
 import { MOCK_PRODUCTS } from '../../../constants';
+import EmptyState from '../shared/EmptyState';
 import ProductCard from '../shared/ProductCard';
 import type { Product } from '../../../types';
 
@@ -45,6 +46,9 @@ const StoreSection: React.FC<StoreSectionProps> = ({ onAddToCart }) => {
         ))}
       </div>
 
+      {filteredProducts.length === 0 && (
+        <EmptyState icon="🛍️" title="Belum ada produk" description="Produk akan disenaraikan di sini apabila ia benar-benar tersedia untuk dijual." />
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.map(product => (
           <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />

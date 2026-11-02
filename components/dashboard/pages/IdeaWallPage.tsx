@@ -233,7 +233,10 @@ const IdeaWallPage: React.FC = () => {
                     <span className="text-xl">🔥</span>
                     <p className="font-bold text-sm md:text-base">Your ideas are waiting. Go build something.</p>
                 </div>
-                <button className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition">Review</button>
+                <button
+                    type="button"
+                    onClick={() => document.getElementById('idea-wall-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition">Review</button>
             </div>
 
             {/* Header & Input Section */}
@@ -396,7 +399,7 @@ const IdeaWallPage: React.FC = () => {
             </div>
 
             {/* Ideas Grid */}
-            <div className="columns-1 md:columns-2 gap-4 space-y-4">
+            <div id="idea-wall-list" className="scroll-mt-4 columns-1 md:columns-2 gap-4 space-y-4">
                 {filteredIdeas.map((idea, index) => (
                     <div
                         key={idea.id}

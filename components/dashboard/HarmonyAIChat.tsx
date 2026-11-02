@@ -321,7 +321,7 @@ const HarmonyAIChat: React.FC = () => {
   };
 
 return (
-        <div className="absolute bottom-4 right-4 w-[400px] h-[600px] bg-[var(--card)] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[var(--border)] animate-fade-in-up">
+        <div className="fixed inset-x-2 top-16 bottom-20 z-[60] md:absolute md:inset-auto md:bottom-4 md:right-4 md:w-[400px] md:h-[600px] md:max-h-[calc(100%-2rem)] bg-[var(--card)] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[var(--border)] animate-fade-in-up">
             <header className="flex items-center justify-between p-4 border-b border-[var(--border)] flex-shrink-0 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--accent)]/10">
                 <div className="flex items-center gap-3">
                     <ChatAltIcon className="h-6 w-6 text-[var(--primary)]"/>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { UsersIcon, ChatAlt2Icon, HeartIcon, SparklesIcon, PlusIcon, BellIcon, ChevronDownIcon } from '../Icons';
 import { useToast } from '../../../contexts/ToastContext';
+import EmptyState from '../shared/EmptyState';
 
 type Tab = 'feed' | 'qa' | 'updates';
 
@@ -33,11 +34,8 @@ const CommunitySpacePage: React.FC = () => {
 
     // --- Feed Tab ---
     const FeedTab = () => {
-        const [posts, setPosts] = useState([
-            { id: 1, user: 'Sarah K.', avatar: '👩‍🎨', time: '2h ago', content: 'Just finished my first Python project thanks to the Harmony course! It\'s a simple calculator but I\'m so proud. 🐍💻', likes: 24, comments: 5, liked: false },
-            { id: 2, user: 'Amirul H.', avatar: '🏃‍♂️', time: '5h ago', content: 'Morning run complete! 5km in 30 mins. Who else is training for the community marathon?', likes: 45, comments: 12, liked: false },
-            { id: 3, user: 'Mei Ling', avatar: '📚', time: '1d ago', content: 'Reviewing for SPM trials. The study techniques module really helped me organize my notes.', likes: 60, comments: 8, liked: false },
-        ]);
+        // Starts empty: only posts written by real users are shown.
+        const [posts, setPosts] = useState<{ id: number; user: string; avatar: string; time: string; content: string; likes: number; comments: number; liked: boolean }[]>([]);
         const [newPost, setNewPost] = useState('');
 
         const handlePost = () => {
@@ -101,6 +99,9 @@ const CommunitySpacePage: React.FC = () => {
 
                 {/* Posts List */}
                 <div className="space-y-4">
+                    {posts.length === 0 && (
+                        <EmptyState icon="💬" title="Belum ada hantaran" description="Kongsi kemajuan atau pemikiran anda untuk memulakan perbualan." />
+                    )}
                     {posts.map(post => (
                         <div key={post.id} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--border)] hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-3 mb-3">
@@ -134,11 +135,8 @@ const CommunitySpacePage: React.FC = () => {
 
     // --- Q&A Tab ---
     const QaTab = () => {
-        const [questions, setQuestions] = useState([
-            { id: 1, tag: 'Parent Ask', question: "How can I motivate my teen to balance gaming and study?", answers: 12, status: 'Hot' },
-            { id: 2, tag: 'Teen Ask', question: "My parents don't understand that esports is a real career path. Help?", answers: 8, status: 'New' },
-            { id: 3, tag: 'General', question: "What are good universities for Graphic Design in KL?", answers: 24, status: 'Solved' },
-        ]);
+        // Starts empty: only questions asked by real users are shown.
+        const [questions, setQuestions] = useState<{ id: number; tag: string; question: string; answers: number; status: string }[]>([]);
         const [showForm, setShowForm] = useState(false);
         const [newQuestion, setNewQuestion] = useState('');
         const [selectedTag, setSelectedTag] = useState<'Teen Ask' | 'Parent Ask' | 'General'>('Teen Ask');
@@ -209,6 +207,9 @@ const CommunitySpacePage: React.FC = () => {
                 )}
 
                 <div className="space-y-4">
+                    {questions.length === 0 && (
+                        <EmptyState icon="❓" title="Belum ada soalan" description="Klik “Ask a Question” untuk bertanya kepada komuniti." />
+                    )}
                     {questions.map(q => (
                         <div key={q.id} className="bg-[var(--card)] p-5 rounded-2xl border border-[var(--border)] cursor-pointer hover:border-[var(--primary)] transition-colors">
                             <div className="flex justify-between items-start mb-2">
@@ -235,14 +236,14 @@ const CommunitySpacePage: React.FC = () => {
 
     // --- Updates Tab ---
     const UpdatesTab = () => {
-        const updates = [
-            { title: 'New Course: Mobile App Dev', date: 'Today', desc: 'Learn React Native and build your first iOS/Android app.', type: 'Content' },
-            { title: 'Weekend Workshop: Public Speaking', date: 'Sat, 2 PM', desc: 'Join us live for a masterclass on confidence.', type: 'Event' },
-            { title: 'Platform Update v2.1', date: 'Yesterday', desc: 'We fixed the dark mode toggle and improved speed.', type: 'System' },
-        ];
+        // No announcements yet. Add real updates here when there are any.
+        const updates: { title: string; date: string; desc: string; type: string }[] = [];
 
         return (
             <div className="space-y-6 animate-fade-in">
+                {updates.length === 0 && (
+                    <EmptyState icon="🔔" title="Tiada pengumuman" description="Pengumuman rasmi Harmony akan dipaparkan di sini." />
+                )}
                 {updates.map((update, i) => (
                     <div key={i} className="flex gap-4 items-start bg-[var(--card)] p-5 rounded-2xl border border-[var(--border)]">
                         <div className="p-3 bg-[var(--secondary)]/50 rounded-xl text-[var(--primary)]">

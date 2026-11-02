@@ -15,10 +15,7 @@ interface Affiliate {
 
 const AdminAffiliatesPage: React.FC = () => {
     const { addToast } = useToast();
-    const [affiliates, setAffiliates] = useState<Affiliate[]>([
-        { id: '1', name: 'Aina C.', email: 'aina@example.com', code: 'AINA10', sales: 12, earnings: 'RM 360', status: 'Approved' },
-        { id: '2', name: 'Bala S.', email: 'bala@example.com', code: 'BALA_POWER', sales: 0, earnings: 'RM 0', status: 'Pending' },
-    ]);
+    const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
 
     const handleApprove = (id: string) => {
         setAffiliates(prev => prev.map(a => a.id === id ? { ...a, status: 'Approved' } : a));
@@ -40,7 +37,7 @@ const AdminAffiliatesPage: React.FC = () => {
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Manage influencers and students promoting Harmony.</p>
                 </div>
-                <button className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition flex items-center gap-2">
+                <button type="button" onClick={() => addToast('Ciri ini akan datang tidak lama lagi.', 'info')} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition flex items-center gap-2">
                     <LinkIcon className="h-5 w-5" />
                     Generate Invite Link
                 </button>
@@ -59,6 +56,9 @@ const AdminAffiliatesPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                        {affiliates.length === 0 && (
+                            <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada afiliasi.</td></tr>
+                        )}
                         {affiliates.map(affiliate => (
                             <tr key={affiliate.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
                                 <td className="px-6 py-4">

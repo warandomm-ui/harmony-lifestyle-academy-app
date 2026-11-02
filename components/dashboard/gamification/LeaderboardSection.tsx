@@ -1,6 +1,7 @@
 import React from 'react';
 import { MOCK_LEADERBOARD } from '../../../constants';
 import { TrophyIcon } from '../Icons';
+import EmptyState from '../shared/EmptyState';
 
 const LeaderboardSection: React.FC = () => {
   return (
@@ -16,6 +17,9 @@ const LeaderboardSection: React.FC = () => {
             </p>
         </header>
 
+        {MOCK_LEADERBOARD.length === 0 ? (
+          <EmptyState icon="🏆" title="Papan pendahulu belum tersedia" description="Kedudukan akan dipaparkan apabila ada data sebenar daripada pengguna." />
+        ) : (
         <div className="bg-[var(--card)] rounded-2xl shadow-lg border border-[var(--border)] overflow-hidden">
             <ul className="divide-y divide-[var(--border)]">
                 {MOCK_LEADERBOARD.map(entry => (
@@ -34,6 +38,7 @@ const LeaderboardSection: React.FC = () => {
                 ))}
             </ul>
         </div>
+        )}
       </div>
     </main>
   );

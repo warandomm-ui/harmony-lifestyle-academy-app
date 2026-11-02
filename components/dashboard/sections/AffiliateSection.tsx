@@ -3,23 +3,29 @@ import React, { useState } from 'react';
 import { useToast } from '../../../contexts/ToastContext';
 import { CashIcon, UsersIcon, TrendingUpIcon, LinkIcon, CheckCircleIcon, PlusIcon } from '../Icons';
 import WithdrawalModal from '../WithdrawalModal';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const AffiliateSection: React.FC = () => {
     const { addToast } = useToast();
     const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
     
+    const { user } = useAuth();
+    // Referral links point at this site and carry the signed-in user's id.
+    const refBase = `${typeof window !== 'undefined' ? window.location.origin : ''}/?ref=${user?.id ?? ''}`;
+
     // State for Link Generator
-    const [generatedLink, setGeneratedLink] = useState('https://harmony.app/ref/student_123');
+    const [generatedLink, setGeneratedLink] = useState(refBase);
     const [campaignName, setCampaignName] = useState('Homepage');
     const [isCopied, setIsCopied] = useState(false);
 
-    // Mock Data
-    const currentBalance = 1250.00;
+    // No referral tracking backend yet, so every figure starts at zero rather than sample values.
+    const currentBalance = 0;
+    const revenueStream: { date: string; activity: string; campaign: string; amount: string }[] = [];
 
     const handleGenerateLink = () => {
         // Simulate generating a tracking link
         const slug = campaignName.toLowerCase().replace(/\s+/g, '-');
-        setGeneratedLink(`https://harmony.app/ref/student_123?c=${slug}`);
+        setGeneratedLink(`${refBase}&c=${slug}`);
         addToast('New tracking link generated!', 'success');
     };
 
@@ -49,7 +55,7 @@ const AffiliateSection: React.FC = () => {
                         <p className="text-sm text-[var(--muted)] mt-1">Promote Harmony and earn recurring revenue.</p>
                     </div>
                     <button 
-                        onClick={() => setIsWithdrawalOpen(true)}
+                        onClick={() => currentBalance > 0 ? setIsWithdrawalOpen(true) : addToast('Tiada baki untuk dikeluarkan.', 'info')}
                         className="bg-green-600 text-white font-bold py-2 px-6 rounded-full hover:bg-green-700 transition shadow-lg shadow-green-500/20 flex items-center gap-2"
                     >
                         <CashIcon className="h-5 w-5" />
@@ -61,19 +67,16 @@ const AffiliateSection: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-[var(--secondary)]/30 p-6 rounded-2xl border border-[var(--border)]">
                         <p className="text-sm font-bold text-[var(--muted)] uppercase">Total Earnings</p>
-                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">RM 1,250.00</p>
-                        <p className="text-xs text-green-500 font-bold mt-1 flex items-center gap-1">
-                            <TrendingUpIcon className="h-3 w-3" /> +15% this month
-                        </p>
+                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">RM {currentBalance.toFixed(2)}</p>
                     </div>
                     <div className="bg-[var(--secondary)]/30 p-6 rounded-2xl border border-[var(--border)]">
                         <p className="text-sm font-bold text-[var(--muted)] uppercase">Active Referrals</p>
-                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">24</p>
+                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">0</p>
                         <p className="text-xs text-[var(--muted)] mt-1">Students joined via your link</p>
                     </div>
                     <div className="bg-[var(--secondary)]/30 p-6 rounded-2xl border border-[var(--border)]">
                         <p className="text-sm font-bold text-[var(--muted)] uppercase">Conversion Rate</p>
-                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">3.2%</p>
+                        <p className="text-3xl font-extrabold text-[var(--foreground)] mt-2">—</p>
                         <p className="text-xs text-[var(--muted)] mt-1">Clicks to Paid Users</p>
                     </div>
                 </div>
@@ -93,9 +96,6 @@ const AffiliateSection: React.FC = () => {
                                 className="w-full px-4 py-3 rounded-xl bg-[var(--card)] border-2 border-[var(--border)] focus:border-[var(--primary)] focus:outline-none transition"
                             >
                                 <option value="Homepage">Harmony Homepage</option>
-                                <option value="Python Course">Course: Python for Beginners</option>
-                                <option value="Summer Camp">Event: Tech Summer Camp</option>
-                                <option value="Scholarship">Scholarship Page</option>
                             </select>
                         </div>
                         <div className="flex-1 w-full">
@@ -126,7 +126,7 @@ const AffiliateSection: React.FC = () => {
                         </div>
                     </div>
                     <p className="text-xs text-[var(--muted)] mt-3">
-                        Share this link on social media, your blog, or directly with friends. Cookies track referrals for 30 days.
+                        Kongsi pautan ini dengan rakan atau di media sosial. Penjejakan rujukan belum diaktifkan, jadi rujukan belum dikira lagi.
                     </p>
                 </div>
 
@@ -144,12 +144,10 @@ const AffiliateSection: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {[
-                                    { date: 'Today, 10:42 AM', activity: 'New Subscription (Pro)', campaign: 'Homepage', amount: '+ RM 3.75' },
-                                    { date: 'Yesterday, 4:15 PM', activity: 'Course Purchase (Python)', campaign: 'Python Course', amount: '+ RM 12.50' },
-                                    { date: '22 Aug, 9:00 AM', activity: 'Withdrawal Request', campaign: '-', amount: '- RM 150.00' },
-                                    { date: '20 Aug, 2:30 PM', activity: 'New Subscription (Yearly)', campaign: 'Summer Camp', amount: '+ RM 45.00' },
-                                ].map((item, i) => (
+                                {revenueStream.length === 0 && (
+                                    <tr><td colSpan={4} className="py-6 text-center text-sm text-[var(--muted)]">Belum ada komisen.</td></tr>
+                                )}
+                                {revenueStream.map((item, i) => (
                                     <tr key={i} className="border-b border-[var(--border)] last:border-none hover:bg-[var(--secondary)]/10 transition-colors">
                                         <td className="py-4 pl-2 text-sm text-[var(--muted)]">{item.date}</td>
                                         <td className="py-4 text-sm font-semibold text-[var(--foreground)]">{item.activity}</td>

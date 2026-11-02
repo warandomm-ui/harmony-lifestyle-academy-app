@@ -14,9 +14,10 @@ interface Habit {
 const HabitTrackerWidget: React.FC = () => {
   const { addPoints } = useGamification();
   const [habits, setHabits] = useState<Habit[]>([
-    { id: '1', name: 'Drink 2L Water', type: 'positive', streak: 5, completedToday: false },
-    { id: '2', name: 'Read 15 mins', type: 'positive', streak: 12, completedToday: true },
-    { id: '3', name: 'No Sugar', type: 'negative', streak: 3, completedToday: false },
+    // Suggested starter habits; streaks start at zero until the user ticks them off.
+    { id: '1', name: 'Drink 2L Water', type: 'positive', streak: 0, completedToday: false },
+    { id: '2', name: 'Read 15 mins', type: 'positive', streak: 0, completedToday: false },
+    { id: '3', name: 'No Sugar', type: 'negative', streak: 0, completedToday: false },
   ]);
   const [newHabitName, setNewHabitName] = useState('');
   const [showInput, setShowInput] = useState(false);

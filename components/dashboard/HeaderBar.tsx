@@ -8,9 +8,10 @@ interface HeaderBarProps {
   userProfile: UserProfile;
   cartItemCount?: number;
   onMobileMenuToggle?: () => void;
+  onProfileClick?: () => void;
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, onMobileMenuToggle }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, onMobileMenuToggle, onProfileClick }) => {
   const { addToast } = useToast();
   const { toggleChat } = useChat();
   const [showSearch, setShowSearch] = useState(false);
@@ -68,6 +69,10 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
                 onBlur={e => (e.currentTarget.style.borderColor = 'rgba(201,168,76,0.18)')}
                 placeholder="Search anything..."
                 type="search"
+                aria-label="Search"
+                onKeyDown={e => {
+                  if (e.key === 'Enter') addToast('Carian akan datang tidak lama lagi.', 'info');
+                }}
               />
             </div>
           </div>
@@ -75,21 +80,21 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
 
         {/* Right: icons */}
         <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Search icon Ã¢ÂÂ xs only */}
+          {/* Search icon — xs only */}
           <button
             className="sm:hidden flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
             aria-label="Search"
-              onClick={() => addToast("Search feature coming soon!", "info")}
-            >
-              <SearchIcon className="h-5 w-5" />
+            onClick={() => addToast('Carian akan datang tidak lama lagi.', 'info')}
+          >
+            <SearchIcon className="h-5 w-5" />
           </button>
 
           <button
             className="relative flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
-            aria-label="Cart"
-              onClick={() => addToast(cartItemCount > 0 ? "You have items in cart" : "Your cart is empty", "info")}
+            aria-label={cartItemCount > 0 ? `Cart, ${cartItemCount} item(s)` : 'Cart'}
+            onClick={() => addToast(cartItemCount > 0 ? `Troli anda mempunyai ${cartItemCount} item.` : 'Troli anda kosong.', 'info')}
           >
             <ShoppingCartIcon className="h-5 w-5" />
             {cartItemCount > 0 && (
@@ -103,15 +108,17 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
             className="flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}
             aria-label="Notifications"
-              onClick={() => addToast("No new notifications", "info")}
+            onClick={() => addToast('Tiada notifikasi baharu.', 'info')}
           >
             <BellIcon className="h-5 w-5" />
           </button>
 
           {/* Avatar with gold ring */}
-          <div
-              onClick={() => addToast("Profile menu coming soon!", "info")}
-              className="flex items-center gap-1.5 cursor-pointer p-1 rounded-full ml-1 transition-all"
+          <button
+            type="button"
+            onClick={onProfileClick ?? (() => addToast('Menu profil akan datang tidak lama lagi.', 'info'))}
+            aria-label="Open profile"
+            className="flex items-center gap-1.5 cursor-pointer p-1 rounded-full ml-1 transition-all"
             style={{ border: '1px solid rgba(201,168,76,0.35)' }}
           >
             <img
@@ -123,7 +130,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
               }}
             />
             <ChevronDownIcon className="h-4 w-4 hidden sm:block" style={{ color: '#c9a84c' }} />
-          </div>
+          </button>
         </div>
       </div>
     </header>

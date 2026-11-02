@@ -48,6 +48,9 @@ const AnonymousChatSection: React.FC<AnonymousChatSectionProps> = ({ posts, onPo
 
       {/* Anonymous Feed */}
       <div className="flex-1 overflow-y-auto pr-2 space-y-3">
+        {posts.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">Belum ada hantaran. Anda boleh menjadi yang pertama berkongsi.</p>
+        )}
         {posts.map(post => (
           <div key={post.id} className="bg-[var(--secondary)]/50 rounded-lg p-3">
             <div className="flex items-center gap-2 mb-2">

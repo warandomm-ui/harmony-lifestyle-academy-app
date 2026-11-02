@@ -16,11 +16,7 @@ interface Coupon {
 
 const AdminCouponsPage: React.FC = () => {
     const { addToast } = useToast();
-    const [coupons, setCoupons] = useState<Coupon[]>([
-        { id: '1', code: 'WELCOME20', discount: '20% OFF', uses: 45, maxUses: 100, expiryDate: '2024-12-31', targetAudience: 'Student', status: 'Active' },
-        { id: '2', code: 'SCHOOL_BULK_50', discount: 'RM 500 OFF', uses: 2, maxUses: 10, expiryDate: '2024-09-01', targetAudience: 'School', status: 'Active' },
-        { id: '3', code: 'EARLYBIRD', discount: 'RM 50 OFF', uses: 12, maxUses: 50, expiryDate: '2023-01-01', targetAudience: 'Parent', status: 'Expired' },
-    ]);
+    const [coupons, setCoupons] = useState<Coupon[]>([]);
     const [showForm, setShowForm] = useState(false);
     
     // Form State
@@ -168,6 +164,9 @@ const AdminCouponsPage: React.FC = () => {
             )}
 
             <div className="grid grid-cols-1 gap-4">
+                {coupons.length === 0 && (
+                    <p className="text-center text-gray-500 dark:text-gray-400 py-8">Belum ada kupon. Cipta kupon pertama anda.</p>
+                )}
                 {coupons.map(coupon => (
                     <div key={coupon.id} className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div className="flex items-center gap-4 w-full sm:w-auto">
