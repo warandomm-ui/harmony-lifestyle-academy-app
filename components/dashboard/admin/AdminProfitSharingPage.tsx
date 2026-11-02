@@ -55,12 +55,12 @@ const AdminProfitSharingPage: React.FC = () => {
                     </p>
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Active Pool ({activeCycle?.month})</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Active Pool ({activeCycle?.month ?? '—'})</p>
                     <div className="flex items-center gap-2 mt-2">
                         <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-                            RM {activeCycle?.totalPool.toLocaleString() || '0'}
+                            RM {activeCycle?.totalPool.toLocaleString() ?? '0'}
                         </p>
-                        {activeCycle && <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">+12%</span>}
+                        
                     </div>
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">

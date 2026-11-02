@@ -8,8 +8,8 @@ interface CommunitySupportSectionProps {
 }
 
 const CommunitySupportSection: React.FC<CommunitySupportSectionProps> = ({ onRequestHelp, onDonate }) => {
-  // Mock data
-  const currentFund = 5432.10;
+  // No donations have been collected yet; show the true balance (zero) rather than a sample amount.
+  const currentFund = 0;
   const monthlyGoal = 10000;
   const progress = (currentFund / monthlyGoal) * 100;
 

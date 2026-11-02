@@ -98,7 +98,7 @@ const AdminRewardsPage: React.FC = () => {
             <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Profit-Sharing & Rewards</h1>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 mt-1">Review and approve AI-suggested payouts for {profitPool.month}.</p>
+                    <p className="text-lg text-gray-500 dark:text-gray-400 mt-1">Review and approve AI-suggested payouts{profitPool.total_pool_amount > 0 ? ` for ${profitPool.month}` : ''}.</p>
                 </div>
                 {/* Navigation to Profit Sharing Page is handled via Sidebar, but adding a quick link here helps workflow */}
                 <button type="button" disabled aria-disabled="true" className="flex items-center gap-2 px-4 py-2 bg-[var(--secondary)]/50 text-[var(--foreground)] rounded-lg font-bold cursor-not-allowed opacity-50" title="Use sidebar to manage cycles">
@@ -128,6 +128,11 @@ const AdminRewardsPage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            {payouts.length === 0 && (
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Tiada cadangan bayaran. Belum ada data pelajar sebenar.</td>
+                                </tr>
+                            )}
                             {payouts.map((p) => (
                                 <tr key={p.student_id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">

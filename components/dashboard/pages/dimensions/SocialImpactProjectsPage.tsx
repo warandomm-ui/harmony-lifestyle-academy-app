@@ -1,6 +1,7 @@
 import React from 'react';
 import { useToast } from '../../../../contexts/ToastContext';
 import { MOCK_SOCIAL_PROJECTS } from '../../../../constants';
+import EmptyState from '../../shared/EmptyState';
 import type { SocialImpactProject } from '../../../../types';
 import { LightBulbIcon, UsersIcon, GlobeAltIcon, CashIcon } from '../../Icons';
 
@@ -65,6 +66,9 @@ const SocialImpactProjectsPage: React.FC = () => {
 
             <section>
                 <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Project Board</h3>
+                {MOCK_SOCIAL_PROJECTS.length === 0 && (
+                    <EmptyState icon="🌱" title="Belum ada projek" description="Projek komuniti akan disenaraikan apabila ada projek sebenar yang disahkan." />
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {MOCK_SOCIAL_PROJECTS.map(project => (
                         <ProjectCard key={project.id} project={project} />

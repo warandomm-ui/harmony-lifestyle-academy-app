@@ -121,11 +121,12 @@ const FullPageWrapper: React.FC<FullPageWrapperProps> = ({ children, title }) =>
 /* ═══════════════════════════════════════════════
    DEFAULT COURSES
    ═══════════════════════════════════════════════ */
+// Starter courses begin at 0% — progress only moves when the user actually studies.
 const DEFAULT_COURSES: Course[] = [
-  { id: 'c_1', icon: '📐', title: 'Matematik', subtitle: 'Tingkatan 3', progress: 45 },
-  { id: 'c_2', icon: '💻', title: 'Python', subtitle: 'for Beginners', progress: 30 },
-  { id: 'c_3', icon: '🎨', title: 'Web Design', subtitle: 'Basics', progress: 15 },
-  { id: 'c_4', icon: '🔬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 55 },
+  { id: 'c_1', icon: '📐', title: 'Matematik', subtitle: 'Tingkatan 3', progress: 0 },
+  { id: 'c_2', icon: '💻', title: 'Python', subtitle: 'for Beginners', progress: 0 },
+  { id: 'c_3', icon: '🎨', title: 'Web Design', subtitle: 'Basics', progress: 0 },
+  { id: 'c_4', icon: '🔬', title: 'Sains', subtitle: 'Tingkatan 3', progress: 0 },
 ];
 /* ═══════════════════════════════════════════════
    MAIN COMPONENT

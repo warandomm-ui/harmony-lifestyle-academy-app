@@ -21,11 +21,8 @@ const DealsHubSection: React.FC = () => {
     const [orgType, setOrgType] = useState('School');
     const [email, setEmail] = useState('');
 
-    const activeDeals: Deal[] = [
-        { id: '1', code: 'HARMONY2024', description: 'Get 20% off your first month of Pro.', discount: '20% OFF', type: 'Student' },
-        { id: '2', code: 'FLASH50', description: 'Limited time offer! Save on yearly plans.', discount: 'RM 50 OFF', expiry: 'Ends in 2 days', type: 'Limited' },
-        { id: '3', code: 'FAMILY_BUNDLE', description: 'Sign up 2+ students and save.', discount: '15% OFF', type: 'Parent' },
-    ];
+    // No promotions are running yet; real coupon codes appear here once they exist at checkout.
+    const activeDeals: Deal[] = [];
 
     const handleCopy = (code: string, id: string) => {
         navigator.clipboard.writeText(code);
@@ -65,6 +62,9 @@ const DealsHubSection: React.FC = () => {
                         Active Promo Codes
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {activeDeals.length === 0 && (
+                            <p className="md:col-span-2 text-sm text-[var(--muted)] text-center py-6">Tiada tawaran aktif buat masa ini.</p>
+                        )}
                         {activeDeals.map(deal => (
                             <div key={deal.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl border-2 border-dashed border-green-300 dark:border-green-700 relative overflow-hidden group hover:border-green-500 transition-colors">
                                 {/* Ticket Cutout Effect */}

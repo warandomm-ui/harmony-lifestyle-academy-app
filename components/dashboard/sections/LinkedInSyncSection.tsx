@@ -35,10 +35,8 @@ const LinkedInSyncSection: React.FC<LinkedInSyncSectionProps> = ({ completedCour
   // For demonstration, we'll treat courses > 80% as eligible for "Early Access Badge" or similar if not 100%
   const certsToSync = completedCourses.filter(c => c.progress >= 100);
   
-  // Mocking a completed course if the user has none, just to show the UI
-  const displayCerts = certsToSync.length > 0 ? certsToSync : [
-    { title: 'Python for Beginners', subtitle: 'Completed', icon: '🐍', progress: 100 } // Mock for UI preview
-  ];
+  // Only real completed courses — no placeholder certificate when the user has none.
+  const displayCerts = certsToSync;
 
   const displaySkills = skills.slice(0, 5); // Show top 5 skills
 
@@ -61,6 +59,9 @@ const LinkedInSyncSection: React.FC<LinkedInSyncSectionProps> = ({ completedCour
                 <CheckBadgeIcon className="h-4 w-4" /> Pending Certifications
             </h3>
             <div className="space-y-3">
+                {displayCerts.length === 0 && (
+                    <p className="text-sm text-[var(--muted)] py-2">Belum ada kursus yang selesai. Sijil akan muncul di sini selepas anda menamatkan kursus.</p>
+                )}
                 {displayCerts.map((cert, index) => {
                     const id = `cert-${index}`;
                     const isSynced = syncedItems.has(id);

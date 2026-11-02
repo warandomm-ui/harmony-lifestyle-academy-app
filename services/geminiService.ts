@@ -92,7 +92,11 @@ export const generatePlaceholderVideo = async (prompt: string): Promise<string> 
 
 export const getAdminAssistance = async (prompt: string, studentData?: StudentDataItem[]): Promise<AdminAssistanceResult> => {
     try {
-        const fullPrompt = `System: Harmony Admin Assistant. Context: ${studentData ? JSON.stringify(studentData) : "N/A"}. Request: ${prompt}`;
+        // With no real student records, say so explicitly so the model does not invent numbers.
+        const context = studentData && studentData.length > 0
+            ? JSON.stringify(studentData)
+            : 'No student data is available yet. Do not invent student names, statistics or results; if the request needs data, say that none is available.';
+        const fullPrompt = `System: Harmony Admin Assistant. Context: ${context}. Request: ${prompt}`;
         const text = await generateContent(fullPrompt);
         return { text: text || '', groundingLinks: [] };
     } catch (error) { return { text: 'Sorry, assistant is temporarily unavailable.', groundingLinks: [] }; }

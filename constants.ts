@@ -465,173 +465,11 @@ export const getPersonalityColor = (type: string, mapping: { [key: string]: stri
   return 'text-green-600 dark:text-green-500'; 
 };
 
-export const MOCK_STUDENT_DATA: StudentDataItem[] = [
-    {
-      userId: 'user-001',
-      activity: 'Completed "Introduction to Python" Module 1',
-      timestamp: '2024-07-20T10:00:00Z',
-      engagementScore: 90,
-      quizScore: 85,
-      timeSpentMinutes: 120,
-      feedback: 'Really enjoyed the interactive coding exercises. Video quality was good.',
-      personalityType: 'The Analytical Architect',
-      careerPath: 'Software Engineer',
-    },
-    {
-      userId: 'user-002',
-      activity: 'Attempted "Matematik Tingkatan 3" Quiz 2',
-      timestamp: '2024-07-20T11:30:00Z',
-      engagementScore: 65,
-      quizScore: 55,
-      timeSpentMinutes: 45,
-      feedback: 'Struggled with algebraic fractions. Need more examples.',
-      personalityType: 'The Empathetic Collaborator',
-      careerPath: 'Teacher',
-    },
-    {
-      userId: 'user-003',
-      activity: 'Participated in "SPM 2025 Warriors" chat group',
-      timestamp: '2024-07-20T14:00:00Z',
-      engagementScore: 80,
-      timeSpentMinutes: 30,
-      feedback: 'Good discussion on study techniques, but some members were off-topic.',
-      personalityType: 'The Social Innovator',
-      careerPath: 'Digital Marketer',
-    },
-    {
-      userId: 'user-004',
-      activity: 'Viewed "Financial Literacy for Teens" lesson on budgeting',
-      timestamp: '2024-07-20T16:00:00Z',
-      engagementScore: 75,
-      timeSpentMinutes: 20,
-      feedback: null,
-      personalityType: 'The Pragmatic Planner',
-      careerPath: 'Financial Analyst',
-    },
-    {
-      userId: 'user-005',
-      activity: 'Completed "Introduction to Python" Module 2',
-      timestamp: '2024-07-21T09:00:00Z',
-      engagementScore: 92,
-      quizScore: 90,
-      timeSpentMinutes: 150,
-      feedback: 'Project was challenging but rewarding. Learned a lot!',
-      personalityType: 'The Analytical Architect',
-      careerPath: 'Software Engineer',
-    },
-    {
-      userId: 'user-006',
-      activity: 'Skipped "Sains Tingkatan 3" Chapter 5 reading',
-      timestamp: '2024-07-21T10:15:00Z',
-      engagementScore: 30,
-      timeSpentMinutes: 5,
-      feedback: 'Reading material was too dry. Prefer videos.',
-      personalityType: 'The Creative Explorer',
-      careerPath: 'Content Creator',
-    },
-    {
-      userId: 'user-007',
-      activity: 'Logged 30 minutes of workout in Health & Fitness section',
-      timestamp: '2024-07-21T18:00:00Z',
-      engagementScore: 88,
-      timeSpentMinutes: 30,
-      feedback: null,
-      personalityType: 'The Action-Oriented Driver',
-      careerPath: 'Entrepreneur',
-    },
-    {
-      userId: 'user-008',
-      activity: 'Started "UX/UI Design Basics" course, but only viewed first lesson',
-      timestamp: '2024-07-22T11:00:00Z',
-      engagementScore: 40,
-      timeSpentMinutes: 15,
-      feedback: 'Lost interest after the intro. Not as engaging as expected.',
-      personalityType: 'The Visionary Innovator',
-      careerPath: 'UX/UI Designer',
-    },
-    {
-      userId: 'user-009',
-      activity: 'Completed "Matematik Tingkatan 3" Quiz 2 with improved score',
-      timestamp: '2024-07-22T14:00:00Z',
-      engagementScore: 80,
-      quizScore: 78,
-      timeSpentMinutes: 60,
-      feedback: 'The extra practice problems really helped!',
-      personalityType: 'The Empathetic Collaborator',
-      careerPath: 'Teacher',
-    },
-    {
-      userId: 'user-010',
-      activity: 'Posted a question in "Career Skills" forum about interview tips',
-      timestamp: '2024-07-22T16:30:00Z',
-      engagementScore: 70,
-      timeSpentMinutes: 10,
-      feedback: null,
-      personalityType: 'The Driven Achiever',
-      careerPath: 'Product Manager',
-    },
-    {
-      userId: 'user-011',
-      activity: 'Completed "Introduction to Python" Module 3, including final project',
-      timestamp: '2024-07-23T10:00:00Z',
-      engagementScore: 95,
-      quizScore: 92,
-      timeSpentMinutes: 180,
-      feedback: 'Excellent course! Feeling confident to build more.',
-      personalityType: 'The Analytical Architect',
-      careerPath: 'Software Engineer',
-    },
-    {
-      userId: 'user-012',
-      activity: 'Viewed "Digital Marketing Fundamentals" first module videos',
-      timestamp: '2024-07-23T11:45:00Z',
-      engagementScore: 70,
-      timeSpentMinutes: 40,
-      feedback: null,
-      personalityType: 'The Social Innovator',
-      careerPath: 'Digital Marketer',
-    },
-    {
-      userId: 'user-013',
-      activity: 'Reported a bug in the "Game Studio" app builder',
-      timestamp: '2024-07-23T13:00:00Z',
-      engagementScore: 50,
-      timeSpentMinutes: 10,
-      feedback: 'App crashed when trying to add a new asset. Very frustrating.',
-      personalityType: 'The Creative Explorer',
-      careerPath: 'Game Developer',
-    },
-    {
-      userId: 'user-014',
-      activity: 'Visited "My Courses" section, no new activity',
-      timestamp: '2024-07-23T15:00:00Z',
-      engagementScore: 20,
-      timeSpentMinutes: 5,
-      feedback: null,
-      personalityType: 'The Pragmatic Planner',
-      careerPath: 'Business Analyst',
-    },
-    {
-      userId: 'user-015',
-      activity: 'Successfully completed the "Build a Weather App" challenge',
-      timestamp: '2024-07-23T17:00:00Z',
-      engagementScore: 98,
-      timeSpentMinutes: 240,
-      feedback: 'The challenge was super fun and pushed my skills!',
-      personalityType: 'The Action-Oriented Driver',
-      careerPath: 'Software Engineer',
-    },
-];
+// No sample students: the admin assistant only analyses real student records once they are loaded.
+export const MOCK_STUDENT_DATA: StudentDataItem[] = [];
 
-export const MOCK_EMOTION_DATA: EmotionEntry[] = [
-  { date: '2024-07-23', emotion: 'Happy', note: 'Had a great coding session and solved a tough bug!' },
-  { date: '2024-07-22', emotion: 'Calm', note: 'Relaxed after a long walk in the park.' },
-  { date: '2024-07-21', emotion: 'Excited', note: 'Received an acceptance letter for a summer program!' },
-  { date: '2024-07-20', emotion: 'Neutral', note: 'Just another normal day of studying.' },
-  { date: '2024-07-19', emotion: 'Anxious', note: 'Big exam tomorrow, feeling a bit stressed.' },
-  { date: '2024-07-18', emotion: 'Happy', note: 'Spent time with friends, lots of laughter.' },
-  { date: '2024-07-17', emotion: 'Sad', note: 'Missed my online class due to internet issues.' },
-];
+// Starts empty: a new user has no mood history until they log one.
+export const MOCK_EMOTION_DATA: EmotionEntry[] = [];
 
 export const EMOTION_OPTIONS: { emotion: Emotion; emoji: string; color: string }[] = [
   { emotion: 'Happy', emoji: '😄', color: 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300' },
@@ -659,22 +497,8 @@ const getYesterdayString = () => {
     return d.toISOString().split('T')[0];
 };
 
-export const MOCK_TIMETABLE_DATA: TimeTableEntry[] = [
-  { id: 'tt1', date: getTodayString(), time: '08:00 AM - 09:00 AM', activity: 'Matematik Tingkatan 3 (Module 5)', type: 'study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
-  { id: 'tt2', date: getTodayString(), time: '09:00 AM - 10:00 AM', activity: 'Sains Fizik (Chapter 2 Reading)', type: 'study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
-  { id: 'tt3', date: getTodayString(), time: '10:00 AM - 10:30 AM', activity: 'Break / Snack', type: 'leisure', colorClass: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' },
-  { id: 'tt4', date: getTodayString(), time: '10:30 AM - 12:00 PM', activity: 'Python Programming (Project Work)', type: 'study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
-  { id: 'tt5', date: getTodayString(), time: '12:00 PM - 01:00 PM', activity: 'Lunch Break', type: 'leisure', colorClass: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' },
-  { id: 'tt6', date: getTodayString(), time: '01:00 PM - 02:00 PM', activity: 'Workout / Exercise', type: 'fitness', colorClass: 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300' },
-  { id: 'tt7', date: getTodayString(), time: '02:00 PM - 03:00 PM', activity: 'Community Study Group (History)', type: 'study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
-  { id: 'tt8', date: getTodayString(), time: '03:00 PM - 04:00 PM', activity: 'Personal Project (Digital Art)', type: 'leisure', colorClass: 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300' },
-  { id: 'tt9', date: getTodayString(), time: '04:00 PM - 05:00 PM', activity: 'Reading a Book', type: 'leisure', colorClass: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' },
-  { id: 'tt10', date: getTodayString(), time: '05:00 PM - 06:00 PM', activity: 'Family Time', type: 'other', colorClass: 'bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300' },
-  // Example entries for tomorrow and yesterday to show calendar functionality
-  { id: 'tt11', date: getTomorrowString(), time: '09:00 AM - 10:00 AM', activity: 'Plan Week Ahead', type: 'other', colorClass: 'bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300' },
-  { id: 'tt12', date: getTomorrowString(), time: '11:00 AM - 12:30 PM', activity: 'Deep Work: Project Alpha', type: 'study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
-  { id: 'tt13', date: getYesterdayString(), time: '07:00 PM - 08:00 PM', activity: 'Evening Run', type: 'fitness', colorClass: 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300' },
-];
+// Starts empty: the timetable only shows entries the user adds.
+export const MOCK_TIMETABLE_DATA: TimeTableEntry[] = [];
 
 export const TIMETABLE_ACTIVITY_TYPE_OPTIONS: { type: TimeTableEntry['type']; label: string; colorClass: string; }[] = [
   { type: 'study', label: 'Study', colorClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300' },
@@ -695,12 +519,8 @@ const getGenericDateStringForCurrentMonth = (day: number) => {
     return d.toISOString().split('T')[0]; // YYYY-MM-DD for the current month
 };
 
-export const MOCK_INCOME_DATA: IncomeEntry[] = [
-  { id: 'inc1', source: 'Part-time Tutoring', amount: 150, date: getGenericDateStringForCurrentMonth(15) },
-  { id: 'inc2', source: 'Allowance', amount: 100, date: getGenericDateStringForCurrentMonth(1) },
-  { id: 'inc3', source: 'Freelance Design', amount: 50, date: getGenericDateStringForCurrentMonth(10) },
-  { id: 'inc4', source: 'Content Creation', amount: 80, date: getGenericDateStringForCurrentMonth(20) },
-];
+// Starts empty: income is only what the user records.
+export const MOCK_INCOME_DATA: IncomeEntry[] = [];
 
 export const MOCK_WORLD_EDUCATION_DATA: EducationCountry[] = [
   {
@@ -750,14 +570,8 @@ export const MOCK_WORLD_EDUCATION_DATA: EducationCountry[] = [
   },
 ];
 
-export const MOCK_PRODUCTS: Product[] = [
-    { id: 'prod_1', name: 'Notion Study Planner', category: 'Study Template', price: 25.00, description: 'Organize your studies like a pro with this aesthetic template.', imageUrl: 'https://placehold.co/400x300/D9CEFF/1B1B1F?text=Notion+Planner' },
-    { id: 'prod_2', name: 'Harmony Hoodie', category: 'Merch', price: 120.00, description: 'Cozy and stylish official merch to rep the academy.', imageUrl: 'https://placehold.co/400x300/7F5AF0/FFFFFF?text=Harmony+Hoodie' },
-    { id: 'prod_3', name: 'SPM Sejarah Survival E-Book', category: 'E-Book', price: 15.00, description: 'Key notes and proven tips to help you ace the Sejarah paper.', imageUrl: 'https://placehold.co/400x300/00F5D4/1B1B1F?text=Sejarah+E-Book' },
-    { id: 'prod_4', name: 'Focus Pomodoro Timer App', category: 'Digital Tool', price: 5.00, description: 'A minimal and beautiful timer to boost your focus sessions.', imageUrl: 'https://placehold.co/400x300/F8F7FF/1B1B1F?text=Pomodoro+App' },
-    { id: 'prod_5', name: 'Aesthetic Sticker Pack', category: 'Merch', price: 12.00, description: 'High-quality vinyl stickers for your laptop, water bottle, etc.', imageUrl: 'https://placehold.co/400x300/FF6B6B/FFFFFF?text=Stickers' },
-    { id: 'prod_6', name: 'Python for Beginners Video Course', category: 'E-Book', price: 50.00, description: 'A comprehensive video course to start your coding journey.', imageUrl: 'https://placehold.co/400x300/4ECDC4/FFFFFF?text=Python+Course' },
-];
+// No products are listed until real products are available for sale.
+export const MOCK_PRODUCTS: Product[] = [];
 
 export const SUPPORT_HOTLINES: SupportHotline[] = [
   {
@@ -790,46 +604,28 @@ export const SUPPORT_HOTLINES: SupportHotline[] = [
   },
 ];
 
-export const MOCK_ANONYMOUS_POSTS: AnonymousPost[] = [
-  {
-    id: 'anon_1',
-    content: "Feeling really overwhelmed with SPM trials. It feels like I can't keep up no matter how hard I study. Does anyone else feel this way?",
-    timestamp: '2 hours ago',
-    userId: 'user-hidden-1',
-  },
-  {
-    id: 'anon_2',
-    content: "I'm having a tough time making friends at my new uni. Everyone seems to have their own groups already. It's pretty lonely.",
-    timestamp: '5 hours ago',
-    userId: 'user-hidden-2',
-  },
-  {
-    id: 'anon_3',
-    content: "My parents are putting a lot of pressure on me to choose a career I'm not passionate about. I don't know how to tell them without disappointing them.",
-    timestamp: '1 day ago',
-    userId: 'user-hidden-3',
-  },
-];
+// No sample posts: only real posts from users are shown.
+export const MOCK_ANONYMOUS_POSTS: AnonymousPost[] = [];
 
 export const CHAT_GROUPS: ChatGroup[] = [
   // Student Groups
-  { name: 'Form 1-3 Hangout', members: '128 members', category: 'Student' },
-  { name: 'SPM Warriors 2024/25', members: '342 members', category: 'Student' },
-  { name: 'Pre-University & Foundation', members: '215 members', category: 'Student' },
-  { name: 'Uni Students Malaysia', members: '500+ members', category: 'Student' },
+  { name: 'Form 1-3 Hangout', members: '', category: 'Student' },
+  { name: 'SPM Warriors 2024/25', members: '', category: 'Student' },
+  { name: 'Pre-University & Foundation', members: '', category: 'Student' },
+  { name: 'Uni Students Malaysia', members: '', category: 'Student' },
   // Parent Groups
-  { name: 'Parents of Secondary Students', members: '98 members', category: 'Parent' },
-  { name: 'Parents of University Students', members: '76 members', category: 'Parent' },
+  { name: 'Parents of Secondary Students', members: '', category: 'Parent' },
+  { name: 'Parents of University Students', members: '', category: 'Parent' },
   // Female Only
-  { name: 'Girl Gamers Malaysia 🎮', members: '88 members', category: 'Female Only' },
-  { name: 'Women in Tech MY', members: '150 members', category: 'Female Only' },
+  { name: 'Girl Gamers Malaysia 🎮', members: '', category: 'Female Only' },
+  { name: 'Women in Tech MY', members: '', category: 'Female Only' },
   // Male Only
-  { name: 'Brotherhood Book Club 📚', members: '45 members', category: 'Male Only' },
-  { name: 'KL Futsal Crew', members: '112 members', category: 'Male Only' },
+  { name: 'Brotherhood Book Club 📚', members: '', category: 'Male Only' },
+  { name: 'KL Futsal Crew', members: '', category: 'Male Only' },
   // Mixed Gender (General Interest)
-  { name: 'KL & Selangor Foodies', members: '600+ members', category: 'Mixed Gender' },
-  { name: 'Malaysian Memes & Lols', members: '1000+ members', category: 'Mixed Gender' },
-  { name: 'Anime & Manga Fans', members: '450+ members', category: 'Mixed Gender' },
+  { name: 'KL & Selangor Foodies', members: '', category: 'Mixed Gender' },
+  { name: 'Malaysian Memes & Lols', members: '', category: 'Mixed Gender' },
+  { name: 'Anime & Manga Fans', members: '', category: 'Mixed Gender' },
 ];
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
@@ -874,20 +670,17 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     },
 ];
 
-export const MOCK_TRANSACTIONS: Transaction[] = [
-    { id: 'txn_1', date: '2024-07-20', description: 'Harmony Store: Notion Planner', amount: 25.00, status: 'Completed' },
-    { id: 'txn_2', date: '2024-07-15', description: 'Donation to Community Fund', amount: 10.00, status: 'Completed' },
-    { id: 'txn_3', date: '2024-07-01', description: 'Pro Plan Subscription', amount: 25.00, status: 'Failed' },
-    { id: 'txn_4', date: '2024-06-30', description: 'Harmony Store: Hoodie', amount: 120.00, status: 'Completed' },
-];
+// No sample transactions: billing history only lists real payments.
+export const MOCK_TRANSACTIONS: Transaction[] = [];
 
 // --- Gamification Data ---
+// A new user starts at zero, with only the welcome badge for having joined.
 export const MOCK_USER_GAMIFICATION_PROFILE: GamificationProfile = {
-  points: 1250,
-  level: 5,
-  xpInLevel: 250,
+  points: 0,
+  level: 1,
+  xpInLevel: 0,
   xpForNextLevel: 1000,
-  badges: ['newbie', 'task-master-1', 'streaker-1'],
+  badges: ['newbie'],
 };
 
 export const MOCK_BADGES: Badge[] = [
@@ -913,25 +706,19 @@ export const MOCK_BADGES: Badge[] = [
   { id: 'sunnah-master', name: 'Sunnah Master', description: 'Completed all 354 Sunnah practices. SubhanAllah!', icon: '🏆' },
 ];
 
-export const MOCK_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, userName: 'Aina C.', points: 12500, isCurrentUser: false, avatar: '🧕' },
-  { rank: 2, userName: 'Bala S.', points: 11800, isCurrentUser: false, avatar: '👳' },
-  { rank: 3, userName: 'Chen W.', points: 10500, isCurrentUser: false, avatar: '👲' },
-  { rank: 4, userName: 'Dania R.', points: 9800, isCurrentUser: false, avatar: '👩‍💻' },
-  { rank: 5, userName: 'Ethan L.', points: 9200, isCurrentUser: false, avatar: '👨‍🎨' },
-  { rank: 6, userName: 'Farah A.', points: 8500, isCurrentUser: false, avatar: '🧑‍🔬' },
-  { rank: 28, userName: 'You', points: 1250, isCurrentUser: true, avatar: '🧑‍🚀' },
-];
+// No sample players: the leaderboard only lists real users once a backend provides them.
+export const MOCK_LEADERBOARD: LeaderboardEntry[] = [];
 
+// Attributions follow what can be sourced; quotes with no documented origin say so.
 export const DAILY_QUOTES = [
   { quote: "You become who you are from what you read, watch, listen and talk. Choose good.", author: "Anonymous" },
-  { quote: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { quote: "The secret of getting ahead is getting started.", author: "Tidak diketahui (sering disandarkan kepada Mark Twain)" },
   { quote: "It’s not whether you get knocked down, it’s whether you get up.", author: "Vince Lombardi" },
   { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+  { quote: "Believe you can and you're halfway there.", author: "Tidak diketahui (sering disandarkan kepada Theodore Roosevelt)" },
   { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-  { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
+  { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Tidak diketahui (sering disandarkan kepada Winston Churchill)" },
+  { quote: "Try not to become a man of success, but rather try to become a man of value.", author: "Albert Einstein (LIFE, 1955)" },
   { quote: "Ilmu itu didapat dengan lidah yang gemar bertanya dan akal yang suka berpikir.", author: "Abdullah bin Abbas" },
   { quote: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
   { quote: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
@@ -1098,65 +885,22 @@ export const MOCK_MARTIAL_ARTS_TECHNIQUES: MartialArtTechnique[] = [
 ];
 
 // --- Mock Profit-Sharing Data ---
-export const MOCK_STUDENT_REWARD_DATA: StudentRewardInfo[] = [
-  { student_id: 'user-001', name: 'Aina C.', avatar: '🧕', level: 'Partner', progress_score: 95, contribution_points: 120, harmony_coins: 1580, suggested_payout: 250, status: 'suggested' },
-  { student_id: 'user-002', name: 'Bala S.', avatar: '👳', level: 'Mentor', progress_score: 88, contribution_points: 95, harmony_coins: 1230, suggested_payout: 180, status: 'suggested' },
-  { student_id: 'user-003', name: 'Chen W.', avatar: '👲', level: 'Mentor', progress_score: 92, contribution_points: 80, harmony_coins: 1100, suggested_payout: 150, status: 'suggested' },
-  { student_id: 'user-004', name: 'Dania R.', avatar: '👩‍💻', level: 'Learner', progress_score: 75, contribution_points: 50, harmony_coins: 650, suggested_payout: 75, status: 'suggested' },
-  { student_id: 'user-005', name: 'Ethan L.', avatar: '👨‍🎨', level: 'Learner', progress_score: 68, contribution_points: 30, harmony_coins: 400, suggested_payout: 50, status: 'suggested' },
-];
+// No sample students or payouts.
+export const MOCK_STUDENT_REWARD_DATA: StudentRewardInfo[] = [];
 
+// No pool has been funded yet; zeros instead of sample amounts.
 export const MOCK_PROFIT_POOL_DATA: ProfitPoolInfo = {
-  month: 'July 2024',
-  total_pool_amount: 10000,
-  eligible_students: 28,
+  month: '—',
+  total_pool_amount: 0,
+  eligible_students: 0,
 };
 
-export const MOCK_PROFIT_SHARING_CYCLES: ProfitSharingCycle[] = [
-    { id: 'cycle-1', month: 'July 2024', totalPool: 10000, eligibleStudents: 28, status: 'Active' },
-    { id: 'cycle-2', month: 'June 2024', totalPool: 8500, eligibleStudents: 22, status: 'Distributed', distributedDate: '2024-07-01' },
-    { id: 'cycle-3', month: 'May 2024', totalPool: 7200, eligibleStudents: 18, status: 'Distributed', distributedDate: '2024-06-01' },
-];
+// No sample cycles: only real profit-sharing cycles are listed.
+export const MOCK_PROFIT_SHARING_CYCLES: ProfitSharingCycle[] = [];
 
 // --- Mock Social Impact Projects ---
-export const MOCK_SOCIAL_PROJECTS: SocialImpactProject[] = [
-    {
-        id: 'proj-001',
-        title: 'School Washroom Improvement',
-        description: 'The main student washrooms are old, with broken tiles, leaking taps, and poor ventilation. This project aims to renovate the washrooms to create a cleaner, safer, and more pleasant environment for everyone.',
-        location: 'SMK Taman Melati, Kuala Lumpur',
-        impactArea: 'Health & Sanitation',
-        status: 'Open',
-        teamSize: '3-5 students',
-        incomePotential: true,
-        requiredSkills: ['Project Management', 'Fundraising', 'Basic Plumbing', 'Interior Design'],
-        objectives: ['Repair all leaks', 'Repaint walls with anti-mold paint', 'Install water-saving taps', 'Improve ventilation'],
-    },
-    {
-        id: 'proj-002',
-        title: 'Community Recycling Program',
-        description: 'Our neighborhood lacks a systematic recycling program, leading to excess waste. This project will establish collection points and a student-led initiative to educate residents on proper recycling.',
-        location: 'Taman Bunga Raya, Selangor',
-        impactArea: 'Environment',
-        status: 'Open',
-        teamSize: '5-8 students',
-        incomePotential: true,
-        requiredSkills: ['Event Planning', 'Public Speaking', 'Logistics', 'Social Media Marketing'],
-        objectives: ['Set up 3 recycling collection points', 'Run 2 educational workshops', 'Partner with a local recycling center'],
-    },
-    {
-        id: 'proj-003',
-        title: 'Digital Literacy for Seniors',
-        description: 'Many elderly members of our community struggle with using smartphones and accessing digital services. This project will organize weekly workshops to teach them essential digital skills.',
-        location: 'Balai Raya, Kampung Baru',
-        impactArea: 'Education & Community',
-        status: 'In Progress',
-        teamSize: '4 students',
-        incomePotential: false,
-        requiredSkills: ['Teaching', 'Patience', 'Communication', 'Basic IT'],
-        objectives: ['Teach 20 seniors how to use WhatsApp', 'Help them set up MySejahtera', 'Explain how to spot online scams'],
-    },
-];
+// No sample projects: only real, verified community projects are listed.
+export const MOCK_SOCIAL_PROJECTS: SocialImpactProject[] = [];
 
 export const MOCK_FULL_COURSE: Course = {
     id: 'c_101',

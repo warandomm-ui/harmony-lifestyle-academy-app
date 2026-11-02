@@ -14,10 +14,7 @@ interface AdminCourse {
 
 const AdminCoursesPage: React.FC = () => {
     const { addToast } = useToast();
-    const [courses, setCourses] = useState<AdminCourse[]>([
-        { id: '1', title: 'Python for Beginners', instructor: 'Harmony AI', status: 'Published', lessons: 12, thumbnail: '🐍' },
-        { id: '2', title: 'Financial Literacy 101', instructor: 'Cikgu Siti', status: 'Draft', lessons: 5, thumbnail: '💰' },
-    ]);
+    const [courses, setCourses] = useState<AdminCourse[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [newCourseTitle, setNewCourseTitle] = useState('');
 
@@ -75,6 +72,9 @@ const AdminCoursesPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                        {courses.length === 0 && (
+                            <tr><td colSpan={5} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada kursus. Cipta kursus pertama anda.</td></tr>
+                        )}
                         {courses.map(course => (
                             <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
                                 <td className="px-6 py-4">
