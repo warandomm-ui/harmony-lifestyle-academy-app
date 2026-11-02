@@ -44,7 +44,9 @@ const ProjectsSection: React.FC = () => {
     );
 };
 
-const ProjectCard = ({ icon, title, startDate, progress }: { icon: string, title: string, startDate: string, progress: number }) => (
+const ProjectCard = ({ icon, title, startDate, progress }: { icon: string, title: string, startDate: string, progress: number }) => {
+    const { addToast } = useToast();
+    return (
     <div className="bg-[var(--secondary)] rounded-2xl p-6 flex flex-col">
         <div className="flex items-start justify-between">
             <div>
@@ -57,8 +59,9 @@ const ProjectCard = ({ icon, title, startDate, progress }: { icon: string, title
         <div className="my-4">
            <ProgressBar label="Progress" percentage={progress} value={`${progress}%`} />
         </div>
-        <button className="w-full mt-auto bg-[var(--primary)] text-[var(--primary-foreground)] font-bold py-2 px-4 rounded-full hover:opacity-90 transition">Continue Building</button>
+        <button type="button" onClick={() => addToast('Ciri ini akan datang tidak lama lagi.', 'info')} className="w-full mt-auto bg-[var(--primary)] text-[var(--primary-foreground)] font-bold py-2 px-4 rounded-full hover:opacity-90 transition">Continue Building</button>
     </div>
-);
+    );
+};
 
 export default ProjectsSection;

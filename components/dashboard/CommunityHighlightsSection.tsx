@@ -36,8 +36,8 @@ const PostCard: React.FC<PostCardProps> = ({ author, time, group, content, likes
         </div>
         <p className="my-3 text-sm leading-relaxed" style={{ color: 'rgba(245,240,232,0.85)' }}>{content}</p>
         <div className="flex items-center gap-4 text-xs" style={{ color: '#8a8a9a' }}>
-            <span>Ã¢ÂÂ¤Ã¯Â¸Â {likes}</span>
-            <span>Ã°ÂÂÂ¬ {comments}</span>
+            <span>❤️ {likes}</span>
+            <span>💬 {comments}</span>
             <button onClick={() => addToast('Post shared to your feed!', 'success')} className="font-semibold hover:underline transition-colors" style={{ color: 'rgba(201,168,76,0.7)' }}>
                 Share
             </button>
@@ -69,7 +69,7 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
             className="text-2xl pt-0.5 flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl"
             style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)' }}
         >
-            {type === 'online' ? 'Ã°ÂÂÂ' : 'Ã°ÂÂÂÃ¯Â¸Â'}
+            {type === 'online' ? '📅' : '🏟️'}
         </div>
         <div className="flex-1 min-w-0">
             <p
@@ -103,36 +103,29 @@ const EventCard: React.FC<EventCardProps> = ({ date, title, host, attendees, typ
 };
 
 // --- Main Section ---
+// No sample posts or events are shown: the feed only lists real activity once the
+// community backend exists. Until then each list shows an honest empty state.
+const posts: PostCardProps[] = [];
+const events: EventCardProps[] = [];
+
+const EmptyState: React.FC<{ icon: string; text: string }> = ({ icon, text }) => (
+    <div
+        className="rounded-xl p-4 text-sm flex items-center gap-3"
+        style={{ background: 'rgba(201,168,76,0.04)', border: '1px dashed rgba(201,168,76,0.2)', color: '#8a8a9a', fontFamily: "'DM Sans', sans-serif" }}
+    >
+        <span className="text-xl" aria-hidden="true">{icon}</span>
+        <span>{text}</span>
+    </div>
+);
+
 const CommunityHighlightsSection: React.FC = () => {
-  const { addToast } = useToast();
-    const posts = [
-        {
-            author: 'Ahmad Ã¢ÂÂ Form 4',
-            time: '2 hours ago',
-            group: 'SPM 2025 Warriors',
-            content: 'Just completed my first Python game! Ã°ÂÂÂ® So hyped! This is giving me life.',
-            likes: 23,
-            comments: 8,
-        },
-    ];
-
-    const events = [
-        {
-            date: 'Tomorrow, 8:00 PM',
-            title: 'Live Q&A: Acing Add Maths',
-            host: 'with Cikgu Reza',
-            attendees: '45 going',
-            type: 'online' as const,
-        },
-    ];
-
     return (
         <div className="bento-card h-full">
             <h2
                 className="text-xl font-bold mb-5 flex items-center gap-2"
                 style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#f5f0e8' }}
             >
-                <span style={{ color: '#c9a84c' }}>Ã¢ÂÂ¦</span>
+                <span style={{ color: '#c9a84c' }}>✦</span>
                 Community Feed
             </h2>
 
@@ -145,7 +138,9 @@ const CommunityHighlightsSection: React.FC = () => {
                         What's Happening
                     </h3>
                     <div className="space-y-3">
-                        {posts.map((post, i) => <PostCard key={i} {...post} />)}
+                        {posts.length > 0
+                            ? posts.map((post, i) => <PostCard key={i} {...post} />)
+                            : <EmptyState icon="💬" text="Belum ada hantaran komuniti." />}
                     </div>
                 </div>
 
@@ -157,13 +152,10 @@ const CommunityHighlightsSection: React.FC = () => {
                         Upcoming Events
                     </h3>
                     <div className="space-y-3">
-                        {events.map((event, i) => <EventCard key={i} {...event} />)}
+                        {events.length > 0
+                            ? events.map((event, i) => <EventCard key={i} {...event} />)
+                            : <EmptyState icon="📅" text="Tiada acara dijadualkan buat masa ini." />}
                     </div>
-                    <button
-                        className="mt-4 w-full text-center text-xs font-semibold uppercase tracking-[0.15em] py-2 transition-colors hover:opacity-80"
-                        style={{ color: 'rgba(201,168,76,0.7)', fontFamily: "'DM Sans', sans-serif" }} onClick={() => addToast('Events page coming soon!', 'info')}>
-                        View All Events
-                    </button>
                 </div>
             </div>
         </div>

@@ -43,9 +43,10 @@ const AdminDashboard: React.FC<{ setCurrentView: (view: DashboardView) => void }
         {/* App Analytics Section */}
         <section className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <StatCard icon={<UsersIcon className="h-6 w-6 text-green-600" />} title="Total Users" value="1,284" trend="+5.2% this month" />
-                <StatCard icon={<ChartBarIcon className="h-6 w-6 text-green-600" />} title="Daily Engagement" value="78%" trend="-1.5% yesterday" />
-                <StatCard icon={<TrendingUpIcon className="h-6 w-6 text-green-600" />} title="Revenue" value="RM 4,200" trend="+20% this month" />
+                {/* No analytics source is connected yet, so no figures are shown rather than sample numbers. */}
+                <StatCard icon={<UsersIcon className="h-6 w-6 text-green-600" />} title="Total Users" value="—" trend="Data belum disambungkan" />
+                <StatCard icon={<ChartBarIcon className="h-6 w-6 text-green-600" />} title="Daily Engagement" value="—" trend="Data belum disambungkan" />
+                <StatCard icon={<TrendingUpIcon className="h-6 w-6 text-green-600" />} title="Revenue" value="—" trend="Data belum disambungkan" />
             </div>
         </section>
 

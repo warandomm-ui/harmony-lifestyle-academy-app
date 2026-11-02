@@ -1,4 +1,5 @@
 import React from 'react';
+import { useToast } from '../../../contexts/ToastContext';
 import { ShieldCheckIcon } from '../Icons';
 
 const selfDefenseStyles = [
@@ -23,6 +24,7 @@ const selfDefenseStyles = [
 ];
 
 const SelfDefenseSection: React.FC = () => {
+  const { addToast } = useToast();
     return (
         <div className="bento-card">
             <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4 flex items-center gap-2">
@@ -36,7 +38,7 @@ const SelfDefenseSection: React.FC = () => {
                         <h3 className="font-bold text-lg text-[var(--foreground)]">{style.name}</h3>
                         <p className="text-sm font-semibold text-[var(--primary)]">{style.style}</p>
                         <p className="text-sm text-[var(--muted)] mt-2">{style.description}</p>
-                        <button className="mt-4 w-full bg-red-500/20 text-red-700 dark:text-red-300 font-bold py-2 px-4 rounded-full hover:bg-red-500/30 transition">
+                        <button type="button" onClick={() => addToast('Ciri ini akan datang tidak lama lagi.', 'info')} className="mt-4 w-full bg-red-500/20 text-red-700 dark:text-red-300 font-bold py-2 px-4 rounded-full hover:bg-red-500/30 transition">
                             Learn More
                         </button>
                     </div>

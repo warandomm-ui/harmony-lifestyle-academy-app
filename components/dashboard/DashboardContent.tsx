@@ -42,7 +42,7 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
 
   return (
     <main
-      className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto"
+      className="flex-1 p-4 sm:p-6 md:p-8 pb-24 md:pb-8 overflow-y-auto"
       style={{
         background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(13,27,42,0.9), transparent), #0a0a0f',
       }}

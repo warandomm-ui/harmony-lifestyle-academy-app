@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { UserProfile, AnalysisResult } from '../../../types';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { useToast } from '../../../contexts/ToastContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../services/supabaseClient';
 import * as Icons from '../Icons';
 import { GENDERS, RACES, RELIGIONS, STATES } from '../../../constants';
 import { getCareerIcon } from '../../../constants';
@@ -99,6 +101,26 @@ const TraitItem: React.FC<{ icon: string; label: string; value: string; }> = ({ 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onProfileUpdate }) => {
     const { profile: gamificationProfile } = useGamification();
     const { addToast } = useToast();
+    const { user } = useAuth();
+    const [isSendingReset, setIsSendingReset] = useState(false);
+
+    // Sends a real Supabase password-reset email to the signed-in address.
+    const handleSendPasswordReset = async () => {
+        if (!user?.email) {
+            addToast('Tiada alamat e-mel dikaitkan dengan akaun ini.', 'error');
+            return;
+        }
+        setIsSendingReset(true);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin });
+            if (error) throw error;
+            addToast(`Pautan set semula kata laluan dihantar ke ${user.email}.`, 'success');
+        } catch (err: any) {
+            addToast(err?.message || 'Gagal menghantar e-mel set semula.', 'error');
+        } finally {
+            setIsSendingReset(false);
+        }
+    };
 
     const [editableProfile, setEditableProfile] = useState<UserProfile>(userProfile);
     
@@ -217,8 +239,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onP
                  <section className="bento-card">
                     <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Account Settings</h2>
                     <div className="space-y-4">
-                        <button className="w-full text-left p-3 rounded-lg bg-[var(--background)] hover:bg-[var(--secondary)] transition font-medium">Change Email or Password</button>
-                         <button className="w-full text-left p-3 rounded-lg bg-red-500/10 text-red-700 dark:text-red-300 hover:bg-red-500/20 transition font-medium">Delete Account</button>
+                        <button type="button" onClick={handleSendPasswordReset} disabled={isSendingReset} className="w-full text-left p-3 rounded-lg bg-[var(--background)] hover:bg-[var(--secondary)] transition font-medium disabled:opacity-60 disabled:cursor-wait">{isSendingReset ? 'Menghantar…' : 'Change Password (send reset link)'}</button>
+                         <button type="button" onClick={() => addToast('Untuk memadam akaun, sila hubungi pihak sokongan melalui menu Support.', 'info')} className="w-full text-left p-3 rounded-lg bg-red-500/10 text-red-700 dark:text-red-300 hover:bg-red-500/20 transition font-medium">Delete Account</button>
                     </div>
                 </section>
             </div>

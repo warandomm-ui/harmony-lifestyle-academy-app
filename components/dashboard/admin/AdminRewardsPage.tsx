@@ -101,7 +101,7 @@ const AdminRewardsPage: React.FC = () => {
                     <p className="text-lg text-gray-500 dark:text-gray-400 mt-1">Review and approve AI-suggested payouts for {profitPool.month}.</p>
                 </div>
                 {/* Navigation to Profit Sharing Page is handled via Sidebar, but adding a quick link here helps workflow */}
-                <button className="flex items-center gap-2 px-4 py-2 bg-[var(--secondary)]/50 text-[var(--foreground)] rounded-lg font-bold hover:bg-[var(--secondary)] transition cursor-default opacity-50" title="Use sidebar to manage cycles">
+                <button type="button" disabled aria-disabled="true" className="flex items-center gap-2 px-4 py-2 bg-[var(--secondary)]/50 text-[var(--foreground)] rounded-lg font-bold cursor-not-allowed opacity-50" title="Use sidebar to manage cycles">
                     <PieChartIcon className="h-5 w-5" />
                     Manage Cycles
                 </button>
