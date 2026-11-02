@@ -321,7 +321,7 @@ const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
     icon: '🌟',
     title: 'Purpose',
     subtitle: 'Living Your Values',
-    description: '"He who has a why to live can bear almost any how." — Friedrich Nietzsche',
+    description: '"Dan tidak Aku ciptakan jin dan manusia melainkan supaya mereka beribadah kepada-Ku." — Surah Adh-Dhariyat (51): 56',
     color: 'from-amber-900 to-amber-700',
     practices: [
       { title: 'Values Clarification', duration: '20 min', desc: 'List 10 values, then ruthlessly narrow to your top 3. Ask: if I could only live by three values, what would they be?', benefit: 'Clarity on values predicts life satisfaction more than wealth or status (Self-Determination Theory, Deci & Ryan)' },
@@ -335,10 +335,10 @@ const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
     icon: '🌊',
     title: 'Resilience',
     subtitle: 'The Strength to Return',
-    description: '"The oak fought the wind and was broken, the willow bent when it must and survived." — Robert Jordan',
+    description: '"Wahai orang-orang yang beriman, mohonlah pertolongan dengan sabar dan solat. Sesungguhnya Allah bersama orang-orang yang sabar." — Surah Al-Baqarah (2): 153',
     color: 'from-blue-900 to-blue-700',
     practices: [
-      { title: 'Stoic Evening Review', duration: '10 min', desc: 'Marcus Aurelius did this nightly: What did I do well today? What could I have done better? What will I improve tomorrow?', benefit: 'Self-reflection reduces stress and depression. 8 weeks of journaling increased resilience by 23% (J Occupational Health, 2022)' },
+      { title: 'Muhasabah Malam', duration: '10 min', desc: '"Hisablah diri kamu sebelum kamu dihisab." — Umar bin al-Khattab (RA), diriwayatkan oleh at-Tirmidhi. Sebelum tidur, tanya: Apa yang saya lakukan dengan baik hari ini? Apa yang boleh saya perbaiki? Apa yang akan saya tingkatkan esok?', benefit: 'Self-reflection reduces stress and depression. 8 weeks of journaling increased resilience by 23% (J Occupational Health, 2022)' },
       { title: 'Negative Visualisation', duration: '10 min', desc: 'Imagine losing something you take for granted — your health, a relationship, your sight. Then return to the present with deep appreciation.', benefit: 'Stoic practice of memento mori and negative visualisation measurably increases present-moment gratitude and hedonic adaptation' },
       { title: 'Emotional Labelling', duration: '5 min', desc: 'When difficult emotions arise, name them precisely: "I notice frustration" or "I am feeling fear." The act of labelling reduces intensity immediately.', benefit: 'Affect labelling reduces amygdala activation by 20% — naming the emotion literally calms the brain (Lieberman, UCLA, 2007)' },
       { title: 'Post-Traumatic Growth Journal', duration: '15 min', desc: 'Write about a past difficulty. Ask: What did I learn? How did I grow? What strength did I discover? Reframe challenge as the training ground.', benefit: 'PTG journaling turns adversity into strength. Expressive writing reduces PTSD symptoms and improves immune function (Pennebaker, 1997)' },

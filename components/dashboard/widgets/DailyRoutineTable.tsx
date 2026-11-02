@@ -238,7 +238,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     time: '9:00 PM',
     task: 'Evening Reflection (10 min)',
     category: 'life',
-    sunnahNote: 'The Stoic "evening review" — asking "what did I do well? what could I improve?" — was practised nightly by Marcus Aurelius, Seneca and Epictetus without exception.',
+    sunnahNote: 'Muhasabah: "Hisablah diri kamu sebelum kamu dihisab." — Umar bin al-Khattab (RA), diriwayatkan oleh at-Tirmidhi. Tanya diri: apa yang saya lakukan dengan baik hari ini, dan apa yang boleh saya perbaiki?',
     scienceNote: '🔬 Meta-analysis 2020 (J Occupational Health, 9 RCTs): Self-reflection practices significantly reduce stress and depression. Eight weeks of journaling increased resilience by 23% (2022).',
     dimensions: {
       ruh: 'Reviewing your day with honest eyes — celebrating growth and acknowledging lessons learned',

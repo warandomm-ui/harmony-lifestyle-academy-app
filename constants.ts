@@ -709,21 +709,7 @@ export const MOCK_BADGES: Badge[] = [
 // No sample players: the leaderboard only lists real users once a backend provides them.
 export const MOCK_LEADERBOARD: LeaderboardEntry[] = [];
 
-// Attributions follow what can be sourced; quotes with no documented origin say so.
-export const DAILY_QUOTES = [
-  { quote: "You become who you are from what you read, watch, listen and talk. Choose good.", author: "Anonymous" },
-  { quote: "The secret of getting ahead is getting started.", author: "Tidak diketahui (sering disandarkan kepada Mark Twain)" },
-  { quote: "It’s not whether you get knocked down, it’s whether you get up.", author: "Vince Lombardi" },
-  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "Believe you can and you're halfway there.", author: "Tidak diketahui (sering disandarkan kepada Theodore Roosevelt)" },
-  { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-  { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Tidak diketahui (sering disandarkan kepada Winston Churchill)" },
-  { quote: "Try not to become a man of success, but rather try to become a man of value.", author: "Albert Einstein (LIFE, 1955)" },
-  { quote: "Ilmu itu didapat dengan lidah yang gemar bertanya dan akal yang suka berpikir.", author: "Abdullah bin Abbas" },
-  { quote: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
-  { quote: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-  { quote: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-];
+// Daily reminders (Quran, hadith, sunnah) live in constants/dailyReminders.ts.
 
 export const MOCK_SECURITY_ALERTS: SecurityAlert[] = [
   {
