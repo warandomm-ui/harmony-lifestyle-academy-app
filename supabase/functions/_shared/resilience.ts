@@ -27,26 +27,38 @@ export class CircuitOpenError extends Error {
   }
 }
 
+/** Structured fields a server may put in its JSON error body. */
+export interface ErrorDetails {
+  code?: string;
+  /** Server's own verdict on whether retrying can help; overrides the status. */
+  retryable?: boolean;
+  requestId?: string;
+}
+
 export class HttpError extends Error {
   readonly name = 'HttpError';
   constructor(
     message: string,
     readonly status: number,
     readonly retryAfterMs?: number,
+    readonly details: ErrorDetails = {},
   ) {
     super(message);
   }
 }
 
 /** Transient failures worth retrying (and worth counting against a breaker). */
-const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
+const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504, 529]); // 529 = Anthropic overloaded
 
 export const isNetworkError = (err: unknown): boolean =>
   err instanceof TypeError; // fetch rejects with TypeError on DNS / connection failure
 
 export function isTransientError(err: unknown): boolean {
   if (err instanceof TimeoutError || isNetworkError(err)) return true;
-  if (err instanceof HttpError) return RETRYABLE_STATUS.has(err.status);
+  if (err instanceof HttpError) {
+    if (typeof err.details.retryable === 'boolean') return err.details.retryable;
+    return RETRYABLE_STATUS.has(err.status);
+  }
   return false;
 }
 
@@ -173,7 +185,11 @@ export async function requestJson<T = any>(
       const body = await res.json().catch(() => null);
       if (link.timedOut()) throw new TimeoutError(`Request timed out after ${opts.timeoutMs}ms`);
       const message = opts.errorMessage?.(res.status, body) ?? `HTTP ${res.status}`;
-      throw new HttpError(message, res.status, parseRetryAfter(res.headers.get('retry-after')));
+      throw new HttpError(message, res.status, parseRetryAfter(res.headers.get('retry-after')), {
+        code: typeof body?.code === 'string' ? body.code : undefined,
+        retryable: typeof body?.retryable === 'boolean' ? body.retryable : undefined,
+        requestId: typeof body?.requestId === 'string' ? body.requestId : undefined,
+      });
     }
     return (await res.json()) as T; // aborts mid-body surface via the catch below
   } catch (err) {

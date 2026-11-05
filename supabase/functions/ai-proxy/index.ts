@@ -9,6 +9,7 @@ import {
   fetchWithTimeout,
   requestJson,
 } from '../_shared/resilience.ts';
+import { ERRORS, type ErrorCode, codeForUpstreamStatus, errorBody } from '../_shared/errors.ts';
 
 // ─────────────────────────────────────────────────────────────
 // ai-proxy — single secure gateway for all model providers.
@@ -31,6 +32,17 @@ import {
 //   After repeated timeouts / 5xx / 429 the provider is skipped for a
 //   short while and callers get 503 + Retry-After at once.
 //
+// Failure reporting (see _shared/errors.ts for the full catalogue):
+//   - every failure is a catalogued code with a fixed status, a
+//     `retryable` verdict and a user-safe message; provider statuses are
+//     mapped, never forwarded (a provider 401 is our key, not the user)
+//   - a 200 is only returned when there is a usable answer; empty or
+//     safety-blocked provider answers are reported, not passed on as ''
+//   - every response carries X-Request-Id (and requestId in error bodies);
+//     the browser sends one per logical call so retries share it
+//   - one structured JSON log line per request, plus one per provider
+//     error; prompts, answers and secrets are never logged
+//
 // Required secrets: GEMINI_API_KEY, ANTHROPIC_API_KEY
 // (SUPABASE_URL and SUPABASE_ANON_KEY are injected by Supabase.)
 // ─────────────────────────────────────────────────────────────
@@ -39,15 +51,9 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  // Lets the browser honour Retry-After on 429/503 responses.
-  'Access-Control-Expose-Headers': 'Retry-After',
+  // Lets the browser honour Retry-After and show the request reference.
+  'Access-Control-Expose-Headers': 'Retry-After, X-Request-Id',
 };
-
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
 
 const GEMINI_ROOT = 'https://generativelanguage.googleapis.com';
 const GEMINI_BASE = `${GEMINI_ROOT}/v1beta/models`;
@@ -72,14 +78,97 @@ const breakers = {
   gemini: new CircuitBreaker('Gemini', { failureThreshold: 5, resetTimeoutMs: 30_000 }),
 };
 
+// Gemini finish reasons that mean "refused", not "nothing to say".
+const GEMINI_BLOCKED = new Set(['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII', 'RECITATION', 'IMAGE_SAFETY']);
+
+// ─── Request context, logging, responses ─────────────────────
+
+interface RequestContext {
+  requestId: string;
+  startedAt: number;
+  action?: string;
+  attempt?: number;
+  userId?: string;
+  provider?: 'anthropic' | 'gemini';
+  upstreamStatus?: number;
+}
+
+const REQUEST_ID_RE = /^[A-Za-z0-9_-]{8,64}$/;
+
+/** One JSON line per event, so logs can be filtered by requestId, code or provider. */
+function log(level: 'info' | 'warn' | 'error', event: string, ctx: RequestContext, fields: Record<string, unknown> = {}) {
+  const line = JSON.stringify({
+    level,
+    event,
+    requestId: ctx.requestId,
+    action: ctx.action,
+    attempt: ctx.attempt,
+    provider: ctx.provider,
+    userId: ctx.userId,
+    upstreamStatus: ctx.upstreamStatus,
+    durationMs: Date.now() - ctx.startedAt,
+    ...fields,
+  });
+  if (level === 'error') console.error(line);
+  else if (level === 'warn') console.warn(line);
+  else console.log(line);
+}
+
+function respond(ctx: RequestContext, body: unknown, status: number, headers: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Request-Id': ctx.requestId, ...headers },
+  });
+}
+
+function succeed(ctx: RequestContext, body: unknown) {
+  log('info', 'request_completed', ctx, { status: 200 });
+  return respond(ctx, body, 200);
+}
+
+/** The only way this function reports a failure. `detail` goes to logs, never to the browser. */
+function fail(ctx: RequestContext, code: ErrorCode, opts: { retryAfterSec?: number; detail?: string } = {}) {
+  const { status } = ERRORS[code];
+  log(status >= 500 ? 'error' : 'warn', 'request_failed', ctx, { status, code, detail: opts.detail });
+  const headers: Record<string, string> = opts.retryAfterSec !== undefined
+    ? { 'Retry-After': String(Math.max(1, Math.ceil(opts.retryAfterSec))) }
+    : {};
+  return respond(ctx, errorBody(code, ctx.requestId), status, headers);
+}
+
+/** Map anything a provider call can throw to a catalogued failure. */
+function failFromUpstream(ctx: RequestContext, err: unknown): Response {
+  if (err instanceof CircuitOpenError) {
+    return fail(ctx, 'CIRCUIT_OPEN', { retryAfterSec: err.retryAfterMs / 1000, detail: `${err.breaker} breaker open` });
+  }
+  if (err instanceof TimeoutError) {
+    return fail(ctx, 'UPSTREAM_TIMEOUT', { detail: err.message });
+  }
+  if (err instanceof HttpError) {
+    ctx.upstreamStatus = err.status;
+    const code = codeForUpstreamStatus(err.status);
+    const retryAfterSec = err.retryAfterMs !== undefined && ERRORS[code].retryable
+      ? err.retryAfterMs / 1000
+      : undefined;
+    return fail(ctx, code, { retryAfterSec, detail: err.message });
+  }
+  if (err instanceof SyntaxError) {
+    return fail(ctx, 'UPSTREAM_BAD_RESPONSE', { detail: `invalid JSON from provider: ${err.message}` });
+  }
+  if (err instanceof TypeError) {
+    return fail(ctx, 'UPSTREAM_UNREACHABLE', { detail: err.message });
+  }
+  return fail(ctx, 'INTERNAL', { detail: err instanceof Error ? err.message : String(err) });
+}
+
 /**
  * Call a provider through its breaker. The timeout covers headers *and*
  * body, and is the per-provider cap or what is left of the caller's
  * deadline, whichever is smaller. Non-2xx throws HttpError.
  */
 function callUpstream(
+  ctx: RequestContext,
   breaker: CircuitBreaker,
-  label: string,
   url: string,
   init: RequestInit,
   deadline: Deadline,
@@ -89,53 +178,26 @@ function callUpstream(
     requestJson(url, init, {
       timeoutMs: deadline.timeoutFor(capMs, RESPONSE_MARGIN_MS),
       errorMessage: (status, body) => {
-        console.error(`${label} error:`, status, JSON.stringify(body));
-        return `${label} HTTP ${status}`;
+        // Provider error bodies explain *why* (bad key, quota, bad input); keep them for operators.
+        log('warn', 'upstream_error', { ...ctx, upstreamStatus: status }, {
+          upstreamBody: JSON.stringify(body)?.slice(0, 500),
+        });
+        return `${breaker.name} HTTP ${status}`;
       },
     })
   );
 }
 
-/** Turn transport / upstream failures into a response for the browser. */
-function upstreamErrorResponse(err: unknown, fallbackMessage: string): Response {
-  if (err instanceof CircuitOpenError) {
-    const retryAfter = String(Math.max(1, Math.ceil(err.retryAfterMs / 1000)));
-    return withHeaders(
-      json({ error: `${err.breaker} is temporarily unavailable. Please try again shortly.`, code: 'CIRCUIT_OPEN' }, 503),
-      { 'Retry-After': retryAfter },
-    );
-  }
-  if (err instanceof TimeoutError) {
-    console.error('Upstream timeout:', err.message);
-    return json({ error: 'The AI service took too long to respond. Please try again.', code: 'UPSTREAM_TIMEOUT' }, 504);
-  }
-  if (err instanceof HttpError) {
-    // An upstream 404 (e.g. unknown model) is a server-side problem; passing
-    // it through would look like "edge function not deployed" to the browser.
-    const status = err.status === 404 ? 502 : err.status;
-    const res = json({ error: fallbackMessage }, status);
-    return err.retryAfterMs !== undefined
-      ? withHeaders(res, { 'Retry-After': String(Math.ceil(err.retryAfterMs / 1000)) })
-      : res;
-  }
-  if (err instanceof TypeError) {
-    console.error('Upstream network error:', err);
-    return json({ error: 'Could not reach the AI provider. Please try again.', code: 'UPSTREAM_UNREACHABLE' }, 502);
-  }
-  throw err;
-}
-
-const withHeaders = (res: Response, extra: Record<string, string>) => {
-  for (const [k, v] of Object.entries(extra)) res.headers.set(k, v);
-  return res;
-};
+// ─── Handler ─────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+
+  const ctx: RequestContext = { requestId: crypto.randomUUID(), startedAt: Date.now() };
   if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405);
+    return fail(ctx, 'METHOD_NOT_ALLOWED', { detail: req.method });
   }
 
   // Parse first so the time budget starts as soon as the request arrives.
@@ -147,14 +209,19 @@ Deno.serve(async (req: Request) => {
     action = body.action;
     payload = body.payload ?? {};
     deadline = Deadline.fromRemaining(body.meta?.deadlineMs, DEFAULT_BUDGET_MS, MIN_BUDGET_MS, MAX_BUDGET_MS);
+    if (typeof body.meta?.requestId === 'string' && REQUEST_ID_RE.test(body.meta.requestId)) {
+      ctx.requestId = body.meta.requestId;
+    }
+    if (Number.isInteger(body.meta?.attempt)) ctx.attempt = body.meta.attempt;
+    ctx.action = typeof action === 'string' ? action : undefined;
   } catch {
-    return json({ error: 'Invalid JSON body' }, 400);
+    return fail(ctx, 'BAD_REQUEST', { detail: 'invalid JSON body' });
   }
 
   // Only signed-in users may spend the AI quota.
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
-    return json({ error: 'Missing authorization header' }, 401);
+    return fail(ctx, 'UNAUTHENTICATED', { detail: 'missing authorization header' });
   }
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
@@ -170,26 +237,27 @@ Deno.serve(async (req: Request) => {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError?.name === 'AuthRetryableFetchError') {
     // Auth service slow/unreachable: a retryable 503, not a misleading 401.
-    console.error('Auth check failed:', authError.message);
-    return withHeaders(json({ error: 'Could not verify your session. Please try again.' }, 503), { 'Retry-After': '2' });
+    return fail(ctx, 'AUTH_UNAVAILABLE', { retryAfterSec: 2, detail: authError.message });
   }
   if (authError || !user) {
-    return json({ error: 'Unauthorized' }, 401);
+    return fail(ctx, 'UNAUTHENTICATED', { detail: authError?.message ?? 'no user' });
   }
+  ctx.userId = user.id;
 
   try {
     // ─── Anthropic (Claude) ───────────────────────────────────
     if (action === 'anthropic') {
+      ctx.provider = 'anthropic';
       const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY');
       if (!ANTHROPIC_API_KEY) {
-        return json({ error: 'ANTHROPIC_API_KEY not configured in Supabase secrets' }, 500);
+        return fail(ctx, 'CONFIG_MISSING', { detail: 'ANTHROPIC_API_KEY not set in Supabase secrets' });
       }
 
       let data: any;
       try {
         data = await callUpstream(
+          ctx,
           breakers.anthropic,
-          'Anthropic API',
           'https://api.anthropic.com/v1/messages',
           {
             method: 'POST',
@@ -209,18 +277,26 @@ Deno.serve(async (req: Request) => {
           UPSTREAM_TIMEOUT_MS.anthropic,
         );
       } catch (err) {
-        return upstreamErrorResponse(err, 'AI service error');
+        return failFromUpstream(ctx, err);
       }
 
-      const text = Array.isArray(data.content)
-        ? data.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('')
-        : '';
-      return json({ text });
+      if (!Array.isArray(data?.content)) {
+        return fail(ctx, 'UPSTREAM_BAD_RESPONSE', { detail: 'Anthropic response has no content array' });
+      }
+      const text = data.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+      if (data.stop_reason === 'refusal') {
+        return fail(ctx, 'CONTENT_BLOCKED', { detail: 'Anthropic stop_reason=refusal' });
+      }
+      if (!text) {
+        return fail(ctx, 'UPSTREAM_EMPTY_RESPONSE', { detail: `Anthropic stop_reason=${data.stop_reason}` });
+      }
+      return succeed(ctx, { text });
     }
 
+    ctx.provider = 'gemini';
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     if (!GEMINI_API_KEY) {
-      return json({ error: 'GEMINI_API_KEY not configured in Supabase secrets' }, 500);
+      return fail(ctx, 'CONFIG_MISSING', { detail: 'GEMINI_API_KEY not set in Supabase secrets' });
     }
 
     // ─── Gemini Live API ephemeral token ──────────────────────
@@ -231,8 +307,8 @@ Deno.serve(async (req: Request) => {
       let data: any;
       try {
         data = await callUpstream(
+          ctx,
           breakers.gemini,
-          'Gemini token',
           `${GEMINI_ROOT}/v1alpha/auth_tokens`,
           {
             method: 'POST',
@@ -247,9 +323,12 @@ Deno.serve(async (req: Request) => {
           UPSTREAM_TIMEOUT_MS.liveToken,
         );
       } catch (err) {
-        return upstreamErrorResponse(err, 'Could not create live session token');
+        return failFromUpstream(ctx, err);
       }
-      return json({ text: '', token: data.name });
+      if (typeof data?.name !== 'string' || !data.name) {
+        return fail(ctx, 'UPSTREAM_BAD_RESPONSE', { detail: 'Gemini token response has no name' });
+      }
+      return succeed(ctx, { text: '', token: data.name });
     }
 
     // ─── Gemini text / chat / tts ─────────────────────────────
@@ -284,14 +363,15 @@ Deno.serve(async (req: Request) => {
         break;
       }
       default:
-        return json({ error: `Unknown action: ${action}` }, 400);
+        ctx.provider = undefined;
+        return fail(ctx, 'UNKNOWN_ACTION', { detail: `action=${String(action)}` });
     }
 
     let data: any;
     try {
       data = await callUpstream(
+        ctx,
         breakers.gemini,
-        'Gemini API',
         `${GEMINI_BASE}/${model}:generateContent`,
         {
           method: 'POST',
@@ -302,15 +382,29 @@ Deno.serve(async (req: Request) => {
         UPSTREAM_TIMEOUT_MS.gemini,
       );
     } catch (err) {
-      return upstreamErrorResponse(err, 'AI service error');
+      return failFromUpstream(ctx, err);
     }
 
-    const parts = data.candidates?.[0]?.content?.parts || [];
+    // A 200 from Gemini can still carry no answer (safety block, empty
+    // candidate). Report it instead of returning an empty string.
+    const candidate = data?.candidates?.[0];
+    const blockReason = data?.promptFeedback?.blockReason;
+    if (!candidate) {
+      return blockReason
+        ? fail(ctx, 'CONTENT_BLOCKED', { detail: `Gemini promptFeedback.blockReason=${blockReason}` })
+        : fail(ctx, 'UPSTREAM_EMPTY_RESPONSE', { detail: 'Gemini returned no candidates' });
+    }
+    const parts = candidate.content?.parts || [];
     const text = parts.map((p: any) => p.text || '').join('');
     const inlineData = parts.find((p: any) => p.inlineData)?.inlineData || null;
-    return json({ text, inlineData });
+    if (!text && !inlineData) {
+      return GEMINI_BLOCKED.has(candidate.finishReason)
+        ? fail(ctx, 'CONTENT_BLOCKED', { detail: `Gemini finishReason=${candidate.finishReason}` })
+        : fail(ctx, 'UPSTREAM_EMPTY_RESPONSE', { detail: `Gemini finishReason=${candidate.finishReason}` });
+    }
+    return succeed(ctx, { text, inlineData });
   } catch (error) {
-    console.error('Edge function error:', error);
-    return json({ error: (error as Error).message || 'Internal server error' }, 500);
+    // Our own bug: log the detail, give the browser only the reference.
+    return fail(ctx, 'INTERNAL', { detail: error instanceof Error ? `${error.name}: ${error.message}` : String(error) });
   }
 });

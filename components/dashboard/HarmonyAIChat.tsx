@@ -5,7 +5,10 @@ import { decode, decodeAudioData, createBlob } from '../../utils/audioUtils';
 import { MicrophoneIcon, StopIcon, XIcon, ChatAltIcon, TrashIcon, DownloadIcon } from './Icons';
 import type { Transcript } from '../../types'; // Import Transcript type
 import { useToast } from '../../contexts/ToastContext';
-import { generateContent, getLiveToken } from '../../services/aiProxyService';
+import { generateContent, getLiveToken, AIServiceError } from '../../services/aiProxyService';
+
+/** Give up on a Live session that has not opened by then, and release the microphone. */
+const LIVE_CONNECT_TIMEOUT_MS = 15_000;
 
 const TypingIndicator = () => (
     <div className="flex space-x-1 p-3">
@@ -44,6 +47,7 @@ const HarmonyAIChat: React.FC = () => {
     });
 
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
+    const connectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const scrollToBottom = () => {
         transcriptEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,10 +57,16 @@ const HarmonyAIChat: React.FC = () => {
         scrollToBottom();
     }, [transcripts]);
     
-    const stopConversation = useCallback(() => {
+    // finalStatus lets an error stay on screen instead of being replaced by "Idle".
+    const stopConversation = useCallback((finalStatus?: string) => {
         setIsRecording(false);
         setIsConnecting(false);
-        setStatus('Idle. Press mic to start.');
+        setStatus(finalStatus ?? 'Idle. Press mic to start.');
+
+        if (connectTimerRef.current) {
+            clearTimeout(connectTimerRef.current);
+            connectTimerRef.current = null;
+        }
     
         if (sessionPromiseRef.current) {
             sessionPromiseRef.current.then(session => {
@@ -132,6 +142,10 @@ const HarmonyAIChat: React.FC = () => {
                 model: 'gemini-2.5-flash-native-audio-preview-09-2025',
                 callbacks: {
                     onopen: () => {
+                        if (connectTimerRef.current) {
+                            clearTimeout(connectTimerRef.current);
+                            connectTimerRef.current = null;
+                        }
                         setIsConnecting(false);
                         setStatus('Listening... Talk now!');
                         const source = audioRefs.current.inputAudioContext!.createMediaStreamSource(stream);
@@ -231,11 +245,14 @@ const HarmonyAIChat: React.FC = () => {
                     },
                     onerror: (e: ErrorEvent) => {
                         console.error('Session error:', e);
-                        setStatus(`Error: ${e.message}. Please try again.`);
-                        stopConversation();
+                        stopConversation(`Error: ${e.message || 'connection lost'}. Please try again.`);
                     },
                     onclose: () => {
-                        stopConversation();
+                        // After a user stop or an error, teardown already ran (ref is null),
+                        // so this only reports closes the user did not ask for.
+                        if (sessionPromiseRef.current) {
+                            stopConversation('Connection closed. Press mic to start again.');
+                        }
                     },
                 },
                 config: {
@@ -246,13 +263,29 @@ const HarmonyAIChat: React.FC = () => {
                     tools: [{googleSearch: {}}], // Added googleSearch tool
                 },
             });
+
+            // Strict connect timeout: a hung handshake must not keep the mic open.
+            const thisSession = sessionPromiseRef.current;
+            connectTimerRef.current = setTimeout(() => {
+                if (sessionPromiseRef.current === thisSession) {
+                    console.error(`Live session did not open within ${LIVE_CONNECT_TIMEOUT_MS}ms`);
+                    stopConversation('Error: Connecting to Harmony AI timed out. Please try again.');
+                }
+            }, LIVE_CONNECT_TIMEOUT_MS);
+            thisSession.catch((err) => {
+                if (sessionPromiseRef.current !== thisSession) return;
+                console.error('Live session failed to connect:', err);
+                sessionPromiseRef.current = null; // nothing to close
+                stopConversation('Error: Could not connect to Harmony AI. Please try again.');
+            });
         } catch (error) {
             console.error('Failed to start conversation:', error);
-            audioRefs.current.mediaStream?.getTracks().forEach(track => track.stop());
-            audioRefs.current.mediaStream = null;
-            setStatus(error instanceof DOMException ? 'Error: Could not access microphone.' : 'Error: Could not connect to Harmony AI.');
-            setIsRecording(false);
-            setIsConnecting(false);
+            const reason = error instanceof DOMException
+                ? 'Could not access microphone.'
+                : error instanceof AIServiceError
+                    ? error.message // e.g. timeout / unavailable, with a reference for 5xx
+                    : 'Could not connect to Harmony AI.';
+            stopConversation(`Error: ${reason}`);
         }
     };
 

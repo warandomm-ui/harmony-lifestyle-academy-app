@@ -24,6 +24,15 @@ import {
  *  - transient failures (timeout, network, 408/429/5xx) are retried with
  *    jittered backoff, honouring Retry-After
  *  - a circuit breaker fails fast while the proxy is clearly down
+ *
+ * Failure reporting (contract in supabase/functions/_shared/errors.ts):
+ *  - one requestId per logical call, sent as meta.requestId and shared by
+ *    every retry, so the proxy's log lines for it group together
+ *  - the proxy's `retryable` verdict decides retries (a misconfigured key
+ *    is not retried; an overloaded provider is)
+ *  - failures reach the UI as AIServiceError { message, code, status,
+ *    requestId, retryable }; server-side failures (5xx) end with a short
+ *    reference the user can quote when reporting the problem
  */
 
 const EDGE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-proxy`;
@@ -91,16 +100,33 @@ const aiProxyBreaker = new CircuitBreaker('AI service', {
  */
 export class AIServiceError extends Error {
   readonly name = 'AIServiceError';
-  constructor(message: string, readonly status?: number, readonly cause?: unknown) {
+  constructor(
+    message: string,
+    readonly status?: number,
+    readonly cause?: unknown,
+    /** Catalogued server code (e.g. UPSTREAM_TIMEOUT) or a client code (NETWORK_ERROR, TIMEOUT, …). */
+    readonly code: string = 'UNKNOWN',
+    readonly requestId?: string,
+    /** Whether trying again later can help. */
+    readonly retryable = false,
+  ) {
     super(message);
   }
 }
+
+/** Short form of a request id for messages, e.g. "Ref: 3f9a1c2b". */
+const shortRef = (requestId?: string) => (requestId ? requestId.replace(/-/g, '').slice(0, 8) : '');
+
+const newRequestId = (): string =>
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const { data: { session } } = await supabase.auth.getSession();
   const token = session?.access_token;
   if (!token) {
-    throw new AIServiceError('User not authenticated. Please sign in.', 401);
+    throw new AIServiceError('User not authenticated. Please sign in.', 401, undefined, 'UNAUTHENTICATED');
   }
   return {
     'Content-Type': 'application/json',
@@ -110,37 +136,42 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 }
 
 function httpErrorMessage(status: number, body: any): string {
+  // The proxy's messages come from its error catalogue and are user-safe.
+  if (typeof body?.error === 'string' && body.error) return body.error;
   if (status === 404) {
     return 'AI proxy edge function not found. Please deploy the ai-proxy edge function to your Supabase project.';
   }
-  if (status === 504) {
-    return 'The AI service took too long to respond. Please try again.';
-  }
-  if (status >= 500) {
-    return body?.error || 'The AI server encountered an error. Please try again in a moment.';
-  }
-  return body?.error || `AI service error: ${status}`;
+  if (status === 504) return 'The AI service took too long to respond. Please try again.';
+  if (status >= 500) return 'The AI server encountered an error. Please try again in a moment.';
+  return `AI service error: ${status}`;
 }
 
-function toUserFacingError(err: unknown): Error {
+function toUserFacingError(err: unknown, requestId: string): Error {
   if (err instanceof AIServiceError) return err;
   if (err instanceof TimeoutError) {
-    return new AIServiceError('The AI service took too long to respond. Please try again.', 504, err);
+    return new AIServiceError(
+      `The AI service took too long to respond. Please try again. (Ref: ${shortRef(requestId)})`,
+      504, err, 'TIMEOUT', requestId, true,
+    );
   }
   if (err instanceof CircuitOpenError) {
     const seconds = Math.max(1, Math.ceil(err.retryAfterMs / 1000));
     return new AIServiceError(
       `The AI service is temporarily unavailable. Please try again in about ${seconds} seconds.`,
-      503,
-      err,
+      503, err, 'CIRCUIT_OPEN', requestId, true,
     );
   }
-  if (err instanceof HttpError) return new AIServiceError(err.message, err.status, err);
+  if (err instanceof HttpError) {
+    const ref = err.details.requestId ?? requestId;
+    const code = err.details.code ?? (err.status === 404 ? 'NOT_DEPLOYED' : `HTTP_${err.status}`);
+    // 5xx = our side or the provider's: give the user something to quote.
+    const message = err.status >= 500 ? `${err.message} (Ref: ${shortRef(ref)})` : err.message;
+    return new AIServiceError(message, err.status, err, code, ref, isTransientError(err));
+  }
   if (isNetworkError(err)) {
     return new AIServiceError(
       'Could not reach the server. Please check your internet connection and verify the server URL is correct.',
-      undefined,
-      err,
+      undefined, err, 'NETWORK_ERROR', requestId, true,
     );
   }
   return err instanceof Error ? err : new Error(String(err));
@@ -152,16 +183,20 @@ export async function callAI(
 ): Promise<AIProxyResponse> {
   if (!isSupabaseConfigured()) {
     throw new AIServiceError(
-      'Server not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.'
+      'Server not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.',
+      undefined, undefined, 'NOT_CONFIGURED',
     );
   }
 
   const deadline = options.deadline ?? Deadline.after(OPERATION_BUDGET_MS[request.action]);
   const attemptCap = ATTEMPT_TIMEOUT_MS[request.action];
+  const requestId = newRequestId();
+  let attempts = 0;
 
   try {
     return await retryWithBackoff(
-      async () => {
+      async (attempt) => {
+        attempts = attempt + 1;
         const headers = await getAuthHeaders();
         const timeoutMs = deadline.timeoutFor(attemptCap);
         return aiProxyBreaker.execute(() =>
@@ -171,7 +206,7 @@ export async function callAI(
               method: 'POST',
               headers,
               // Deadline propagation: the proxy must answer before this attempt times out.
-              body: JSON.stringify({ ...request, meta: { deadlineMs: timeoutMs } }),
+              body: JSON.stringify({ ...request, meta: { deadlineMs: timeoutMs, requestId, attempt } }),
             },
             { timeoutMs, signal: options.signal, errorMessage: httpErrorMessage },
           ),
@@ -187,7 +222,15 @@ export async function callAI(
       },
     );
   } catch (err) {
-    throw toUserFacingError(err);
+    const userError = toUserFacingError(err, requestId);
+    if (userError instanceof AIServiceError) {
+      // Developer-facing trail; matches the proxy's log lines by requestId.
+      console.warn(JSON.stringify({
+        event: 'ai_call_failed', action: request.action, requestId: userError.requestId ?? requestId,
+        code: userError.code, status: userError.status, retryable: userError.retryable, attempts,
+      }));
+    }
+    throw userError;
   }
 }
 
