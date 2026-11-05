@@ -4,6 +4,7 @@ import type { CareerRecommendation, GroundedCareerDetail } from '../types';
 import { getCareerIcon } from '../constants';
 import { getGroundedCareerInfo } from '../services/geminiService';
 import { SpinnerIcon, XCircleIcon } from './dashboard/Icons';
+import { describeAIError } from '../services/aiProxyService';
 
 interface CareerPathCardProps {
   career: CareerRecommendation;
@@ -32,7 +33,7 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
           setGroundedDetails(info);
         } catch (err: any) {
           console.error("Error fetching grounded career info:", err);
-          setGroundingError(err.message || "Could not fetch up-to-date information.");
+          setGroundingError(describeAIError(err, "Could not fetch up-to-date information."));
         } finally {
           setIsGroundedLoading(false);
         }

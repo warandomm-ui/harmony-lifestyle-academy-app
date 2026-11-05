@@ -4,6 +4,7 @@ import { getSkillRecommendations } from '../services/geminiService';
 import { SKILLS } from '../constants';
 import SkillPill from './SkillPill';
 import { useToast } from '../contexts/ToastContext';
+import { describeAIError } from '../services/aiProxyService';
 
 interface SkillSelectionStepProps {
   onComplete: (skills: string[]) => void;
@@ -27,6 +28,8 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         setRecommendations(recs);
       } catch (err) {
         console.error("Failed to fetch skill recommendations:", err);
+        // Say so: an empty list alone looks like "no skills fit you".
+        addToast(describeAIError(err, "Couldn't load skill recommendations. You can still pick skills yourself."), 'error');
         setRecommendations({
           recommendedSkills: [],
           smartSuggestions: []

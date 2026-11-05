@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { editImage } from '../../../services/geminiService';
 import { PencilAltIcon, SpinnerIcon, XCircleIcon, PhotographIcon } from '../Icons';
+import { describeAIError } from '../../../services/aiProxyService';
 
 const ImageEditorSection: React.FC = () => {
   const [originalImage, setOriginalImage] = useState<{ preview: string; data: string; mimeType: string } | null>(null);
@@ -46,7 +47,7 @@ const ImageEditorSection: React.FC = () => {
       const resultBase64 = await editImage(originalImage.data, originalImage.mimeType, prompt);
       setEditedImage(`data:image/png;base64,${resultBase64}`);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during image editing.');
+      setError(describeAIError(err, 'An error occurred during image editing.'));
     } finally {
       setIsLoading(false);
     }

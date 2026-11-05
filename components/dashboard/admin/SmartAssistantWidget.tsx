@@ -4,6 +4,7 @@ import { getAdminAssistance } from '../../../services/geminiService';
 import { SparklesIcon, SpinnerIcon } from '../Icons';
 import type { AdminAssistanceResult } from '../../../types';
 import { MOCK_STUDENT_DATA } from '../../../constants';
+import { describeAIError } from '../../../services/aiProxyService';
 
 const SmartAssistantWidget: React.FC = () => {
     const [prompt, setPrompt] = useState('');
@@ -30,7 +31,7 @@ const SmartAssistantWidget: React.FC = () => {
             const result = await getAdminAssistance(cleanPrompt, MOCK_STUDENT_DATA);
             setResponse(result);
         } catch (err: any) {
-            setError(err.message || 'An error occurred.');
+            setError(describeAIError(err, 'An error occurred.'));
         } finally {
             setIsLoading(false);
         }

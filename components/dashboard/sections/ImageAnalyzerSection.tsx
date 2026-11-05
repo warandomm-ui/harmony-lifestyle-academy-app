@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { analyzeImage } from '../../../services/geminiService';
 import { PhotographIcon, SpinnerIcon, XCircleIcon, TrashIcon } from '../Icons';
+import { describeAIError } from '../../../services/aiProxyService';
 
 const ImageAnalyzerSection: React.FC = () => {
   const [image, setImage] = useState<{ preview: string; data: string; mimeType: string } | null>(null);
@@ -45,7 +46,7 @@ const ImageAnalyzerSection: React.FC = () => {
       const result = await analyzeImage(image.data, image.mimeType, prompt);
       setAnalysis(result);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during analysis.');
+      setError(describeAIError(err, 'An error occurred during analysis.'));
     } finally {
       setIsLoading(false);
     }

@@ -1,3 +1,5 @@
+import { CircuitBreaker, Deadline, requestJson, retryWithBackoff } from '../supabase/functions/_shared/resilience';
+
 // Quran API Service
 // Uses api.quran.com v4 (FREE, no API key needed)
 // Translation ID 39 = Malay (Abdullah Muhammad Basmeih)
@@ -25,6 +27,27 @@ export interface QuranSurahDetail {
 const API_BASE = 'https://api.quran.com/api/v4';
 const MALAY_TRANSLATION_ID = 39; // Abdullah Muhammad Basmeih
 
+// ─── Resilient GET for quran.com ─────────────────────────────
+// Read-only and idempotent, so safe to retry. Each request gets a
+// 10s timeout and a 25s total budget; the breaker stops hammering
+// quran.com while it is down (callers already fall back to empty data).
+const REQUEST_TIMEOUT_MS = 10_000;
+const REQUEST_BUDGET_MS = 25_000;
+const quranBreaker = new CircuitBreaker('Quran API', { failureThreshold: 4, resetTimeoutMs: 30_000 });
+
+const getJson = <T = any>(path: string): Promise<T> => {
+  const deadline = Deadline.after(REQUEST_BUDGET_MS);
+  return retryWithBackoff(
+    () => quranBreaker.execute(() =>
+      requestJson<T>(`${API_BASE}${path}`, { method: 'GET' }, {
+        timeoutMs: deadline.timeoutFor(REQUEST_TIMEOUT_MS),
+        errorMessage: (status) => `Quran API error ${status} for ${path}`,
+      })
+    ),
+    { retries: 2, baseDelayMs: 500, deadline },
+  );
+};
+
 // Cache to avoid refetching
 const cache: Record<number, QuranSurahDetail> = {};
 
@@ -45,8 +68,7 @@ export const fetchSurahInfo = async (surahNumber: number): Promise<{
   revelationType: string;
 }> => {
   try {
-    const res = await fetch(`${API_BASE}/chapters/${surahNumber}?language=ms`);
-    const data = await res.json();
+    const data = await getJson(`/chapters/${surahNumber}?language=ms`);
     const chapter = data.chapter;
     return {
       nameArabic: chapter.name_arabic,
@@ -64,10 +86,7 @@ export const fetchSurahInfo = async (surahNumber: number): Promise<{
 // Fetch Arabic text for a surah
 const fetchArabicText = async (surahNumber: number): Promise<string[]> => {
   try {
-    const res = await fetch(
-      `${API_BASE}/quran/verses/uthmani?chapter_number=${surahNumber}`
-    );
-    const data = await res.json();
+    const data = await getJson(`/quran/verses/uthmani?chapter_number=${surahNumber}`);
     return data.verses.map((v: any) => v.text_uthmani);
   } catch (err) {
     console.error(`Failed to fetch Arabic text for surah ${surahNumber}:`, err);
@@ -78,10 +97,9 @@ const fetchArabicText = async (surahNumber: number): Promise<string[]> => {
 // Fetch Malay translation for a surah
 const fetchMalayTranslation = async (surahNumber: number): Promise<string[]> => {
   try {
-    const res = await fetch(
-      `${API_BASE}/quran/translations/${MALAY_TRANSLATION_ID}?chapter_number=${surahNumber}`
+    const data = await getJson(
+      `/quran/translations/${MALAY_TRANSLATION_ID}?chapter_number=${surahNumber}`
     );
-    const data = await res.json();
     return data.translations.map((t: any) => cleanText(t.text));
   } catch (err) {
     console.error(`Failed to fetch Malay translation for surah ${surahNumber}:`, err);
@@ -165,8 +183,7 @@ export const fetchAllSurahList = async (): Promise<
   { number: number; nameArabic: string; nameEnglish: string; totalAyat: number; revelationType: string }[]
 > => {
   try {
-    const res = await fetch(`${API_BASE}/chapters?language=ms`);
-    const data = await res.json();
+    const data = await getJson(`/chapters?language=ms`);
     return data.chapters.map((ch: any) => ({
       number: ch.id,
       nameArabic: ch.name_arabic,
