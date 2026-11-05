@@ -114,6 +114,24 @@ export class AIServiceError extends Error {
   }
 }
 
+/**
+ * The AI answered, but the answer is unusable (unreadable JSON, missing
+ * fields, empty). Not an AIServiceError, so retry() will re-run it.
+ */
+export class AIResponseError extends Error {
+  readonly name = 'AIResponseError';
+}
+
+/**
+ * What to show the user for a failed AI call: the real reason for AI
+ * failures (with Ref for server-side ones), the fallback for anything
+ * else, since an unexpected exception's text is not written for users.
+ */
+export function describeAIError(err: unknown, fallback: string): string {
+  if (err instanceof AIServiceError || err instanceof AIResponseError) return err.message;
+  return fallback;
+}
+
 /** Short form of a request id for messages, e.g. "Ref: 3f9a1c2b". */
 const shortRef = (requestId?: string) => (requestId ? requestId.replace(/-/g, '').slice(0, 8) : '');
 

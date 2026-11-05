@@ -2,10 +2,16 @@
  * Gemini Service - SECURED via Supabase Edge Function
  * All AI calls go through the ai-proxy edge function
  * No API keys exposed to the browser
+ *
+ * Failure policy: these functions never return placeholder content in
+ * place of an answer. A failed or unusable AI call throws — an
+ * AIServiceError from the transport (with code / Ref), or an
+ * AIResponseError when the answer arrived but was unusable — so the
+ * caller can show the user what really happened. Malformed JSON is
+ * retried (via retry()) before giving up.
  */
-import { generateContent, generateContentWithImage, generateTTS, retry } from './aiProxyService';
+import { generateContent, generateContentWithImage, generateTTS, retry, AIResponseError } from './aiProxyService';
 import type { AnalysisResult, CourseDifficulty, CourseOutline, Goal, SkillSuggestion, SurveyAnswers, AdminAssistanceResult, GroundedCareerDetail, StudentDataItem, StudyMode, StudyBuddyMessage, Emotion, WeeklyEmotionReview } from '../types';
-import { DEFAULT_ANALYSIS_RESULT } from '../constants';
 
 const escapePrompt = (content: string, tag: string = "user_content") => {
     const cleanContent = content.replace(new RegExp(`</${tag}>`, 'g'), '');
@@ -23,8 +29,35 @@ const safeParseJSON = (text: string | undefined): any => {
   }
   return JSON.parse(cleaned);
 };
+
+/**
+ * Ask for JSON, parse it and check its shape. Any failure throws
+ * AIResponseError, which retry() re-runs (a malformed answer is often a
+ * one-off); transport errors are not re-run, callAI already retried them.
+ */
+const generateJSON = <T>(prompt: string, isValid: (v: any) => boolean, what: string): Promise<T> =>
+  retry(async () => {
+    const text = await generateContent(prompt, { jsonMode: true });
+    let parsed: any;
+    try {
+      parsed = safeParseJSON(text);
+    } catch {
+      throw new AIResponseError(`The AI returned an unreadable ${what}. Please try again.`);
+    }
+    if (!parsed || !isValid(parsed)) {
+      throw new AIResponseError(`The AI returned an incomplete ${what}. Please try again.`);
+    }
+    return parsed as T;
+  });
+
+/** Free-text answers must not be empty. */
+const requireText = (text: string | undefined, what: string): string => {
+  if (!text?.trim()) throw new AIResponseError(`The AI returned an empty ${what}. Please try again.`);
+  return text;
+};
+
+const isNonEmptyString = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
 export const getPersonalityAnalysis = async (answers: SurveyAnswers): Promise<AnalysisResult> => {
-  try {
     const prompt = `You are an expert personality analyst for Malaysian secondary school students.
 Analyze the following survey data and return a JSON object.
 
@@ -54,34 +87,41 @@ You MUST return a valid JSON object with EXACTLY this structure (no extra keys, 
   "startupIdeas": [{ "title": "", "description": "", "targetMarket": "", "validationSteps": [], "challenges": [] }]
 }
 Return ONLY valid JSON. Use Malaysian context (RM for salary). Keep tone fun and encouraging.`;
-    const text = await retry(async () => {
-      const response = await generateContent(prompt, { jsonMode: true });
-      const parsed = safeParseJSON(response);
-      if (!parsed || !parsed.studentProfile || !parsed.personalityType) {
-        throw new Error("Invalid response structure from AI");
-      }
-      return response;
-    });
-    return safeParseJSON(text) as AnalysisResult;
-  } catch (error) {
-    console.error("Error in getPersonalityAnalysis:", error);
-    return DEFAULT_ANALYSIS_RESULT;
-  }
+    // No fallback here: returning DEFAULT_ANALYSIS_RESULT used to show a
+    // generic profile as if it were this student's result. The onboarding
+    // flow shows the error and offers "skip" (which uses the default openly).
+    return await generateJSON<AnalysisResult>(
+      prompt,
+      (v) => !!v.studentProfile && isNonEmptyString(v.personalityType),
+      'personality analysis',
+    );
 };
 
 export const getSkillRecommendations = async (personalityType: string, goal: Goal, careerPaths: string[]): Promise<SkillSuggestion> => {
-    try {
-        const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return JSON with keys: skills (array of {name, description, relevance}).`;
-        const text = await generateContent(prompt, { jsonMode: true });
-        return safeParseJSON(text) || { skills: [] };
-    } catch (error) { console.error("Skill recommendations failed:", error); return { skills: [] } as any; }
+    // The prompt used to ask for `skills: [{name, description, relevance}]`
+    // while the UI reads `recommendedSkills: [{skill, reason}]`, so even a
+    // successful call showed no recommendations. Ask for the shape the UI uses.
+    const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION}
+Return ONLY a JSON object with exactly this shape:
+{ "recommendedSkills": [{ "skill": "short skill name", "reason": "one sentence why it fits" }],
+  "smartSuggestions": [{ "context": "e.g. For your goal", "skills": ["skill", "skill"] }] }`;
+    return generateJSON<SkillSuggestion>(
+      prompt,
+      (v) => Array.isArray(v.recommendedSkills) && v.recommendedSkills.length > 0
+        && v.recommendedSkills.every((r: any) => isNonEmptyString(r?.skill)),
+      'list of skill recommendations',
+    );
 };
 
 export const generateCourseOutline = async (topic: string, difficulty: CourseDifficulty): Promise<CourseOutline> => {
     try {
         const prompt = `Create a course outline for: ${topic} (${difficulty}). ${SIMPLE_EXPLANATION_INSTRUCTION} Return as JSON.`;
-        const text = await generateContent(prompt, { jsonMode: true });
-        return safeParseJSON(text) || {};
+        // `|| {}` used to hand an empty object to the course creator.
+        return await generateJSON<CourseOutline>(
+          prompt,
+          (v) => isNonEmptyString(v.title) && Array.isArray(v.modules) && v.modules.length > 0,
+          'course outline',
+        );
     } catch (error) { console.error("Course outline failed:", error); throw error; }
 };
 export const generatePlaceholderVideo = async (prompt: string): Promise<string> => {
@@ -91,63 +131,58 @@ export const generatePlaceholderVideo = async (prompt: string): Promise<string> 
 };
 
 export const getAdminAssistance = async (prompt: string, studentData?: StudentDataItem[]): Promise<AdminAssistanceResult> => {
-    try {
         const fullPrompt = `System: Harmony Admin Assistant. Context: ${studentData ? JSON.stringify(studentData) : "N/A"}. Request: ${prompt}`;
         const text = await generateContent(fullPrompt);
-        return { text: text || '', groundingLinks: [] };
-    } catch (error) { return { text: 'Sorry, assistant is temporarily unavailable.', groundingLinks: [] }; }
+        return { text: requireText(text, 'answer'), groundingLinks: [] };
 };
 
 export const getGroundedCareerInfo = async (careerName: string, personalityType: string, location: string): Promise<GroundedCareerDetail> => {
-    try {
-        const prompt = `Provide career insights for: Career: ${careerName}, Personality: ${personalityType}, Location: ${location}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return a JSON object with keys: groundedExplanation, groundedSalaryRange, jobMarketTrends.`;
-        const text = await generateContent(prompt, { jsonMode: true });
-        try {
-            const json = safeParseJSON(text);
-            return { groundedExplanation: json?.groundedExplanation || "No explanation.", groundedSalaryRange: json?.groundedSalaryRange || "N/A", jobMarketTrends: json?.jobMarketTrends || "N/A", groundingLinks: [] };
-        } catch (e) {
-            return { groundedExplanation: text || "Done.", groundedSalaryRange: "N/A", jobMarketTrends: "N/A", groundingLinks: [] };
-        }
-    } catch (error) { return { groundedExplanation: "Career info temporarily unavailable.", groundedSalaryRange: "N/A", jobMarketTrends: "N/A", groundingLinks: [] }; }
+    const prompt = `Provide career insights for: Career: ${careerName}, Personality: ${personalityType}, Location: ${location}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return a JSON object with keys: groundedExplanation, groundedSalaryRange, jobMarketTrends.`;
+    const json = await generateJSON<any>(prompt, (v) => isNonEmptyString(v.groundedExplanation), 'career insight');
+    return {
+      groundedExplanation: json.groundedExplanation,
+      // Secondary fields may genuinely be unknown; say so rather than invent.
+      groundedSalaryRange: isNonEmptyString(json.groundedSalaryRange) ? json.groundedSalaryRange : 'Not available',
+      jobMarketTrends: isNonEmptyString(json.jobMarketTrends) ? json.jobMarketTrends : 'Not available',
+      groundingLinks: [],
+    };
 };
 export const analyzeImage = async (data: string, mimeType: string, prompt: string): Promise<string> => {
-    try {
-        return await generateContentWithImage(data, mimeType, prompt + " " + SIMPLE_EXPLANATION_INSTRUCTION);
-    } catch (error) { return "Image analysis temporarily unavailable."; }
+    const text = await generateContentWithImage(data, mimeType, prompt + " " + SIMPLE_EXPLANATION_INSTRUCTION);
+    return requireText(text, 'image analysis');
 };
 
 export const editImage = async (data: string, mimeType: string, prompt: string): Promise<string> => {
-    try {
-        return await generateContentWithImage(data, mimeType, prompt);
-    } catch (error) { return ""; }
+    // Returning "" used to render a broken <img src="data:image/png;base64,">.
+    const result = await generateContentWithImage(data, mimeType, prompt);
+    return requireText(result, 'edited image');
 };
 
 export const getWeeklyReview = async (emotions: Emotion[]): Promise<WeeklyEmotionReview> => {
-    try {
-        const prompt = `Review these emotions: ${emotions.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return JSON: summary, reflectionQuestions, actionableTip.`;
-        const text = await generateContent(prompt, { jsonMode: true });
-        return safeParseJSON(text) || { summary: '', reflectionQuestions: [], actionableTip: '' };
-    } catch (error) { return { summary: 'Review unavailable.', reflectionQuestions: [], actionableTip: 'Take a deep breath.' } as any; }
+    // The old fallback ("Take a deep breath.") looked like real advice.
+    const prompt = `Review these emotions: ${emotions.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return JSON: summary (string), reflectionQuestions (array of strings), actionableTip (string).`;
+    return generateJSON<WeeklyEmotionReview>(
+      prompt,
+      (v) => isNonEmptyString(v.summary) && Array.isArray(v.reflectionQuestions) && isNonEmptyString(v.actionableTip),
+      'weekly review',
+    );
 };
 
 export const getStudyBuddyResponse = async (history: StudyBuddyMessage[], topic: string, mode: StudyMode, userText: string = ''): Promise<string> => {
-    try {
-        const prompt = `Mode: ${mode}. Topic: ${topic}. User: ${userText}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
-        return await generateContent(prompt);
-    } catch (error) { return "Study buddy is taking a break. Try again in a moment!"; }
+    // Errors propagate: an apology string here used to appear as the AI's reply.
+    const prompt = `Mode: ${mode}. Topic: ${topic}. User: ${userText}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
+    return requireText(await generateContent(prompt), 'study buddy reply');
 };
 export const getLanguageTutorResponse = async (language: string, history: { role: 'user' | 'model'; text: string }[], userMessage: string): Promise<string> => {
-    try {
-        const prompt = `Language tutor for ${language}. Student: ${userMessage}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
-        return await generateContent(prompt);
-    } catch (error) { return "Language tutor is temporarily unavailable."; }
+    // Errors propagate: an apology string here used to appear as the AI's reply.
+    const prompt = `Language tutor for ${language}. Student: ${userMessage}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
+    return requireText(await generateContent(prompt), 'tutor reply');
 };
 
 export const askAIAboutNote = async (noteContent: string, userQuery: string, history: { role: 'user' | 'model'; text: string }[]): Promise<string> => {
-    try {
-        const prompt = `Note Context: ${escapePrompt(noteContent, "note")}. Query: ${userQuery}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
-        return await generateContent(prompt);
-    } catch (error) { return "Note assistant is temporarily unavailable."; }
+    // Errors propagate: an apology string here used to appear as the AI's reply.
+    const prompt = `Note Context: ${escapePrompt(noteContent, "note")}. Query: ${userQuery}. ${SIMPLE_EXPLANATION_INSTRUCTION}`;
+    return requireText(await generateContent(prompt), 'answer');
 };
 
 export const generatePodcastAudio = async (noteContent: string): Promise<string> => {

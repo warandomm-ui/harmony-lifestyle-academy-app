@@ -15,6 +15,7 @@ import GoalSelectionStep from './GoalSelectionStep';
 import CareerPathSelectionStep from './CareerPathSelectionStep';
 import SkillSelectionStep from './SkillSelectionStep';
 import LifeGoalsStep from './LifeGoalsStep';
+import { describeAIError } from '../services/aiProxyService';
 
 // ═══════════════════════════════════════════════════════════
 // DUAL-PATH ONBOARDING FLOW
@@ -129,11 +130,12 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       setResults(analysisResults);
       setStep('results');
     } catch (err) {
-      setError(
-        isMuslim 
-          ? 'Maaf, analisis tidak berjaya. Sila cuba lagi.' 
-          : 'Sorry, we couldn\'t analyze your results. Please try again.'
-      );
+      // Show the real reason (and Ref for server-side failures) under the localized summary.
+      const detail = describeAIError(err, '');
+      const summary = isMuslim
+        ? 'Maaf, analisis tidak berjaya. Sila cuba lagi.'
+        : 'Sorry, we couldn\'t analyze your results. Please try again.';
+      setError(detail ? `${summary} (${detail})` : summary);
       setStep('assessment'); 
     }
   }, [isMuslim]);

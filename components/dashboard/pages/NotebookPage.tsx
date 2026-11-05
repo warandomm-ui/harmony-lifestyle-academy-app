@@ -5,6 +5,7 @@ import { useToast } from '../../../contexts/ToastContext';
 import { askAIAboutNote, generatePodcastAudio } from '../../../services/geminiService';
 import { decode, decodeAudioData } from '../../../utils/audioUtils';
 import type { Note } from '../../../types';
+import { describeAIError } from '../../../services/aiProxyService';
 
 const NotebookPage: React.FC = () => {
     const { addToast } = useToast();
@@ -136,7 +137,7 @@ const NotebookPage: React.FC = () => {
             const response = await askAIAboutNote(content, userMsg, chatMessages);
             setChatMessages(prev => [...prev, { role: 'model', text: response }]);
         } catch (error) {
-            addToast('AI failed to respond. Please try again.', 'error');
+            addToast(describeAIError(error, 'AI failed to respond. Please try again.'), 'error');
         } finally {
             setIsAiLoading(false);
         }
@@ -149,7 +150,7 @@ const NotebookPage: React.FC = () => {
         setIsAiLoading(true);
         askAIAboutNote(content, userMsg, chatMessages)
             .then(res => setChatMessages(prev => [...prev, { role: 'model', text: res }]))
-            .catch(() => addToast('AI failed.', 'error'))
+            .catch((err) => addToast(describeAIError(err, 'AI failed to respond. Please try again.'), 'error'))
             .finally(() => setIsAiLoading(false));
     };
 

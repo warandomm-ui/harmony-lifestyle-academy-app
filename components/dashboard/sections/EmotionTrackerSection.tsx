@@ -4,6 +4,7 @@ import { FaceSmileIcon, CalendarIcon, BookOpenIcon, SpinnerIcon, XCircleIcon } f
 import { MOCK_EMOTION_DATA, EMOTION_OPTIONS } from '../../../constants';
 import type { Emotion, EmotionEntry, WeeklyEmotionReview } from '../../../types';
 import { getWeeklyReview } from '../../../services/geminiService';
+import { describeAIError } from '../../../services/aiProxyService';
 
 const EmotionChart: React.FC<{ data: { emotion: Emotion; count: number; emoji: string; color: string; }[] }> = ({ data }) => {
   const maxCount = Math.max(...data.map(d => d.count), 1); // Avoid division by zero
@@ -123,7 +124,7 @@ const EmotionTrackerSection: React.FC = () => {
       const review = await getWeeklyReview(pastWeekEmotions);
       setWeeklyReview(review);
     } catch (err) {
-      setReviewError("Couldn't generate your weekly review. Please try again.");
+      setReviewError(describeAIError(err, "Couldn't generate your weekly review. Please try again."));
     } finally {
       setIsReviewLoading(false);
     }

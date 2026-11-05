@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, ReactNode, useCallback } fr
 import type { StudyBuddyMessage, StudyMode } from '../types';
 import { getStudyBuddyResponse } from '../services/geminiService';
 import { useToast } from './ToastContext';
+import { describeAIError } from '../services/aiProxyService';
 
 interface StudyBuddyContextType {
   topic: string | null;
@@ -63,7 +64,7 @@ export const StudyBuddyProvider: React.FC<{ children: ReactNode }> = ({ children
       setMessages(prev => [...prev, modelMessage]);
 
     } catch (error: any) {
-      addToast(error.message || "Failed to get response from Study Buddy.", 'error');
+      addToast(describeAIError(error, "Failed to get response from Study Buddy."), 'error');
       const errorMessage: StudyBuddyMessage = {
         id: `${Date.now()}-error`,
         role: 'model',

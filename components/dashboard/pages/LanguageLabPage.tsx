@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GlobeAltIcon, ChatAltIcon, PlayIcon, BookOpenIcon, SpinnerIcon } from '../Icons';
 import { getLanguageTutorResponse } from '../../../services/geminiService';
 import { useToast } from '../../../contexts/ToastContext';
+import { describeAIError } from '../../../services/aiProxyService';
 
 type Language = 'Arabic' | 'Mandarin' | 'English' | 'Hindi';
 
@@ -121,7 +122,7 @@ const RoleplaySection: React.FC<{ language: Language }> = ({ language }) => {
             const response = await getLanguageTutorResponse(language, messages, userMsg);
             setMessages(prev => [...prev, { role: 'model', text: response }]);
         } catch (error) {
-            addToast("Failed to get tutor response.", "error");
+            addToast(describeAIError(error, "Failed to get tutor response."), "error");
         } finally {
             setLoading(false);
         }
