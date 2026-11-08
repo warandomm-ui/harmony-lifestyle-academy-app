@@ -20,12 +20,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       </div>
       <div className="flex items-center justify-between mt-4">
         <p className="text-lg font-extrabold text-[var(--foreground)]">RM {product.price.toFixed(2)}</p>
-        <button
-          onClick={() => onAddToCart(product)}
-          className="bg-[var(--primary)] text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition-transform hover:scale-105"
-        >
-          Buy Now
-        </button>
+        {product.category === 'Merch' ? (
+          // Physical goods need shipping-address capture, which isn't built yet.
+          <span className="text-sm font-bold text-[var(--muted)] py-2 px-4 rounded-full border border-[var(--border)]">
+            Akan datang
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onAddToCart(product)}
+            className="bg-[var(--primary)] text-white font-bold py-2 px-4 rounded-full hover:opacity-90 transition-transform hover:scale-105"
+          >
+            Beli Sekarang
+          </button>
+        )}
       </div>
     </div>
   );

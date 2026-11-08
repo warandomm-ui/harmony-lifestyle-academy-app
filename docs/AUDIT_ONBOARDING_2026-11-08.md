@@ -37,15 +37,17 @@ Skop: semua kod klien (`tsc --noEmit` dan `vite build` bersih sebelum dan selepa
 - Toast resit menyatakan e-mel **rekaan** (`nama@gmail.com`) → kini guna e-mel akaun sebenar.
 - Butang tema terapung bertindih dengan avatar pengepala → dipaparkan hanya semasa onboarding.
 
-## 2. Penyekat sebelum menerima bayaran (TIDAK diubah — perlu keputusan pemilik)
+## 2. Penyekat sebelum menerima bayaran — ✅ diselesaikan (ToyyibPay)
 
-| Keutamaan | Isu | Lokasi |
-|---|---|---|
-| **P0** | `CheckoutModal` ialah simulasi: `setTimeout` → "Payment Successful!" tanpa sebarang panggilan gerbang pembayaran. Mana-mana pengguna boleh "membeli" dan didaftar automatik secara percuma. | `components/dashboard/CheckoutModal.tsx` |
-| **P0** | Tukar pelan langganan (`handleSelectPlan`) terus menaik taraf tanpa bayaran. | `MainDashboard.tsx` |
-| **P0** | `PaymentModal` mengumpul nombor kad penuh + CVC dalam pelayar. Jangan sesekali hantar ke pelayan sendiri (PCI-DSS). Guna halaman hos gerbang (ToyyibPay / Bayarcash / Stripe Checkout). | `PaymentModal.tsx` |
-| P1 | Kad Visa `4242` dan sejarah transaksi ialah data olok-olok (`MOCK_TRANSACTIONS`). | `MainDashboard.tsx` |
-| P1 | Pengesahan pembayaran mesti melalui webhook/callback sisi pelayan, bukan keadaan klien. | — |
+| Isu asal | Status |
+|---|---|
+| `CheckoutModal` simulasi (`setTimeout` → "berjaya") | ✅ Kini mencipta bil ToyyibPay sebenar dan membawa pengguna ke halaman FPX ToyyibPay |
+| Tukar pelan tanpa bayaran | ✅ Pelan berbayar melalui checkout; akses diberi hanya selepas callback disahkan |
+| `PaymentModal` mengumpul nombor kad + CVC | ✅ Dibuang sepenuhnya; tiada butiran kad/bank disimpan |
+| Data olok-olok (kad `4242`, `MOCK_TRANSACTIONS`) | ✅ Diganti dengan pesanan sebenar dari jadual `orders` |
+| Pengesahan pembayaran di pelayan | ✅ Hash callback + `getBillTransactions` + semakan jumlah + idempoten |
+
+Langkah aktifkan: lihat `docs/TOYYIBPAY_SETUP.md`.
 
 ## 3. Pautan
 Tiada pautan dalaman rosak ditemui (penghalaan hash disahkan terhadap senarai `validViews`). Pautan LinkedIn generik (`linkedin.com`) di footer onboarding dibuang kerana tidak menunjuk ke halaman akademi.

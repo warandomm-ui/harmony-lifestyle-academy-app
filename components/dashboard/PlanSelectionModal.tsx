@@ -40,7 +40,7 @@ const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({ currentPlanId, 
                   <span className="text-4xl font-extrabold text-[var(--foreground)]">
                     {plan.price > 0 ? `RM${plan.price}` : 'Free'}
                   </span>
-                  {plan.price > 0 && <span className="text-sm text-[var(--muted)]"> / {plan.billingCycle}</span>}
+                  {plan.price > 0 && <span className="text-sm text-[var(--muted)]"> / 30 hari</span>}
                 </p>
                 <ul className="space-y-3 text-sm flex-grow">
                   {plan.features.map((feature, index) => (
@@ -50,18 +50,29 @@ const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({ currentPlanId, 
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={() => onSelectPlan(plan)}
-                  disabled={currentPlanId === plan.id}
-                  className={`w-full mt-8 font-bold py-3 px-4 rounded-full transition-all duration-200
-                    ${currentPlanId === plan.id
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600'
-                      : 'bg-[var(--primary)] text-white hover:opacity-90 transform hover:scale-105'
-                    }
-                  `}
-                >
-                  {currentPlanId === plan.id ? 'Current Plan' : 'Select Plan'}
-                </button>
+                {(() => {
+                  const isCurrent = currentPlanId === plan.id;
+                  // Paid plans are 30-day passes: the current one can be extended.
+                  const disabled = isCurrent && plan.price <= 0;
+                  const label = isCurrent
+                    ? (plan.price > 0 ? 'Lanjutkan 30 Hari' : 'Pelan Semasa')
+                    : (plan.price > 0 ? 'Pilih Pelan' : 'Kekal Free');
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => onSelectPlan(plan)}
+                      disabled={disabled}
+                      className={`w-full mt-8 font-bold py-3 px-4 rounded-full transition-all duration-200
+                        ${disabled
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600'
+                          : 'bg-[var(--primary)] text-white hover:opacity-90 transform hover:scale-105'
+                        }
+                      `}
+                    >
+                      {label}
+                    </button>
+                  );
+                })()}
               </div>
             ))}
           </div>

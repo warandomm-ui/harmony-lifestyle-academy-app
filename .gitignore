@@ -25,3 +25,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 .vercel
+
+# Deno test artefacts
+supabase/functions/_tests/node_modules/
+supabase/functions/_tests/deno.lock

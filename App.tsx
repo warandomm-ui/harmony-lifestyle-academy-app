@@ -4,6 +4,7 @@ import { isMuslimStudent } from './components/OnboardingFlow';
 import ThemeToggle from './components/ThemeToggle';
 import MainDashboard from './components/dashboard/MainDashboard';
 import AuthScreen from './components/AuthScreen';
+import PaymentReturnPage, { isPaymentReturnUrl } from './components/PaymentReturnPage';
 import type { AnalysisResult, UserStatus, UserProfile, LifeVision, DashboardMode } from './types';
 import { ChatProvider } from './contexts/ChatContext';
 import { useAuth } from './contexts/AuthContext';
@@ -20,6 +21,8 @@ const App: React.FC = () => {
   // True while we look up whether this user already finished onboarding
   // (prevents a flash of the onboarding wizard for returning users).
   const [profileLoading, setProfileLoading] = useState(true);
+  // Opened on ToyyibPay's return URL (/payment/return?status_id=…&order_id=…)
+  const [showPaymentReturn, setShowPaymentReturn] = useState(isPaymentReturnUrl);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [userResults, setUserResults] = useState<AnalysisResult | null>(null);
   const [userSkills, setUserSkills] = useState<string[]>([]);
@@ -144,6 +147,15 @@ const App: React.FC = () => {
             <ToastContainer />
             {/* key forces a fresh form state when switching into/out of recovery */}
             <AuthScreen key={isPasswordRecovery ? 'recovery' : 'auth'} recoveryMode={isPasswordRecovery} />
+        </>
+    );
+  }
+
+  if (showPaymentReturn) {
+    return (
+        <>
+            <ToastContainer />
+            <PaymentReturnPage onDone={() => setShowPaymentReturn(false)} />
         </>
     );
   }

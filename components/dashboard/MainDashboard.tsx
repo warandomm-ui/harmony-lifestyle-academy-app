@@ -6,16 +6,16 @@ import HarmonyAIChat from './HarmonyAIChat';
 import AdminPanel from './sections/AdminPanel';
 import {
   AnalysisResult, Course, DashboardView, DashboardMode, Product,
-  UserStatus, AnonymousPost, PaymentMethod, SubscriptionPlan,
+  UserStatus, AnonymousPost, SubscriptionPlan,
   Transaction, UserProfile, LifeVision,
 } from '../../types';
 import { useToast } from '../../contexts/ToastContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { useChat } from '../../contexts/ChatContext';
 import SupportModal from './SupportModal';
 import LeaderboardSection from './gamification/LeaderboardSection';
 import BadgesSection from './gamification/BadgesSection';
-import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_TRANSACTIONS, MOCK_FULL_COURSE } from '../../constants';
+import { MOCK_ANONYMOUS_POSTS, SUBSCRIPTION_PLANS, MOCK_FULL_COURSE, MOCK_PRODUCTS } from '../../constants';
+import { fetchActivePlan, fetchMyOrders, ordersToTransactions, type CheckoutItem } from '../../services/paymentService';
 // Legacy Page Imports
 import WisdomPage from './pages/WisdomPage';
 import KnowledgePage from './pages/KnowledgePage';
@@ -54,7 +54,6 @@ import MyPathPage from './pages/MyPathPage';
 import LessonPage from './pages/LessonPage';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
-import PaymentModal from './PaymentModal';
 import CheckoutModal from './CheckoutModal';
 import PlanSelectionModal from './PlanSelectionModal';
 import RequestHelpModal from './RequestHelpModal';
@@ -141,7 +140,6 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   dashboardMode,
 }) => {
   const { addToast } = useToast();
-  const { user: authUser } = useAuth();
   const { toggleChat } = useChat();
   const isMuslim = dashboardMode === 'muslim';
   // ─── Navigation State ───
@@ -186,51 +184,46 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
   const [cart, setCart] = useState<Product[]>([]);
   const [activeCourses, setActiveCourses] = useState<Course[]>(DEFAULT_COURSES);
   const [anonymousPosts, setAnonymousPosts] = useState<AnonymousPost[]>(MOCK_ANONYMOUS_POSTS);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
-    { id: 'pm_1', cardType: 'Visa', last4: '4242', expiryMonth: '12', expiryYear: '2025' },
-  ]);
   const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan>(SUBSCRIPTION_PLANS[0]);
-  const [transactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
+  const [planExpiresAt, setPlanExpiresAt] = useState<string | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  // Real billing data: active plan + order history come from Supabase (RLS: own rows only).
+  const refreshBilling = useCallback(async () => {
+    const [plan, orders] = await Promise.all([fetchActivePlan(), fetchMyOrders()]);
+    const matched = plan ? SUBSCRIPTION_PLANS.find((p) => p.id === plan.planId) : undefined;
+    setCurrentPlan(matched ?? SUBSCRIPTION_PLANS[0]);
+    setPlanExpiresAt(matched && plan ? plan.expiresAt : null);
+    setTransactions(ordersToTransactions(orders));
+    // Paid digital courses/e-books appear in "My Learning".
+    const purchasedCourses: Course[] = orders
+      .filter((o) => o.status === 'paid' && o.item_type === 'product')
+      .map((o) => MOCK_PRODUCTS.find((p) => p.id === o.item_id))
+      .filter((p): p is Product => Boolean(p) && (p!.category === 'E-Book' || p!.name.includes('Course')))
+      .map((p) => ({ id: `purchased_${p.id}`, title: p.name, subtitle: 'Dibeli', icon: '🎓', progress: 0 }));
+    if (purchasedCourses.length) {
+      setActiveCourses((prev) => {
+        const have = new Set(prev.map((c) => c.id));
+        return [...purchasedCourses.filter((c) => !have.has(c.id)), ...prev];
+      });
+    }
+  }, []);
+  useEffect(() => { refreshBilling(); }, [refreshBilling]);
   // ─── Modal State ───
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isCourseCreatorOpen, setIsCourseCreatorOpen] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
+  const [checkoutItem, setCheckoutItem] = useState<CheckoutItem | null>(null);
   const [isRequestHelpModalOpen, setIsRequestHelpModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   // ─── Handlers ───
-  const handleInitiateCheckout = (product: Product) => {
-    setCheckoutProduct(product);
-    setIsCheckoutOpen(true);
-  };
-  const handleCheckoutSuccess = () => {
-    if (!checkoutProduct) return;
-    setIsCheckoutOpen(false);
-    // Never invent an address: only mention the email we actually have on file.
-    const receiptEmail = authUser?.email || userProfile.email;
-    addToast(
-      receiptEmail
-        ? `Receipt for ${checkoutProduct.name} will be sent to ${receiptEmail}`
-        : `Purchase of ${checkoutProduct.name} confirmed.`,
-      'success'
-    );
-    if (checkoutProduct.category === 'E-Book' || checkoutProduct.name.includes('Course')) {
-      const newCourse: Course = {
-        id: `purchased_${Date.now()}`,
-        title: checkoutProduct.name,
-        subtitle: 'Enrolled via Purchase',
-        icon: '🎓',
-        progress: 0,
-      };
-      setActiveCourses((prev) => [newCourse, ...prev]);
-      addToast(`Auto-enrolled in ${checkoutProduct.name}! Check 'My Learning'.`, 'info');
-    }
-    setCheckoutProduct(null);
-  };
   const handleAddToCart = (product: Product) => {
-    handleInitiateCheckout(product);
+    if (product.category === 'Merch') {
+      // Physical goods need a shipping address flow, which doesn't exist yet.
+      addToast('Barangan fizikal akan datang tidak lama lagi.', 'info');
+      return;
+    }
+    setCheckoutItem({ type: 'product', id: product.id, name: product.name, subtitle: product.category, priceRm: product.price });
   };
   const handleQuickAction = (actionLabel: string) => {
     switch (actionLabel) {
@@ -252,16 +245,19 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
     setActiveCourses((prev) => [newCourse, ...prev]);
     setIsCourseCreatorOpen(false);
   };
-  const handleSavePaymentMethod = (data: Omit<PaymentMethod, 'id'>) => {
-    const newMethod: PaymentMethod = { id: `pm_${Date.now()}`, ...data };
-    setPaymentMethods((prev) => [...prev, newMethod]);
-    setIsPaymentModalOpen(false);
-    addToast(`${data.cardType} card ending in ${data.last4} added.`, 'success');
-  };
   const handleSelectPlan = (plan: SubscriptionPlan) => {
-    setCurrentPlan(plan);
     setIsPlanModalOpen(false);
-    addToast(`Switched to ${plan.name} plan!`, 'success');
+    if (plan.price <= 0) {
+      // There is no auto-renewal, so a paid plan simply runs out at its expiry date.
+      addToast(
+        planExpiresAt
+          ? `Pelan ${currentPlan.name} anda kekal aktif sehingga ${new Date(planExpiresAt).toLocaleDateString('ms-MY')} dan tidak akan diperbaharui secara automatik.`
+          : 'Anda sudah menggunakan pelan Free.',
+        'info'
+      );
+      return;
+    }
+    setCheckoutItem({ type: 'plan', id: plan.id, name: `Pelan ${plan.name}`, subtitle: 'Akses 30 hari · tiada pembaharuan automatik', priceRm: plan.price });
   };
   const handlePostAnonymously = (content: string) => {
     const newPost: AnonymousPost = {
@@ -487,10 +483,8 @@ case 'parent-dashboard':
             <FinancialPage
               onAddToCart={handleAddToCart}
               currentPlan={currentPlan}
-              paymentMethods={paymentMethods}
+              planExpiresAt={planExpiresAt}
               transactions={transactions}
-              onAddPaymentMethod={() => setIsPaymentModalOpen(true)}
-              onRemovePaymentMethod={() => {}}
               onChangePlan={() => setIsPlanModalOpen(true)}
             />
           </FullPageWrapper>
@@ -603,12 +597,6 @@ case 'parent-dashboard':
       {isDonateModalOpen && (
         <DonateModal onClose={() => setIsDonateModalOpen(false)} />
       )}
-      {isPaymentModalOpen && (
-        <PaymentModal
-          onClose={() => setIsPaymentModalOpen(false)}
-          onSave={handleSavePaymentMethod}
-        />
-      )}
       {isPlanModalOpen && (
         <PlanSelectionModal
           currentPlanId={currentPlan.id}
@@ -617,11 +605,10 @@ case 'parent-dashboard':
           onSelectPlan={handleSelectPlan}
         />
       )}
-      {isCheckoutOpen && checkoutProduct && (
+      {checkoutItem && (
         <CheckoutModal
-          product={checkoutProduct}
-          onClose={() => setIsCheckoutOpen(false)}
-          onSuccess={handleCheckoutSuccess}
+          item={checkoutItem}
+          onClose={() => setCheckoutItem(null)}
         />
       )}
     </div>
