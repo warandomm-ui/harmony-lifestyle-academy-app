@@ -1,23 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
+/**
+ * Claude Service - SECURED via Supabase Edge Function
+ * Calls go through the ai-proxy edge function; no API key in the browser
+ */
+import { callClaude, retry } from './aiProxyService';
 import type { GeneratedModuleContent } from '../types';
-
-const getClaude = () => new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY || '',
-  dangerouslyAllowBrowser: true,
-});
-
-const retry = async <T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promise<T> => {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      if (i === retries) throw err;
-      const waitTime = err?.status === 429 ? delay * (i + 2) : delay;
-      await new Promise(r => setTimeout(r, waitTime));
-    }
-  }
-  throw new Error('Retry failed');
-};
 
 const safeParseJSON = (text: string | undefined): any => {
   if (!text) return null;
@@ -54,8 +40,6 @@ export const generateModuleContent = async (
     }
   }
 
-  const claude = getClaude();
-
   const systemPrompt =
     'You are an expert wellness educator writing for young adult learners (16-25). Create engaging, evidence-based content. Return only valid JSON, no prose outside it.';
 
@@ -65,14 +49,12 @@ export const generateModuleContent = async (
     `Return JSON matching exactly: { "lesson": { "title": "", "explanation": "", "keyPoints": [], "practicalTip": "", "deeperInsight": "" }, "quiz": { "question": "", "options": ["", "", "", ""], "correctIndex": 0, "explanation": "" }, "reflection": { "prompt": "", "guidingQuestions": ["", "", ""] } }`;
 
   const result = await retry(async () => {
-    const response = await claude.messages.create({
+    const text = await callClaude({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1500,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     });
-
-    const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
     const parsed = safeParseJSON(text);
     if (!parsed?.lesson || !parsed?.quiz || !parsed?.reflection) {
       throw new Error('Invalid response structure from Claude');

@@ -9,19 +9,23 @@ import { supabase, isSupabaseConfigured } from './supabaseClient';
 const EDGE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-proxy`;
 
 interface AIProxyRequest {
-  action: 'generateContent' | 'chat' | 'tts';
+  action: 'generateContent' | 'chat' | 'tts' | 'anthropic' | 'liveToken';
   payload: {
     contents?: any;
     model?: string;
     config?: Record<string, any>;
     history?: any[];
+    systemInstruction?: string;
+    system?: string;
+    messages?: { role: 'user' | 'assistant'; content: string }[];
+    max_tokens?: number;
   };
 }
 
 interface AIProxyResponse {
   text: string;
   inlineData?: { data: string; mimeType: string } | null;
-  raw?: any;
+  token?: string;
   error?: string;
 }
 async function getAuthHeaders(): Promise<Record<string, string>> {
@@ -148,6 +152,47 @@ export async function generateTTS(text: string): Promise<string> {
     },
   }));
   return result.inlineData?.data || '';
+}
+
+/**
+ * Multi-turn Gemini chat
+ */
+export async function chatWithAI(
+  history: { role: 'user' | 'model'; text: string }[],
+  systemInstruction?: string,
+  model = 'gemini-2.5-flash'
+): Promise<string> {
+  const result = await callAI({
+    action: 'chat',
+    payload: {
+      history: history.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
+      systemInstruction,
+      model,
+    },
+  });
+  return result.text;
+}
+
+/**
+ * Claude Messages API (through secure proxy)
+ */
+export async function callClaude(options: {
+  system?: string;
+  messages: { role: 'user' | 'assistant'; content: string }[];
+  model?: string;
+  max_tokens?: number;
+}): Promise<string> {
+  const result = await callAI({ action: 'anthropic', payload: options });
+  return result.text;
+}
+
+/**
+ * Single-use token for opening a Gemini Live API session from the browser
+ */
+export async function getLiveToken(): Promise<string> {
+  const result = await callAI({ action: 'liveToken', payload: {} });
+  if (!result.token) throw new Error('No live session token returned');
+  return result.token;
 }
 
 export { retry };

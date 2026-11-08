@@ -5,7 +5,7 @@ import { decode, decodeAudioData, createBlob } from '../../utils/audioUtils';
 import { MicrophoneIcon, StopIcon, XIcon, ChatAltIcon, TrashIcon, DownloadIcon } from './Icons';
 import type { Transcript } from '../../types'; // Import Transcript type
 import { useToast } from '../../contexts/ToastContext';
-import { generateContent } from '../../services/aiProxyService';
+import { generateContent, getLiveToken } from '../../services/aiProxyService';
 
 const TypingIndicator = () => (
     <div className="flex space-x-1 p-3">
@@ -115,7 +115,9 @@ const HarmonyAIChat: React.FC = () => {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             audioRefs.current.mediaStream = stream;
 
-            const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+            // Single-use token from the ai-proxy edge function; the API key stays on the server.
+            const token = await getLiveToken();
+            const ai = new GoogleGenAI({ apiKey: token, httpOptions: { apiVersion: 'v1alpha' } });
             
             // Initialize audio contexts
             audioRefs.current.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -246,7 +248,9 @@ const HarmonyAIChat: React.FC = () => {
             });
         } catch (error) {
             console.error('Failed to start conversation:', error);
-            setStatus('Error: Could not access microphone.');
+            audioRefs.current.mediaStream?.getTracks().forEach(track => track.stop());
+            audioRefs.current.mediaStream = null;
+            setStatus(error instanceof DOMException ? 'Error: Could not access microphone.' : 'Error: Could not connect to Harmony AI.');
             setIsRecording(false);
             setIsConnecting(false);
         }

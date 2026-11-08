@@ -272,17 +272,20 @@ and are worth fixing alongside:
    Proposal: extract a single `getLocalDateKey()` helper, unit-test it with a
    mocked clock across the boundary, and use it everywhere.
 
-2. **API key shipped to the browser.**
-   `services/claudeService.ts:4` constructs the Anthropic SDK client with
-   `dangerouslyAllowBrowser: true` and `VITE_ANTHROPIC_API_KEY`. Any `VITE_`
-   variable is inlined into the client bundle and readable by every visitor.
-   This directly contradicts `.env.example` ("AI API keys are stored securely in
-   Supabase Edge Function secrets - NOT in frontend env") and the header comment
-   in `geminiService.ts`. `claudeService` is reachable from
-   `AIContentGenerator.tsx`. It should route through the existing `ai-proxy`
-   edge function like every other AI call. Worth an architectural guard test
-   asserting no `VITE_*` key name matching `/KEY|SECRET|TOKEN/` is referenced
-   outside `supabaseClient.ts`.
+2. **API key shipped to the browser — fixed on `main`, guard test still open.**
+   As audited, `services/claudeService.ts` constructed the Anthropic SDK client
+   with `dangerouslyAllowBrowser: true` and `VITE_ANTHROPIC_API_KEY`, which any
+   visitor could read out of the client bundle. PR #23 ("route Gemini and Claude
+   calls through ai-proxy edge function") fixed it: `claudeService` now calls
+   `callClaude` in `aiProxyService`, `@anthropic-ai/sdk` is gone from
+   `dependencies`, and no `VITE_ANTHROPIC_API_KEY` or `dangerouslyAllowBrowser`
+   reference remains anywhere in the tree.
+
+   What has *not* landed is anything stopping it recurring. The architectural
+   guard is still worth adding: a test asserting no `VITE_*` name matching
+   `/KEY|SECRET|TOKEN/` is referenced outside `supabaseClient.ts`. That is a
+   cheap, fast test and it is the only thing that would catch the next instance
+   at review time rather than in a bundle.
 
 3. **~25 unguarded-ish `JSON.parse` calls on localStorage.** Most are wrapped,
    but several are not — e.g. `DailyCheckIn.tsx:44` and

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, Chat } from '@google/genai';
+import { chatWithAI } from '../../../services/aiProxyService';
 import { ChatAltIcon, SpinnerIcon } from '../Icons';
 import { useToast } from '../../../contexts/ToastContext';
 
@@ -8,6 +8,9 @@ interface ChatMessage {
   role: 'user' | 'model';
   text: string;
 }
+
+const SYSTEM_INSTRUCTION =
+  'You are Harmony AI, a friendly and helpful guide for Malaysian youth. Keep your answers concise, encouraging, and easy to understand.';
 
 const GeneralTextChatbotSection: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([{
@@ -18,28 +21,7 @@ const GeneralTextChatbotSection: React.FC = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { addToast } = useToast();
-  const chatRef = useRef<Chat | null>(null);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
-
-  // Initialize chat session on component mount
-  useEffect(() => {
-    const initChat = async () => {
-      try {
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
-        chatRef.current = ai.chats.create({
-          model: 'gemini-2.5-flash',
-          config: {
-            systemInstruction: 'You are Harmony AI, a friendly and helpful guide for Malaysian youth. Keep your answers concise, encouraging, and easy to understand.',
-          },
-        });
-      } catch (error) {
-        console.error('Error initializing Gemini text chat:', error);
-        addToast('Failed to initialize chat. Please check your API key.', 'error');
-      }
-    };
-
-    initChat();
-  }, [addToast]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -51,10 +33,6 @@ const GeneralTextChatbotSection: React.FC = () => {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputMessage.trim() || isLoading) return;
-    if (!chatRef.current) {
-      addToast('Chat not initialized yet. Please try again.', 'info');
-      return;
-    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -62,35 +40,24 @@ const GeneralTextChatbotSection: React.FC = () => {
       text: inputMessage.trim(),
     };
 
+    // Gemini expects the conversation to open with a user turn, so the
+    // local greeting is not sent.
+    const history = [...messages, userMessage].filter((msg) => msg.id !== 'initial');
+
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
 
     try {
-      const responseStream = await chatRef.current.sendMessageStream({ message: userMessage.text });
-
-      let modelResponseText = '';
-      const modelMessageId = `${Date.now()}-model`;
-      setMessages((prev) => [...prev, { id: modelMessageId, role: 'model', text: '' }]);
-
-      for await (const chunk of responseStream) {
-        modelResponseText += chunk.text;
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === modelMessageId ? { ...msg, text: modelResponseText } : msg
-          )
-        );
-      }
+      const reply = await chatWithAI(history, SYSTEM_INSTRUCTION);
+      setMessages((prev) => [...prev, { id: `${Date.now()}-model`, role: 'model', text: reply }]);
     } catch (error) {
-      console.error('Error sending message to Gemini:', error);
+      console.error('Error sending message to Harmony AI:', error);
       addToast('Failed to get response from Harmony AI. Please try again.', 'error');
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id.startsWith(Date.now().toString().substring(0, 10)) && msg.role === 'model' // Approximate matching for the error message
-            ? { ...msg, text: 'Sorry, I encountered an error. Please try again.' }
-            : msg
-        )
-      );
+      setMessages((prev) => [
+        ...prev,
+        { id: `${Date.now()}-model`, role: 'model', text: 'Sorry, I encountered an error. Please try again.' },
+      ]);
     } finally {
       setIsLoading(false);
     }

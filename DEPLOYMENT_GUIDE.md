@@ -51,6 +51,18 @@ Bila deploy ke luar, CDN tu tak available. Saya dah fix semua masalah ni.
 4. Pilih project atau buat baru
 5. **SALIN API KEY** — simpan di tempat selamat
 
+> ⚠️ **JANGAN** letak kunci ini dalam Vercel sebagai `VITE_*`. Semua pemboleh ubah
+> `VITE_*` dimasukkan ke dalam JavaScript awam dan boleh dibaca sesiapa.
+> Kunci AI hanya disimpan dalam Supabase Edge Function secrets:
+
+```bash
+supabase secrets set GEMINI_API_KEY=... ANTHROPIC_API_KEY=...
+supabase functions deploy ai-proxy
+```
+
+Sumber fungsi: `supabase/functions/ai-proxy/index.ts`. Semua panggilan Gemini dan
+Claude (termasuk token sekali pakai untuk suara Live) melalui fungsi ini.
+
 ---
 
 ## LANGKAH 3: SETUP GITHUB REPOSITORY (10 minit)
@@ -91,7 +103,6 @@ Di bahagian "Environment Variables", tambah:
 
 | Key | Value |
 |-----|-------|
-| `VITE_GEMINI_API_KEY` | (paste API key dari Langkah 2) |
 | `VITE_SUPABASE_URL` | (paste URL dari Langkah 1) |
 | `VITE_SUPABASE_ANON_KEY` | (paste anon key dari Langkah 1) |
 
