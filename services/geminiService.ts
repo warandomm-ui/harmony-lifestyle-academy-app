@@ -23,6 +23,70 @@ const safeParseJSON = (text: string | undefined): any => {
   }
   return JSON.parse(cleaned);
 };
+// Deep-merge an AI response onto a known-good default so that every field the
+// UI dereferences (arrays it maps over, nested objects) is guaranteed to exist
+// with the right type. Partial/malformed AI output must never crash onboarding.
+const mergeWithDefaults = (value: any, fallback: any): any => {
+  if (Array.isArray(fallback)) return Array.isArray(value) ? value : fallback;
+  if (fallback && typeof fallback === 'object') {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return fallback;
+    const out: any = { ...value };
+    for (const key of Object.keys(fallback)) out[key] = mergeWithDefaults(value[key], fallback[key]);
+    return out;
+  }
+  if (typeof fallback === 'number') return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+  return typeof value === typeof fallback ? value : fallback;
+};
+
+const toStringArray = (arr: any[]): string[] => arr.filter((x) => typeof x === 'string' && x.trim() !== '');
+
+const normalizeCareer = (c: any) => ({
+  ...c,
+  name: typeof c?.name === 'string' ? c.name : '',
+  why: typeof c?.why === 'string' ? c.why : '',
+  salary: typeof c?.salary === 'string' ? c.salary : '',
+  match: typeof c?.match === 'number' ? Math.max(0, Math.min(100, c.match)) : undefined,
+  skills: Array.isArray(c?.skills) ? toStringArray(c.skills) : [],
+});
+
+const normalizeTraits = (traits: any[]) =>
+  traits
+    .filter((t) => t && typeof t.name === 'string')
+    .map((t) => ({ name: t.name, score: typeof t.score === 'number' ? Math.max(0, Math.min(5, t.score)) : 0 }));
+
+export const normalizeAnalysisResult = (raw: any): AnalysisResult => {
+  const r = mergeWithDefaults(raw, DEFAULT_ANALYSIS_RESULT) as AnalysisResult;
+  const careers = r.careerRecommendations.map(normalizeCareer).filter((c) => c.name);
+  const others = r.otherCareerOptions.map(normalizeCareer).filter((c) => c.name);
+  return {
+    ...r,
+    recommendedStudyTechniques: toStringArray(r.recommendedStudyTechniques),
+    lifeSkills: toStringArray(r.lifeSkills),
+    specialSkills: toStringArray(r.specialSkills),
+    recommendedSports: toStringArray(r.recommendedSports),
+    startupIdeas: r.startupIdeas
+      .filter((i: any) => i && typeof i === 'object')
+      .map((i: any) => ({
+        ...i,
+        validationSteps: Array.isArray(i.validationSteps) ? toStringArray(i.validationSteps) : [],
+        challenges: Array.isArray(i.challenges) ? toStringArray(i.challenges) : [],
+      })),
+    summary: { ...r.summary, coreStrengths: toStringArray(r.summary.coreStrengths), naturalTalents: toStringArray(r.summary.naturalTalents) },
+    studentProfile: {
+      ...r.studentProfile,
+      bigFive: { ...r.studentProfile.bigFive, traits: normalizeTraits(r.studentProfile.bigFive.traits) },
+      hexaco: { ...r.studentProfile.hexaco, traits: normalizeTraits(r.studentProfile.hexaco.traits) },
+      multipleIntelligences: {
+        ...r.studentProfile.multipleIntelligences,
+        topIntelligences: toStringArray(r.studentProfile.multipleIntelligences.topIntelligences),
+      },
+    },
+    // Never leave the student with zero career choices on the next step.
+    careerRecommendations: careers.length ? careers : DEFAULT_ANALYSIS_RESULT.careerRecommendations,
+    otherCareerOptions: others,
+  };
+};
+
 export const getPersonalityAnalysis = async (answers: SurveyAnswers): Promise<AnalysisResult> => {
   try {
     const prompt = `You are an expert personality analyst for Malaysian secondary school students.
@@ -54,27 +118,57 @@ You MUST return a valid JSON object with EXACTLY this structure (no extra keys, 
   "startupIdeas": [{ "title": "", "description": "", "targetMarket": "", "validationSteps": [], "challenges": [] }]
 }
 Return ONLY valid JSON. Use Malaysian context (RM for salary). Keep tone fun and encouraging.`;
-    const text = await retry(async () => {
+    const text = await (async () => {
       const response = await generateContent(prompt, { jsonMode: true });
       const parsed = safeParseJSON(response);
       if (!parsed || !parsed.studentProfile || !parsed.personalityType) {
         throw new Error("Invalid response structure from AI");
       }
       return response;
+    })().catch(async (err) => {
+      if (!/Invalid response structure|JSON/i.test(String(err?.message))) throw err;
+      // One quick re-ask for malformed output; transport errors are already retried inside generateContent.
+      const response = await generateContent(prompt, { jsonMode: true });
+      const parsed = safeParseJSON(response);
+      if (!parsed || !parsed.studentProfile || !parsed.personalityType) throw err;
+      return response;
     });
-    return safeParseJSON(text) as AnalysisResult;
+    return normalizeAnalysisResult(safeParseJSON(text));
   } catch (error) {
     console.error("Error in getPersonalityAnalysis:", error);
     return DEFAULT_ANALYSIS_RESULT;
   }
 };
 
-export const getSkillRecommendations = async (personalityType: string, goal: Goal, careerPaths: string[]): Promise<SkillSuggestion> => {
+export const getSkillRecommendations = async (
+  personalityType: string,
+  goal: Goal,
+  careerPaths: string[],
+  availableSkills: string[] = []
+): Promise<SkillSuggestion> => {
+    const empty: SkillSuggestion = { recommendedSkills: [], smartSuggestions: [] };
     try {
-        const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ')}. ${SIMPLE_EXPLANATION_INSTRUCTION} Return JSON with keys: skills (array of {name, description, relevance}).`;
+        const catalogue = availableSkills.length
+          ? `\nPick recommendedSkills ONLY from this exact list (copy names verbatim): ${JSON.stringify(availableSkills)}`
+          : '';
+        const prompt = `Recommend 5 skills for a Malaysian student. Personality: ${personalityType}, Goal: ${goal}, Interests: ${careerPaths.join(', ') || 'not specified'}. ${SIMPLE_EXPLANATION_INSTRUCTION}${catalogue}
+Return ONLY a JSON object with exactly this shape:
+{"recommendedSkills":[{"skill":"string","reason":"short reason"}],"smartSuggestions":[{"context":"short sentence","skills":["string"]}]}`;
         const text = await generateContent(prompt, { jsonMode: true });
-        return safeParseJSON(text) || { skills: [] };
-    } catch (error) { console.error("Skill recommendations failed:", error); return { skills: [] } as any; }
+        const json = safeParseJSON(text);
+        if (!json || typeof json !== 'object') return empty;
+        const recommendedSkills = (Array.isArray(json.recommendedSkills) ? json.recommendedSkills : [])
+          .filter((r: any) => r && typeof r.skill === 'string')
+          .map((r: any) => ({ skill: r.skill, reason: typeof r.reason === 'string' ? r.reason : '' }));
+        const smartSuggestions = (Array.isArray(json.smartSuggestions) ? json.smartSuggestions : [])
+          .filter((s: any) => s && Array.isArray(s.skills))
+          .map((s: any) => ({
+            context: typeof s.context === 'string' ? s.context : '',
+            skills: s.skills.filter((k: any) => typeof k === 'string' && k.trim() !== ''),
+          }))
+          .filter((s: any) => s.skills.length > 0);
+        return { recommendedSkills, smartSuggestions };
+    } catch (error) { console.error("Skill recommendations failed:", error); return empty; }
 };
 
 export const generateCourseOutline = async (topic: string, difficulty: CourseDifficulty): Promise<CourseOutline> => {

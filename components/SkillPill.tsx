@@ -27,9 +27,11 @@ const SkillPill: React.FC<SkillPillProps> = ({ skillName, isSelected, onSelect, 
     // The relative group wrapper is for the tooltip positioning
     <div className="relative group">
       <button
+        type="button"
+        aria-pressed={isSelected}
         onClick={onSelect}
         className={`${baseClasses} ${stateClasses}`}
-        title={isRecommended ? `Recommended: ${recommendationReason}` : ''}
+        title={isRecommended && recommendationReason ? `Recommended: ${recommendationReason}` : undefined}
       >
         {skillName}
         {isRecommended && (

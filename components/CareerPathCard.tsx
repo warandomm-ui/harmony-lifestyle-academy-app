@@ -48,7 +48,14 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
 
   return (
     <div
+      role="checkbox"
+      aria-checked={isSelected}
+      tabIndex={0}
       onClick={() => onSelect(career.name)}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(career.name); }
+      }}
       className={`relative p-4 border-2 rounded-xl text-left cursor-pointer transition-all duration-200 h-full flex flex-col justify-between
         ${isSelected
           ? 'border-green-500 ring-2 ring-green-500 bg-green-50 dark:bg-green-500/10'
@@ -123,8 +130,8 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
                 // Fallback to initial data if no grounded details are available yet
                 <>
                     {career.why && <p className="text-gray-600 dark:text-gray-300"><strong className="text-gray-700 dark:text-gray-200">Why it's a great match:</strong> {career.why}</p>}
-                    <p className="text-gray-600 dark:text-gray-300"><strong className="text-gray-700 dark:text-gray-200">Skills:</strong> {career.skills.join(', ')}</p>
-                    <p className="text-gray-600 dark:text-gray-300"><strong className="text-gray-700 dark:text-gray-200">Salary:</strong> {career.salary}</p>
+                    {career.skills?.length > 0 && <p className="text-gray-600 dark:text-gray-300"><strong className="text-gray-700 dark:text-gray-200">Skills:</strong> {career.skills.join(', ')}</p>}
+                    {career.salary && <p className="text-gray-600 dark:text-gray-300"><strong className="text-gray-700 dark:text-gray-200">Salary:</strong> {career.salary}</p>}
                 </>
             )}
           </div>
@@ -133,6 +140,8 @@ const CareerPathCard: React.FC<CareerPathCardProps> = ({ career, isSelected, onS
 
       <div className="mt-4 flex justify-end items-end">
         <button
+          type="button"
+          aria-expanded={isExpanded}
           onClick={toggleExpand}
           className="text-xs font-bold text-green-600 dark:text-green-400 hover:underline focus:outline-none"
         >

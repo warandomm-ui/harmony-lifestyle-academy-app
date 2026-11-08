@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { STUDENT_360_SURVEY } from '../constants';
 import type { SurveyAnswers, Question as QuestionType } from '../types';
 
@@ -24,6 +24,14 @@ const AssessmentStep: React.FC<AssessmentStepProps> = ({ onComplete, onSkip }) =
     }));
   };
   
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentSectionIndex]);
+
+  const handlePrevSection = () => {
+    if (currentSectionIndex > 0) setCurrentSectionIndex(prev => prev - 1);
+  };
+
   const handleNextSection = () => {
     if (currentSectionIndex < STUDENT_360_SURVEY.length - 1) {
         setCurrentSectionIndex(prev => prev + 1);
@@ -61,14 +69,25 @@ const AssessmentStep: React.FC<AssessmentStepProps> = ({ onComplete, onSkip }) =
         </div>
       </div>
 
-       <div className="text-center mt-10 pt-6 border-t dark:border-gray-700 flex items-center justify-center gap-6">
+       <div className="text-center mt-10 pt-6 border-t dark:border-gray-700 flex flex-wrap items-center justify-center gap-6">
+        {currentSectionIndex > 0 && (
+          <button
+            type="button"
+            onClick={handlePrevSection}
+            className="text-gray-600 dark:text-gray-300 font-medium hover:underline focus:outline-none"
+          >
+            ← Previous
+          </button>
+        )}
         <button
+            type="button"
             onClick={onSkip}
             className="text-gray-500 dark:text-gray-400 font-medium hover:underline focus:outline-none"
         >
             Skip for now
         </button>
         <button
+          type="button"
           onClick={handleNextSection}
           disabled={!isSectionComplete()}
           className="bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed dark:disabled:bg-gray-600 enabled:hover:bg-green-700 enabled:hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
@@ -97,6 +116,7 @@ const Question: React.FC<QuestionProps> = ({ question, onAnswer, answer }) => {
           <div className="space-y-3">
             {question.options?.map(opt => (
               <button
+                type="button"
                 key={opt.value.toString()}
                 onClick={() => onAnswer(question.id, opt.value)}
                 className={`w-full text-left p-3 border-2 rounded-lg transition-all duration-200 text-gray-700 dark:text-gray-200 ${answer === opt.value ? 'bg-green-100 border-green-500 ring-2 ring-green-500 dark:bg-green-500/20 dark:border-green-500' : 'bg-white border-gray-200 hover:border-green-400 hover:bg-green-50 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-green-500 dark:hover:bg-gray-600'}`}
@@ -114,7 +134,9 @@ const Question: React.FC<QuestionProps> = ({ question, onAnswer, answer }) => {
            <div className="flex justify-between items-center space-x-2">
              {Array.from({ length: question.scale!.max }, (_, i) => i + 1).map(val => (
                 <button 
+                  type="button"
                   key={val}
+                  aria-label={`${val} of ${question.scale!.max}`}
                   onClick={() => onAnswer(question.id, {question: question.value, score: val})}
                   className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold transition-all ${answer?.score === val ? 'bg-green-600 border-green-600 text-white' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-green-500'}`}
                 >{val}</button>
@@ -129,12 +151,22 @@ const Question: React.FC<QuestionProps> = ({ question, onAnswer, answer }) => {
           <div className="space-y-4">
             {question.options?.map(opt => (
                <button
+                type="button"
                 key={opt.value.toString()}
                 onClick={() => onAnswer(question.id, opt.value)}
                 className={`w-full text-left p-4 border-2 rounded-xl transition-all duration-200 ${answer === opt.value ? 'bg-green-100 border-green-500 ring-2 ring-green-500 dark:bg-green-500/20 dark:border-green-500' : 'bg-white border-gray-200 hover:border-green-400 hover:bg-green-50 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-green-500 dark:hover:bg-gray-600'}`}
               >
-                <p className="font-bold text-gray-800 dark:text-gray-100">{opt.text.split(':')[0]}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{opt.text.split(':')[1]}</p>
+                {(() => {
+                  const idx = opt.text.indexOf(':');
+                  const heading = idx === -1 ? opt.text : opt.text.slice(0, idx);
+                  const detail = idx === -1 ? '' : opt.text.slice(idx + 1).trim();
+                  return (
+                    <>
+                      <p className="font-bold text-gray-800 dark:text-gray-100">{heading}</p>
+                      {detail && <p className="text-sm text-gray-600 dark:text-gray-300">{detail}</p>}
+                    </>
+                  );
+                })()}
               </button>
             ))}
           </div>

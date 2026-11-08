@@ -5,10 +5,14 @@ import CareerPathCard from './CareerPathCard';
 interface CareerPathSelectionStepProps {
   results: AnalysisResult;
   onComplete: (careers: string[]) => void;
+  initialSelected?: string[];
 }
 
-const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ results, onComplete }) => {
-  const [selectedCareers, setSelectedCareers] = useState<Set<string>>(new Set());
+const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ results, onComplete, initialSelected = [] }) => {
+  const [selectedCareers, setSelectedCareers] = useState<Set<string>>(() => new Set(initialSelected));
+  const topOptions = results.careerRecommendations ?? [];
+  const otherOptions = results.otherCareerOptions ?? [];
+  const hasAnyOptions = topOptions.length + otherOptions.length > 0;
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSelectCareer = (careerName: string) => {
@@ -24,18 +28,18 @@ const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ resul
   };
 
   const filteredOtherOptions = useMemo(() => {
-    if (!searchTerm) return results.otherCareerOptions;
-    return results.otherCareerOptions.filter(career =>
+    if (!searchTerm) return otherOptions;
+    return otherOptions.filter(career =>
       career.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, results.otherCareerOptions]);
+  }, [searchTerm, otherOptions]);
   
   const filteredTopOptions = useMemo(() => {
-    if (!searchTerm) return results.careerRecommendations;
-    return results.careerRecommendations.filter(career =>
+    if (!searchTerm) return topOptions;
+    return topOptions.filter(career =>
         career.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, results.careerRecommendations]);
+  }, [searchTerm, topOptions]);
 
 
   return (
@@ -77,6 +81,16 @@ const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ resul
         </div>
       )}
 
+      {hasAnyOptions && searchTerm && filteredTopOptions.length === 0 && filteredOtherOptions.length === 0 && (
+        <p className="text-center text-gray-500 dark:text-gray-400 py-6">No career paths match "{searchTerm}".</p>
+      )}
+
+      {!hasAnyOptions && (
+        <p className="text-center text-gray-500 dark:text-gray-400 py-6">
+          We couldn't generate career suggestions right now. You can continue and explore careers later from your dashboard.
+        </p>
+      )}
+
       {filteredOtherOptions.length > 0 && (
          <div>
             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Other Options</h3>
@@ -96,7 +110,14 @@ const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ resul
       )}
 
 
-      <div className="text-center mt-10 pt-6 border-t dark:border-gray-700">
+      <div className="text-center mt-10 pt-6 border-t dark:border-gray-700 flex items-center justify-center gap-6">
+        <button
+          type="button"
+          onClick={() => onComplete([])}
+          className="text-gray-500 dark:text-gray-400 font-medium hover:underline focus:outline-none"
+        >
+          {hasAnyOptions ? "I'm not sure yet" : 'Continue'}
+        </button>
         <button
           onClick={() => onComplete(Array.from(selectedCareers))}
           disabled={selectedCareers.size === 0}

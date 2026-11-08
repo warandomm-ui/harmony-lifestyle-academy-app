@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { SurveyAnswers, AnalysisResult, UserStatus, UserProfile, LifeVision, Goal } from '../types';
 import { getPersonalityAnalysis } from '../services/geminiService';
 import { DEFAULT_ANALYSIS_RESULT } from '../constants';
@@ -48,11 +48,14 @@ type OnboardingStep =
   | 'userStatus' 
   | 'generating';
 
+// Goals that lead to the career-path step.
+const CAREER_GOALS: Goal[] = ['career', 'university', 'freelance', 'business'];
+
 // Helper: Determine if student is Muslim based on religion field
 // This is the SINGLE source of truth for the entire app's routing
-const isMuslimStudent = (religion: string): boolean => {
+const isMuslimStudent = (religion: string | null | undefined): boolean => {
   const muslimValues = ['islam', 'muslim', 'sunni', 'shia', 'sufi'];
-  return muslimValues.includes(religion.toLowerCase().trim());
+  return muslimValues.includes((religion ?? '').toLowerCase().trim());
 };
 
 // Export this so other components can use the same logic
@@ -83,6 +86,23 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
   const [selectedCareers, setSelectedCareers] = useState<string[]>([]);
   const [userSkills, setUserSkills] = useState<string[]>([]);
 
+  // Name the user typed at registration (Supabase user metadata), used to prefill.
+  const registeredName: string =
+    (user?.user_metadata?.full_name as string | undefined)?.trim() ||
+    user?.email?.split('@')[0] ||
+    '';
+
+  // Keep the latest completion callback in a ref so the persistence effect does
+  // not re-run (and double-submit) whenever the parent re-renders.
+  const onCompleteRef = useRef(onOnboardingComplete);
+  useEffect(() => { onCompleteRef.current = onOnboardingComplete; }, [onOnboardingComplete]);
+  const persistStartedRef = useRef(false);
+
+  // Scroll to the top whenever the step changes so long steps don't open mid-page.
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   // ─── Derived state: is this a Muslim student? ───
   // Available after PersonalInfoStep completes
   const isMuslim = userProfile ? isMuslimStudent(userProfile.religion) : null;
@@ -108,7 +128,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
     // If student skips, default to universal (non-Muslim) path
     // This is the safest default — no Islamic content shown without explicit choice
     setUserProfile({
-      name: user?.email?.split('@')[0] || 'Member',
+      name: registeredName || 'Member',
       age: null,
       gender: 'Prefer not to say',
       race: 'Prefer not to say',
@@ -118,7 +138,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       country: 'Malaysia'
     });
     setStep('assessment');
-  }, [user]);
+  }, [registeredName]);
 
   const handleAssessmentComplete = useCallback(async (finalAnswers: SurveyAnswers) => {
     setAnswers(finalAnswers);
@@ -129,16 +149,21 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       setResults(analysisResults);
       setStep('results');
     } catch (err) {
+      // Don't throw the student back to question 1 and lose their answers:
+      // show a starter profile they can continue with (and retake later).
+      console.error('Personality analysis failed:', err);
       setError(
-        isMuslim 
-          ? 'Maaf, analisis tidak berjaya. Sila cuba lagi.' 
-          : 'Sorry, we couldn\'t analyze your results. Please try again.'
+        isMuslim
+          ? 'Maaf, analisis penuh tidak berjaya. Kami paparkan profil permulaan — anda boleh ambil semula ujian kemudian.'
+          : 'Sorry, we couldn\'t complete the full analysis. Showing a starter profile — you can retake the survey later.'
       );
-      setStep('assessment'); 
+      setResults(DEFAULT_ANALYSIS_RESULT);
+      setStep('results');
     }
   }, [isMuslim]);
   
   const handleSkipAssessment = useCallback(() => {
+    setError(null);
     setResults(DEFAULT_ANALYSIS_RESULT);
     setStep('results');
   }, []);
@@ -150,9 +175,11 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
 
   const handleGoalSelectionComplete = useCallback((selectedGoal: Goal) => {
     setGoal(selectedGoal);
-    if (['career', 'university', 'freelance', 'business'].includes(selectedGoal)) {
+    if (CAREER_GOALS.includes(selectedGoal)) {
       setStep('careerPathSelection');
     } else {
+      // Careers picked under a previous goal must not leak into skill recommendations.
+      setSelectedCareers([]);
       setStep('skillSelection');
     }
   }, []);
@@ -173,49 +200,81 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
   }, []);
 
   // ─── PERSIST TO SUPABASE ───
+  // Runs exactly once when the user reaches the final step.
   useEffect(() => {
-    const persistData = async () => {
-      if (step === 'generating' && userProfile && results && userStatus && lifeVision && user) {
-        try {
-          const { error: upsertError } = await supabase
-            .from('profiles')
-            .upsert({
-              id: user.id,
-              full_name: userProfile.name,
-              // ═══ CRITICAL: dashboardMode is stored in the database ═══
-              // This determines which dashboard loads on every future login
-              // Muslim student → 'muslim' → loads Muslim dashboard components
-              // Non-Muslim → 'universal' → loads Universal dashboard components
-              profile_data: { 
-                profile: userProfile, 
-                results, 
-                status: userStatus, 
-                vision: lifeVision, 
-                skills: userSkills,
-                dashboardMode: isMuslimStudent(userProfile.religion) ? 'muslim' : 'universal'
-              },
-              updated_at: new Date().toISOString()
-            });
-          
-          if (upsertError) throw upsertError;
+    if (step !== 'generating') {
+      persistStartedRef.current = false;
+      return;
+    }
+    if (persistStartedRef.current) return;
+    if (!(userProfile && results && userStatus && lifeVision && user)) return;
+    persistStartedRef.current = true;
 
-          setTimeout(() => {
-            onOnboardingComplete(userProfile, results, userStatus, lifeVision, userSkills);
-          }, 3000);
-        } catch (err: any) {
-          console.error("Persistence failed:", err);
-          addToast(
-            isMuslim 
-              ? "Sinkronisasi gagal. Menggunakan storan tempatan." 
-              : "Database sync failed. Using local storage instead.", 
-            "info"
-          );
-          onOnboardingComplete(userProfile, results, userStatus, lifeVision, userSkills);
-        }
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const finish = () => {
+      if (!cancelled) onCompleteRef.current(userProfile, results, userStatus, lifeVision, userSkills);
+    };
+
+    const persistData = async () => {
+      try {
+        const { error: upsertError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: user.id,
+            full_name: userProfile.name,
+            // ═══ CRITICAL: dashboardMode is stored in the database ═══
+            // This determines which dashboard loads on every future login
+            // Muslim student → 'muslim' → loads Muslim dashboard components
+            // Non-Muslim → 'universal' → loads Universal dashboard components
+            profile_data: {
+              profile: userProfile,
+              results,
+              status: userStatus,
+              vision: lifeVision,
+              skills: userSkills,
+              dashboardMode: isMuslimStudent(userProfile.religion) ? 'muslim' : 'universal'
+            },
+            updated_at: new Date().toISOString()
+          });
+
+        if (upsertError) throw upsertError;
+        // Let the "building your path" animation play briefly.
+        timer = setTimeout(finish, 3000);
+      } catch (err: any) {
+        console.error("Persistence failed:", err);
+        if (cancelled) return;
+        addToast(
+          isMuslimStudent(userProfile.religion)
+            ? "Sinkronisasi gagal. Menggunakan storan tempatan."
+            : "Database sync failed. Your progress is saved on this device.",
+          "info"
+        );
+        finish();
       }
     };
     persistData();
-  }, [step, userProfile, results, userStatus, lifeVision, onOnboardingComplete, userSkills, user, addToast, isMuslim]);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      // Allow a retry if this run was interrupted (e.g. StrictMode remount).
+      persistStartedRef.current = false;
+    };
+  }, [step, userProfile, results, userStatus, lifeVision, userSkills, user?.id, addToast]);
+
+  // ─── BACK NAVIGATION ───
+  const previousStep = (): OnboardingStep | null => {
+    switch (step) {
+      case 'personalInfo': return 'welcome';
+      case 'lifeGoals': return 'results';
+      case 'goalSelection': return 'lifeGoals';
+      case 'careerPathSelection': return 'goalSelection';
+      case 'skillSelection': return goal && CAREER_GOALS.includes(goal) ? 'careerPathSelection' : 'goalSelection';
+      case 'userStatus': return 'skillSelection';
+      default: return null;
+    }
+  };
+  const backTarget = previousStep();
 
   // ─── RENDER ───
   const renderStep = () => {
@@ -228,6 +287,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
           <PersonalInfoStep 
             onComplete={handlePersonalInfoComplete} 
             onSkip={handlePersonalInfoSkip} 
+            initialValues={userProfile ?? (registeredName ? { name: registeredName } : undefined)}
           />
         );
       
@@ -248,7 +308,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
         return results ? (
           <ResultsStep 
             results={results} 
-            onRestart={() => setStep('welcome')} 
+            onRestart={() => { setError(null); setStep('assessment'); }} 
             onNext={() => setStep('lifeGoals')} 
           />
         ) : (
@@ -258,6 +318,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
       case 'lifeGoals': 
         return (
           <LifeGoalsStep 
+            initialVision={lifeVision}
             onComplete={handleLifeGoalsComplete} 
             onSkip={() => handleLifeGoalsComplete({ 
               vision: '', mission: '', wisdomGoal: '', knowledgeGoal: '', 
@@ -267,11 +328,11 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
         );
       
       case 'goalSelection': 
-        return <GoalSelectionStep onComplete={handleGoalSelectionComplete} />;
+        return <GoalSelectionStep initialGoal={goal} onComplete={handleGoalSelectionComplete} />;
       
       case 'careerPathSelection': 
         return results ? (
-          <CareerPathSelectionStep results={results} onComplete={handleCareerPathComplete} />
+          <CareerPathSelectionStep results={results} initialSelected={selectedCareers} onComplete={handleCareerPathComplete} />
         ) : (
           <LoadingComponent isMuslim={isMuslim} />
         );
@@ -283,6 +344,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
             personalityType={results.personalityType} 
             goal={goal} 
             selectedCareers={selectedCareers} 
+            initialSelected={userSkills}
           />
         ) : (
           <LoadingComponent isMuslim={isMuslim} />
@@ -301,8 +363,17 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-[var(--card)] rounded-3xl shadow-lg p-6 md:p-10 border border-[var(--border)]">
-      {error && (
-        <div className="bg-red-100 border-red-400 text-red-700 dark:bg-red-900/50 px-4 py-3 rounded-md mb-4" role="alert">
+      {backTarget && (
+        <button
+          type="button"
+          onClick={() => { setError(null); setStep(backTarget); }}
+          className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
+        >
+          <span aria-hidden="true">←</span> Back
+        </button>
+      )}
+      {error && (step === 'results' || step === 'assessment') && (
+        <div className="bg-red-100 border border-red-400 text-red-700 dark:bg-red-900/50 dark:text-red-200 px-4 py-3 rounded-md mb-4" role="alert">
           {error}
         </div>
       )}
