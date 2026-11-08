@@ -114,6 +114,8 @@ const RadioGroup = ({ label, options, selectedValue, onChange, values }: { label
         return (
           <button
             key={value}
+            type="button"
+            aria-pressed={isSelected}
             onClick={() => onChange(value)}
             className={`px-4 py-2 rounded-full border-2 text-sm font-semibold transition-all duration-200
               ${isSelected

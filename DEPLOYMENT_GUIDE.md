@@ -169,3 +169,19 @@ Di bahagian "Environment Variables", tambah:
 ---
 
 Bismillah. Satu langkah pada satu masa. Kamu boleh buat ni, Waran.
+
+
+---
+
+## PEMBAYARAN (TOYYIBPAY)
+
+Checkout sebenar menggunakan ToyyibPay (FPX). Langkah penuh — skema, secrets, deploy dan ujian sandbox — ada dalam **`docs/TOYYIBPAY_SETUP.md`**.
+
+Ringkasan:
+
+```bash
+# 1. Jalankan supabase/payments_schema.sql dalam SQL Editor
+supabase secrets set TOYYIBPAY_SECRET_KEY=... TOYYIBPAY_CATEGORY_CODE=... TOYYIBPAY_ENV=sandbox APP_URL=https://www.harmonylifestyleacademy.com
+supabase functions deploy toyyibpay-checkout
+supabase functions deploy toyyibpay-callback --no-verify-jwt
+```

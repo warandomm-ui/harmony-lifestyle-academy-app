@@ -3,6 +3,7 @@ import type { Goal } from '../types';
 
 interface GoalSelectionStepProps {
   onComplete: (goal: Goal) => void;
+  initialGoal?: Goal | null;
 }
 
 const goals: { name: Goal; icon: string; label: string }[] = [
@@ -25,8 +26,8 @@ const goals: { name: Goal; icon: string; label: string }[] = [
   { name: 'life', icon: '❤️', label: 'Improve My Life' },
 ];
 
-const GoalSelectionStep: React.FC<GoalSelectionStepProps> = ({ onComplete }) => {
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+const GoalSelectionStep: React.FC<GoalSelectionStepProps> = ({ onComplete, initialGoal = null }) => {
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(initialGoal);
 
   return (
     <div className="animate-fade-in">
@@ -39,6 +40,8 @@ const GoalSelectionStep: React.FC<GoalSelectionStepProps> = ({ onComplete }) => 
         {goals.map((goal) => (
           <button
             key={goal.name}
+            type="button"
+            aria-pressed={selectedGoal === goal.name}
             onClick={() => setSelectedGoal(goal.name)}
             className={`flex flex-col items-center justify-center p-4 sm:p-6 border-2 rounded-xl text-center cursor-pointer transition-all duration-200 h-full
               ${selectedGoal === goal.name

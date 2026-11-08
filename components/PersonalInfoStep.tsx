@@ -9,18 +9,20 @@ import { GENDERS, RACES, RELIGIONS, STATES } from '../constants';
 interface PersonalInfoStepProps {
   onComplete: (profile: UserProfile) => void;
   onSkip: () => void;
+  /** Values to prefill (e.g. name from registration, or answers when navigating back). */
+  initialValues?: Partial<UserProfile>;
 }
 
 // 1. Define Zod Schema for Validation
 const personalInfoSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  age: z.number({ invalid_type_error: "Age is required" }).min(5, "Age must be valid").max(100, "Age must be valid"),
+  name: z.string().trim().min(2, "Name must be at least 2 characters"),
+  age: z.number({ invalid_type_error: "Age is required" }).int("Age must be a whole number").min(5, "Age must be between 5 and 100").max(100, "Age must be between 5 and 100"),
   gender: z.string().min(1, "Please select a gender"),
   race: z.string().min(1, "Please select a race"),
   religion: z.string().min(1, "Please select a religion"),
-  schoolName: z.string().min(2, "School name is required"),
+  schoolName: z.string().trim().min(2, "School name is required"),
   state: z.string().min(1, "Please select a state"),
-  country: z.string().min(1, "Country is required"),
+  country: z.string().trim().min(1, "Country is required"),
   // Optional fields that exist in UserProfile but might not be in this specific form step
   email: z.string().email().optional().or(z.literal('')),
   role: z.enum(['student', 'admin', 'instructor']).optional(),
@@ -29,7 +31,11 @@ const personalInfoSchema = z.object({
 
 type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
 
-const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip }) => {
+const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip, initialValues }) => {
+  // Only reuse a value if it is a real selectable option (the "skip" path stores 'N/A').
+  const pick = (value: string | undefined, options?: string[]) =>
+    value && value !== 'N/A' && (!options || options.includes(value)) ? value : '';
+
   // 2. Initialize React Hook Form
   const {
     register,
@@ -39,13 +45,14 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip 
     resolver: zodResolver(personalInfoSchema),
     mode: 'onChange', // Validate on change for immediate feedback
     defaultValues: {
-      country: 'Malaysia',
-      name: '',
-      gender: '',
-      race: '',
-      religion: '',
-      schoolName: '',
-      state: '',
+      country: pick(initialValues?.country) || 'Malaysia',
+      name: pick(initialValues?.name),
+      age: typeof initialValues?.age === 'number' ? initialValues.age : undefined,
+      gender: pick(initialValues?.gender, GENDERS),
+      race: pick(initialValues?.race, RACES),
+      religion: pick(initialValues?.religion, RELIGIONS),
+      schoolName: pick(initialValues?.schoolName),
+      state: pick(initialValues?.state, STATES),
     },
   });
 
@@ -57,7 +64,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip 
   return (
     <div className="animate-fade-in text-center">
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Tell Us a Bit About Yourself</h2>
-      <p className="text-[var(--muted)] mt-2">This helps us personalize your experience. (Optional)</p>
+      <p className="text-[var(--muted)] mt-2">This helps us personalize your experience. You can skip this step for now.</p>
       
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 text-left space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -70,6 +77,9 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip 
           <InputField 
             label="Age" 
             type="number" 
+            min={5}
+            max={100}
+            inputMode="numeric"
             {...register("age", { valueAsNumber: true })} 
             error={errors.age?.message} 
             required 

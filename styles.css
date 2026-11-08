@@ -99,6 +99,24 @@ body {
   animation: fade-in-up 0.4s ease-out;
 }
 
+/* Rotating feature on the onboarding welcome step (was referenced but undefined) */
+@keyframes feature-cycle {
+  0%   { opacity: 0; transform: translateY(8px); }
+  15%  { opacity: 1; transform: translateY(0); }
+  85%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+.animate-feature-cycle {
+  animation: feature-cycle 3s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in, .animate-fade-in-fast, .animate-fade-in-up, .animate-feature-cycle {
+    animation: none;
+  }
+}
+
 /* ── Harmony Luxury Academy — Dark Gold Dashboard Theme ── */
 .hla-dashboard {
   --background: #0a0a0f;

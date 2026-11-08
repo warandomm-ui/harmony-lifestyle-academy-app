@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import type { LifeVision } from '../types';
-import { useToast } from '../contexts/ToastContext';
 import * as Icons from './dashboard/Icons';
 
 interface LifeGoalsStepProps {
   onComplete: (vision: LifeVision) => void;
   onSkip: () => void;
+  initialVision?: LifeVision | null;
 }
 
-const LifeGoalsStep: React.FC<LifeGoalsStepProps> = ({ onComplete, onSkip }) => {
-    const [vision, setVision] = useState('');
-    const [mission, setMission] = useState('');
+const LifeGoalsStep: React.FC<LifeGoalsStepProps> = ({ onComplete, onSkip, initialVision }) => {
+    const [vision, setVision] = useState(initialVision?.vision ?? '');
+    const [mission, setMission] = useState(initialVision?.mission ?? '');
     const [goals, setGoals] = useState({
-        wisdomGoal: '',
-        knowledgeGoal: '',
-        careerFinanceGoal: '',
-        healthFitnessGoal: '',
-        socialCommGoal: ''
+        wisdomGoal: initialVision?.wisdomGoal ?? '',
+        knowledgeGoal: initialVision?.knowledgeGoal ?? '',
+        careerFinanceGoal: initialVision?.careerFinanceGoal ?? '',
+        healthFitnessGoal: initialVision?.healthFitnessGoal ?? '',
+        socialCommGoal: initialVision?.socialCommGoal ?? ''
     });
 
     const handleGoalChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -27,9 +27,10 @@ const LifeGoalsStep: React.FC<LifeGoalsStepProps> = ({ onComplete, onSkip }) => 
     const canContinue = vision.trim() !== '' && mission.trim() !== '';
 
     const handleSubmit = () => {
+        if (!canContinue) return;
         onComplete({
-            vision,
-            mission,
+            vision: vision.trim(),
+            mission: mission.trim(),
             ...goals
         });
     };

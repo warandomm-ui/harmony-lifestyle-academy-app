@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { supabase } from '../services/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { GitHubIcon, GoogleIcon } from './dashboard/Icons';
 
-/* ââ Geometric ornament â exact SVG from hla-welcome.html ââ */
+/* ── Geometric ornament — exact SVG from hla-welcome.html ── */
 const GeometricOrnament = () => (
   <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
     <circle cx="250" cy="250" r="200" stroke="#c9a84c" strokeWidth="1"/>
@@ -19,7 +20,7 @@ const GeometricOrnament = () => (
   </svg>
 );
 
-/* ââ Small corner ornament for the form card ââ */
+/* ── Small corner ornament for the form card ── */
 const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 60, height: 60, ...style }}>
     <line x1="0" y1="60" x2="60" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.6"/>
@@ -29,7 +30,7 @@ const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   </svg>
 );
 
-/* ââ Spinner ââ */
+/* ── Spinner ── */
 const SpinnerIcon = () => (
   <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -37,7 +38,7 @@ const SpinnerIcon = () => (
   </svg>
 );
 
-/* ââ Eye icons for password visibility toggle ââ */
+/* ── Eye icons for password visibility toggle ── */
 const EyeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -52,28 +53,53 @@ const EyeOffIcon = () => (
   </svg>
 );
 
-const AuthScreen: React.FC = () => {
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
+interface AuthScreenProps {
+  /** Render the "choose a new password" form (user arrived from a reset link). */
+  recoveryMode?: boolean;
+}
+
+const AuthScreen: React.FC<AuthScreenProps> = ({ recoveryMode = false }) => {
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'update'>(recoveryMode ? 'update' : 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const { addToast } = useToast();
+  const { clearPasswordRecovery, signOut } = useAuth();
 
   const isLogin = mode === 'login';
   const isRegister = mode === 'register';
   const isForgot = mode === 'forgot';
+  const isUpdate = mode === 'update';
+
+  const switchMode = (next: 'login' | 'register' | 'forgot') => {
+    setMode(next);
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+  };
+
+  const ensureConfigured = (): boolean => {
+    if (isSupabaseConfigured()) return true;
+    addToast('Sign-in is temporarily unavailable (service not configured). Please contact support.', 'error');
+    return false;
+  };
 
   const handleSocialLogin = async (provider: 'github' | 'google') => {
+    if (!ensureConfigured()) return;
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin },
+      });
       if (error) throw error;
+      // On success the browser navigates to the provider; keep the spinner until then.
     } catch (error: any) {
       addToast(error.message || `${provider} login failed`, 'error');
-    } finally {
       setLoading(false);
     }
   };
@@ -84,16 +110,39 @@ const AuthScreen: React.FC = () => {
       addToast('Please enter your email address.', 'error');
       return;
     }
+    if (!ensureConfigured()) return;
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: window.location.origin,
       });
       if (error) throw error;
       addToast('Password reset link sent! Check your email inbox.', 'success');
-      setMode('login');
+      switchMode('login');
     } catch (error: any) {
       addToast(error.message || 'Failed to send reset email', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (password.length < 6) {
+      addToast('Password must be at least 6 characters.', 'error');
+      return;
+    }
+    if (password !== confirmPassword) {
+      addToast('Passwords do not match.', 'error');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      addToast('Password updated. You are now signed in.', 'success');
+      clearPasswordRecovery();
+    } catch (error: any) {
+      addToast(error.message || 'Could not update password. Please request a new reset link.', 'error');
     } finally {
       setLoading(false);
     }
@@ -102,9 +151,12 @@ const AuthScreen: React.FC = () => {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isForgot) return handleForgotPassword(e);
+    if (isUpdate) return handleUpdatePassword();
+
+    const cleanEmail = email.trim();
 
     /* Client-side validation */
-    if (!email.trim()) {
+    if (!cleanEmail) {
       addToast('Please enter your email address.', 'error');
       return;
     }
@@ -112,21 +164,52 @@ const AuthScreen: React.FC = () => {
       addToast('Password must be at least 6 characters.', 'error');
       return;
     }
+    if (isRegister && password !== confirmPassword) {
+      addToast('Passwords do not match.', 'error');
+      return;
+    }
+    if (!ensureConfigured()) return;
 
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+        if (error) {
+          if (/email not confirmed/i.test(error.message)) {
+            throw new Error('Please confirm your email first — check your inbox for the confirmation link.');
+          }
+          if (/invalid login credentials/i.test(error.message)) {
+            throw new Error('Incorrect email or password.');
+          }
+          throw error;
+        }
         addToast('Welcome back to Harmony!', 'success');
       } else {
-        const { error } = await supabase.auth.signUp({
-          email,
+        const { data, error } = await supabase.auth.signUp({
+          email: cleanEmail,
           password,
-          options: { data: { full_name: fullName || undefined } },
+          options: {
+            data: { full_name: fullName.trim() || undefined },
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (error) throw error;
-        addToast('Success! Please check your email for a confirmation link.', 'success');
+
+        // Supabase returns a user with no identities when the email is already
+        // registered (to avoid leaking account existence). Guide the user to sign in.
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          addToast('An account with this email already exists. Please sign in instead.', 'info');
+          switchMode('login');
+          return;
+        }
+
+        if (data.session) {
+          // Email confirmation is disabled — the user is signed in immediately.
+          addToast('Account created! Welcome to Harmony.', 'success');
+        } else {
+          addToast('Almost there! Check your email for a confirmation link, then sign in.', 'success');
+          switchMode('login');
+        }
       }
     } catch (error: any) {
       addToast(error.message || 'Authentication failed', 'error');
@@ -135,7 +218,7 @@ const AuthScreen: React.FC = () => {
     }
   };
 
-  /* ââ inline style tokens ââ */
+  /* ── inline style tokens ── */
   const C = {
     deep: '#0a0a0f',
     navy: '#0d1b2a',
@@ -154,7 +237,7 @@ const AuthScreen: React.FC = () => {
     dmSans: "'DM Sans', system-ui, sans-serif",
   };
 
-  /* ââ Shared input style ââ */
+  /* ── Shared input style ── */
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
     background: 'rgba(255,255,255,0.04)',
@@ -178,14 +261,18 @@ const AuthScreen: React.FC = () => {
     transition: 'color 0.3s',
   });
 
-  /* ââ Header text based on mode ââ */
-  const headerTag = isForgot ? 'Password Recovery' : isLogin ? 'Member Portal' : 'Join the Academy';
-  const headerTitle = isForgot
+  /* ── Header text based on mode ── */
+  const headerTag = isUpdate ? 'Password Recovery' : isForgot ? 'Password Recovery' : isLogin ? 'Member Portal' : 'Join the Academy';
+  const headerTitle = isUpdate
+    ? <>Choose a New <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Password</em></>
+    : isForgot
     ? <>Reset Your <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Password</em></>
     : isLogin
     ? <>Welcome <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Back</em></>
     : <>Begin Your <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Journey</em></>;
-  const headerSub = isForgot
+  const headerSub = isUpdate
+    ? 'Enter a new password for your account.'
+    : isForgot
     ? "Enter your email and we'll send you a reset link."
     : isLogin
     ? 'Sign in to continue your path of growth.'
@@ -197,7 +284,7 @@ const AuthScreen: React.FC = () => {
       fontFamily: font.dmSans, color: C.cream, overflowX: 'hidden',
     }}>
 
-      {/* ââ Left panel â hero / branding ââ */}
+      {/* ── Left panel — hero / branding ── */}
       <div style={{
         flex: '0 0 55%', position: 'relative', display: 'flex', flexDirection: 'column',
         justifyContent: 'space-between', padding: '3rem 4rem',
@@ -214,14 +301,14 @@ const AuthScreen: React.FC = () => {
           <GeometricOrnament />
         </div>
 
-        {/* Top â wordmark */}
+        {/* Top — wordmark */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ fontFamily: font.playfair, fontSize: '1.35rem', fontWeight: 700, color: C.gold, letterSpacing: '0.04em' }}>
             Harmony<span style={{ color: C.cream, fontWeight: 300 }}> Lifestyle Academy</span>
           </div>
         </div>
 
-        {/* Middle â hero copy */}
+        {/* Middle — hero copy */}
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '560px' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -248,11 +335,11 @@ const AuthScreen: React.FC = () => {
             fontSize: '1rem', color: C.muted, lineHeight: 1.75, fontWeight: 300,
             maxWidth: '460px', animation: 'hla-fadeUp 0.6s ease 0.6s both',
           }}>
-            A holistic transformation programme for students â combining self-awareness, life values, and practical skills for the modern world.
+            A holistic transformation programme for students — combining self-awareness, life values, and practical skills for the modern world.
           </p>
         </div>
 
-        {/* Bottom â stats */}
+        {/* Bottom — stats */}
         <div style={{
           position: 'relative', zIndex: 2, display: 'flex', gap: '3rem',
           borderTop: `1px solid rgba(201,168,76,0.2)`,
@@ -271,7 +358,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Right panel â auth form ââ */}
+      {/* ── Right panel — auth form ── */}
       <div className="auth-right-panel" style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 'clamp(1.25rem, 5vw, 2.5rem)', background: C.deep,
@@ -309,7 +396,7 @@ const AuthScreen: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-            {/* Full Name â register only */}
+            {/* Full Name — register only */}
             {isRegister && (
               <div>
                 <label style={labelStyle('fullName')}>Full Name</label>
@@ -325,7 +412,8 @@ const AuthScreen: React.FC = () => {
               </div>
             )}
 
-            {/* Email */}
+            {/* Email — not needed when setting a new password */}
+            {!isUpdate && (
             <div>
               <label style={labelStyle('email')}>Email Address</label>
               <input
@@ -335,15 +423,17 @@ const AuthScreen: React.FC = () => {
                 onFocus={() => setFocusedField('email')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="you@example.com"
+                autoComplete="email"
                 required
                 style={inputStyle('email')}
               />
             </div>
+            )}
 
-            {/* Password â hidden on forgot mode */}
+            {/* Password — hidden on forgot mode */}
             {!isForgot && (
               <div>
-                <label style={labelStyle('password')}>Password</label>
+                <label style={labelStyle('password')}>{isUpdate ? 'New Password' : 'Password'}</label>
                 <div style={{ position: 'relative' }}>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -351,7 +441,8 @@ const AuthScreen: React.FC = () => {
                     onChange={e => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
-                    placeholder={isRegister ? 'Min 6 characters' : 'â¢â¢â¢â¢â¢â¢â¢â¢'}
+                    placeholder={isRegister || isUpdate ? 'Min 6 characters' : '••••••••'}
+                    autoComplete={isLogin ? 'current-password' : 'new-password'}
                     required
                     minLength={6}
                     style={{ ...inputStyle('password'), paddingRight: '3rem' }}
@@ -372,12 +463,12 @@ const AuthScreen: React.FC = () => {
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 </div>
-                {/* Forgot password link â login mode only */}
+                {/* Forgot password link — login mode only */}
                 {isLogin && (
                   <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
                     <button
                       type="button"
-                      onClick={() => setMode('forgot')}
+                      onClick={() => switchMode('forgot')}
                       style={{
                         background: 'none', border: 'none', color: C.muted, cursor: 'pointer',
                         fontFamily: font.dmSans, fontSize: '0.75rem', padding: 0,
@@ -390,6 +481,25 @@ const AuthScreen: React.FC = () => {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Confirm password — register and update modes */}
+            {(isRegister || isUpdate) && (
+              <div>
+                <label style={labelStyle('confirmPassword')}>Confirm Password</label>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  onFocus={() => setFocusedField('confirmPassword')}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="Re-enter password"
+                  autoComplete="new-password"
+                  required
+                  minLength={6}
+                  style={inputStyle('confirmPassword')}
+                />
               </div>
             )}
 
@@ -411,6 +521,7 @@ const AuthScreen: React.FC = () => {
             >
               {loading
                 ? <SpinnerIcon />
+                : isUpdate ? 'Update Password'
                 : isForgot ? 'Send Reset Link'
                 : isLogin ? 'Sign In'
                 : 'Join the Academy'
@@ -418,8 +529,8 @@ const AuthScreen: React.FC = () => {
             </button>
           </form>
 
-          {/* Social login â not on forgot mode */}
-          {!isForgot && (
+          {/* Social login — not on forgot mode */}
+          {!isForgot && !isUpdate && (
             <>
               <div className="auth-social-mt" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.75rem 0' }}>
                 <div style={{ flex: 1, height: 1, background: 'rgba(201,168,76,0.15)' }}/>
@@ -434,6 +545,7 @@ const AuthScreen: React.FC = () => {
                 ]).map(({ provider, Icon, label }) => (
                   <button
                     key={provider}
+                    type="button"
                     onClick={() => handleSocialLogin(provider)}
                     disabled={loading}
                     style={{
@@ -458,24 +570,31 @@ const AuthScreen: React.FC = () => {
 
           {/* Toggle sign-in / register / back from forgot */}
           <p className="auth-toggle-mt" style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.82rem', color: C.muted, fontWeight: 300 }}>
-            {isForgot ? (
+            {isUpdate ? (
+              <>
+                Changed your mind?{' '}
+                <button type="button" onClick={() => { clearPasswordRecovery(); signOut(); }} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                  Cancel and sign out
+                </button>
+              </>
+            ) : isForgot ? (
               <>
                 Remember your password?{' '}
-                <button onClick={() => setMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Back to Sign In
                 </button>
               </>
             ) : isLogin ? (
               <>
                 Don&apos;t have an account?{' '}
-                <button onClick={() => setMode('register')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('register')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Register
                 </button>
               </>
             ) : (
               <>
                 Already a member?{' '}
-                <button onClick={() => setMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Sign In
                 </button>
               </>
@@ -489,7 +608,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Keyframe animations ââ */}
+      {/* ── Keyframe animations ── */}
       <style>{`
         @keyframes hla-fadeUp {
           from { opacity: 0; transform: translateY(28px); }

@@ -86,6 +86,7 @@ const ResultsStep: React.FC<ResultsStepProps> = ({ results, onRestart, onNext })
 
       <div className="text-center pt-6 border-t dark:border-gray-700">
         <button
+            type="button"
             onClick={onRestart}
             className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium mr-4"
         >
@@ -125,7 +126,7 @@ const SummaryTab: React.FC<{ results: AnalysisResult }> = ({ results }) => (
         <div>
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Recommended Study Techniques</h3>
             <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1 mt-2">
-                {results.recommendedStudyTechniques.map(tech => <li key={tech}>{tech}</li>)}
+                {results.recommendedStudyTechniques.map((tech, i) => <li key={i}>{tech}</li>)}
             </ul>
         </div>
         <div>
@@ -249,8 +250,8 @@ const ListTab: React.FC<{title: string, subtitle: string, items: string[], summa
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{title}</h3>
         <p className="text-gray-600 dark:text-gray-300 mt-2">{subtitle}</p>
         <div className="flex flex-wrap gap-2 mt-2">
-            {items.map(item => (
-                <span key={item} className="bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300 font-semibold px-3 py-1 rounded-full">{item}</span>
+            {items.map((item, i) => (
+                <span key={i} className="bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300 font-semibold px-3 py-1 rounded-full">{item}</span>
             ))}
         </div>
         <p className="text-gray-600 dark:text-gray-300 mt-3">{summary}</p>

@@ -10,42 +10,53 @@ interface SkillSelectionStepProps {
   personalityType: string;
   goal: Goal;
   selectedCareers: string[];
+  initialSelected?: string[];
 }
 
-const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, personalityType, goal, selectedCareers }) => {
-  const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
+const MIN_SKILLS = 3;
+const MAX_SKILLS = 10;
+
+const ALL_SKILLS: string[] = Array.from(new Set(Object.values(SKILLS).flat()));
+
+const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, personalityType, goal, selectedCareers, initialSelected = [] }) => {
+  const [selectedSkills, setSelectedSkills] = useState<Set<string>>(() => new Set(initialSelected.slice(0, MAX_SKILLS)));
   const [recommendations, setRecommendations] = useState<SkillSuggestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const { addToast } = useToast();
 
+  // Stable key so a new array identity from the parent doesn't trigger a refetch.
+  const careersKey = selectedCareers.join('|');
+
   useEffect(() => {
+    let cancelled = false;
     const fetchRecommendations = async () => {
       setIsLoading(true);
       try {
-        const recs = await getSkillRecommendations(personalityType, goal, selectedCareers);
-        setRecommendations(recs);
+        const recs = await getSkillRecommendations(personalityType, goal, selectedCareers, ALL_SKILLS);
+        if (!cancelled) setRecommendations(recs);
       } catch (err) {
         console.error("Failed to fetch skill recommendations:", err);
-        setRecommendations({
-          recommendedSkills: [],
-          smartSuggestions: []
-        });
+        if (!cancelled) setRecommendations({ recommendedSkills: [], smartSuggestions: [] });
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-      setIsLoading(false);
     };
     fetchRecommendations();
-  }, [personalityType, goal, selectedCareers]);
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personalityType, goal, careersKey]);
 
   const handleSelectSkill = (skill: string) => {
     setSelectedSkills(prev => {
       const newSet = new Set(prev);
       if (newSet.has(skill)) {
         newSet.delete(skill);
-      } else if (newSet.size < 10) {
+      } else if (newSet.size < MAX_SKILLS) {
         newSet.add(skill);
       } else {
-        addToast("You can only select up to 10 skills.", "info");
+        // Defer the toast: calling it inside a state updater runs it twice in StrictMode.
+        setTimeout(() => addToast(`You can only select up to ${MAX_SKILLS} skills.`, "info"), 0);
       }
       return newSet;
     });
@@ -60,7 +71,13 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
   };
 
   const skillCategoriesToDisplay = useMemo(() => {
+    // Surface AI-recommended skills first. Recommendations outside our catalogue
+    // would otherwise be invisible (they'd never appear in any category).
+    const recommended = Array.from(new Set(
+      (recommendations?.recommendedSkills ?? []).map(r => r.skill).filter(Boolean)
+    ));
     const categories: { title: string; skills: string[]; open?: boolean }[] = [
+      ...(recommended.length ? [{ title: '⭐ Recommended for You', skills: recommended, open: true }] : []),
       { title: '📚 School Subjects', skills: SKILLS.school, open: true },
       { title: '💻 Technical Skills', skills: SKILLS.technical },
       { title: '👔 Professional Skills', skills: SKILLS.professional },
@@ -68,7 +85,7 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
       { title: '🎨 Creative Skills', skills: SKILLS.creative },
     ];
     return categories;
-  }, []);
+  }, [recommendations]);
 
   const filteredSkillCategories = useMemo(() => {
     if (!searchTerm) {
@@ -84,9 +101,9 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
         .filter(category => category.skills.length > 0);
     }, [searchTerm, skillCategoriesToDisplay]);
 
-  const canContinue = selectedSkills.size >= 3 && selectedSkills.size <= 10;
+  const canContinue = selectedSkills.size >= MIN_SKILLS && selectedSkills.size <= MAX_SKILLS;
 
-  const progressPercentage = (selectedSkills.size / 10) * 100;
+  const progressPercentage = (selectedSkills.size / MAX_SKILLS) * 100;
   let progressText = 'Choose 3 to 10 skills.';
   let progressColor = "text-gray-500 dark:text-gray-400";
 
@@ -171,7 +188,7 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
                 <div key={index}>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{suggestion.context}</p>
                   <div className="flex flex-wrap gap-2">
-                    {suggestion.skills.map(skill => (
+                    {(suggestion.skills ?? []).map(skill => (
                        <SkillPill
                          key={skill}
                          skillName={skill}

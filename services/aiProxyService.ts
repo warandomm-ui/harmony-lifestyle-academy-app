@@ -90,6 +90,9 @@ async function retry<T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promis
       return await fn();
     } catch (err: any) {
       if (i === retries) throw err;
+      // Don't make the user wait on errors a retry cannot fix.
+      const msg = String(err?.message || '');
+      if (/not authenticated|not configured|not found|Invalid response structure/i.test(msg) && !/429/.test(msg)) throw err;
       const waitTime = err?.message?.includes('429') ? delay * (i + 2) : delay;
       await new Promise(r => setTimeout(r, waitTime));
     }
