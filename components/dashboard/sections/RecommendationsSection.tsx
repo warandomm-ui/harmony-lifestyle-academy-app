@@ -1,4 +1,5 @@
 import React from 'react';
+import { useToast } from '../../../contexts/ToastContext';
 import type { AnalysisResult } from '../../../types';
 
 interface RecommendationsSectionProps {
@@ -6,6 +7,7 @@ interface RecommendationsSectionProps {
 }
 
 const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ userResults }) => {
+    const { addToast } = useToast();
     return (
         <div className="bento-card">
             <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Personalized Recommendations</h2>
@@ -17,18 +19,21 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ userRes
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <RecommendationCard
+                            onAction={() => addToast('This recommendation will open here soon!', 'info')}
                             icon="📚"
                             title="Advanced Python: Building Real Apps"
                             description="Take your building skills to the next level."
                             actionText="View Course"
                         />
                         <RecommendationCard
+                            onAction={() => addToast('This recommendation will open here soon!', 'info')}
                             icon="🎮"
                             title="Game Development with Unity"
                             description="A perfect blend of creativity and technical challenge."
                             actionText="Explore Path"
                         />
                          <RecommendationCard
+                            onAction={() => addToast('This recommendation will open here soon!', 'info')}
                             icon="🤝"
                             title="Connect with Amir"
                             description="Senior Developer at Grab. Great for career advice."
@@ -44,12 +49,14 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ userRes
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <RecommendationCard
+                            onAction={() => addToast('This recommendation will open here soon!', 'info')}
                             icon="📐"
                             title="Matematik Tambahan for Form 4"
                             description="You're doing great in Matematik, try a new challenge!"
                             actionText="View Subject"
                         />
                         <RecommendationCard
+                            onAction={() => addToast('This recommendation will open here soon!', 'info')}
                             icon="💪"
                             title="30-Day Fitness Challenge"
                             description="Let's get moving! You haven't logged a workout in 3 days."
@@ -67,16 +74,17 @@ interface RecommendationCardProps {
     title: string;
     description: string;
     actionText: string;
+    onAction?: () => void;
 }
 
-const RecommendationCard: React.FC<RecommendationCardProps> = ({ icon, title, description, actionText }) => (
+const RecommendationCard: React.FC<RecommendationCardProps> = ({ icon, title, description, actionText, onAction }) => (
     <div className="bg-[var(--secondary)] rounded-2xl p-4 flex items-start gap-4 hover:border-[var(--primary)]/50 border border-transparent transition-colors">
         <div className="text-3xl mt-1">{icon}</div>
         <div className="flex-1">
             <h4 className="font-bold text-[var(--foreground)]">{title}</h4>
             <p className="text-sm text-[var(--muted)] mt-1">{description}</p>
         </div>
-        <button className="self-end text-sm font-bold text-[var(--primary)] hover:underline whitespace-nowrap">
+        <button type="button" onClick={onAction} className="self-end text-sm font-bold text-[var(--primary)] hover:underline whitespace-nowrap">
             {actionText}
         </button>
     </div>

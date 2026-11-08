@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { UserProfile } from '../types';
 import { GENDERS, RACES, RELIGIONS, STATES } from '../constants';
+import { useAuth } from '../contexts/AuthContext';
 
 interface PersonalInfoStepProps {
   onComplete: (profile: UserProfile) => void;
@@ -30,6 +31,9 @@ const personalInfoSchema = z.object({
 type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
 
 const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip }) => {
+  const { user } = useAuth();
+  // Re-use the name typed on the sign-up screen so students don't type it twice.
+  const signupName = typeof user?.user_metadata?.full_name === 'string' ? user.user_metadata.full_name : '';
   // 2. Initialize React Hook Form
   const {
     register,
@@ -40,7 +44,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip 
     mode: 'onChange', // Validate on change for immediate feedback
     defaultValues: {
       country: 'Malaysia',
-      name: '',
+      name: signupName,
       gender: '',
       race: '',
       religion: '',
@@ -57,7 +61,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onComplete, onSkip 
   return (
     <div className="animate-fade-in text-center">
       <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Tell Us a Bit About Yourself</h2>
-      <p className="text-[var(--muted)] mt-2">This helps us personalize your experience. (Optional)</p>
+      <p className="text-[var(--muted)] mt-2">This helps us personalise your experience. Fill in every field marked * to continue, or tap “Skip for now”.</p>
       
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 text-left space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

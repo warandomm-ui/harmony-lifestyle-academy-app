@@ -3,7 +3,7 @@ import { supabase } from '../services/supabaseClient';
 import { useToast } from '../contexts/ToastContext';
 import { GitHubIcon, GoogleIcon } from './dashboard/Icons';
 
-/* ââ Geometric ornament â exact SVG from hla-welcome.html ââ */
+/* ── Geometric ornament — exact SVG from hla-welcome.html ── */
 const GeometricOrnament = () => (
   <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
     <circle cx="250" cy="250" r="200" stroke="#c9a84c" strokeWidth="1"/>
@@ -19,7 +19,7 @@ const GeometricOrnament = () => (
   </svg>
 );
 
-/* ââ Small corner ornament for the form card ââ */
+/* ── Small corner ornament for the form card ── */
 const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 60, height: 60, ...style }}>
     <line x1="0" y1="60" x2="60" y2="0" stroke="#c9a84c" strokeWidth="0.5" opacity="0.6"/>
@@ -29,7 +29,7 @@ const CornerOrnament = ({ style }: { style?: React.CSSProperties }) => (
   </svg>
 );
 
-/* ââ Spinner ââ */
+/* ── Spinner ── */
 const SpinnerIcon = () => (
   <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -37,7 +37,7 @@ const SpinnerIcon = () => (
   </svg>
 );
 
-/* ââ Eye icons for password visibility toggle ââ */
+/* ── Eye icons for password visibility toggle ── */
 const EyeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -52,6 +52,18 @@ const EyeOffIcon = () => (
   </svg>
 );
 
+/* ── Turn raw Supabase auth errors into short, friendly messages for students ── */
+const friendlyAuthError = (message: string | undefined, fallback: string): string => {
+  const m = (message || '').toLowerCase();
+  if (m.includes('invalid login credentials')) return 'That email or password doesn\'t match. Check for typos and try again.';
+  if (m.includes('email not confirmed')) return 'Please confirm your email first — check your inbox (and spam folder) for our link.';
+  if (m.includes('already registered') || m.includes('already been registered')) return 'This email already has an account. Try signing in instead.';
+  if (m.includes('rate limit') || m.includes('too many')) return 'Too many tries. Please wait a minute and try again.';
+  if (m.includes('password')) return message as string;
+  if (m.includes('failed to fetch') || m.includes('network')) return 'Can\'t reach the server. Check your internet connection and try again.';
+  return message || fallback;
+};
+
 const AuthScreen: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState('');
@@ -60,19 +72,29 @@ const AuthScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  // Inline notice that stays visible (toasts disappear, and students often miss them)
+  const [notice, setNotice] = useState<string | null>(null);
   const { addToast } = useToast();
 
   const isLogin = mode === 'login';
   const isRegister = mode === 'register';
   const isForgot = mode === 'forgot';
 
+  const switchMode = (next: 'login' | 'register' | 'forgot') => {
+    setMode(next);
+    setNotice(null);
+  };
+
   const handleSocialLogin = async (provider: 'github' | 'google') => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin },
+      });
       if (error) throw error;
     } catch (error: any) {
-      addToast(error.message || `${provider} login failed`, 'error');
+      addToast(friendlyAuthError(error.message, `${provider} sign-in failed`), 'error');
     } finally {
       setLoading(false);
     }
@@ -86,14 +108,15 @@ const AuthScreen: React.FC = () => {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: window.location.origin,
       });
       if (error) throw error;
       addToast('Password reset link sent! Check your email inbox.', 'success');
       setMode('login');
+      setNotice(`If an account exists for ${email.trim()}, a reset link is on its way. Check your inbox and spam folder.`);
     } catch (error: any) {
-      addToast(error.message || 'Failed to send reset email', 'error');
+      addToast(friendlyAuthError(error.message, 'Failed to send reset email'), 'error');
     } finally {
       setLoading(false);
     }
@@ -112,30 +135,45 @@ const AuthScreen: React.FC = () => {
       addToast('Password must be at least 6 characters.', 'error');
       return;
     }
+    if (isRegister && fullName.trim().length > 0 && fullName.trim().length < 2) {
+      addToast('Please enter at least 2 letters for your name.', 'error');
+      return;
+    }
 
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
         addToast('Welcome back to Harmony!', 'success');
       } else {
-        const { error } = await supabase.auth.signUp({
-          email,
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
           password,
-          options: { data: { full_name: fullName || undefined } },
+          options: {
+            data: { full_name: fullName.trim() || undefined },
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (error) throw error;
-        addToast('Success! Please check your email for a confirmation link.', 'success');
+        if (data.session) {
+          // Email confirmation is off: the student is already signed in.
+          addToast('Welcome to Harmony! Let\'s set up your space.', 'success');
+        } else {
+          addToast('Almost there! Check your email to confirm your account.', 'success');
+          setMode('login');
+          setPassword('');
+          setNotice(`We sent a confirmation link to ${email.trim()}. Open it (check spam too), then sign in here.`);
+        }
       }
     } catch (error: any) {
-      addToast(error.message || 'Authentication failed', 'error');
+      addToast(friendlyAuthError(error.message, 'Something went wrong. Please try again.'), 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  /* ââ inline style tokens ââ */
+  /* ── inline style tokens ── */
   const C = {
     deep: '#0a0a0f',
     navy: '#0d1b2a',
@@ -154,7 +192,7 @@ const AuthScreen: React.FC = () => {
     dmSans: "'DM Sans', system-ui, sans-serif",
   };
 
-  /* ââ Shared input style ââ */
+  /* ── Shared input style ── */
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
     background: 'rgba(255,255,255,0.04)',
@@ -178,7 +216,7 @@ const AuthScreen: React.FC = () => {
     transition: 'color 0.3s',
   });
 
-  /* ââ Header text based on mode ââ */
+  /* ── Header text based on mode ── */
   const headerTag = isForgot ? 'Password Recovery' : isLogin ? 'Member Portal' : 'Join the Academy';
   const headerTitle = isForgot
     ? <>Reset Your <em style={{ fontStyle: 'italic', color: C.gold, fontFamily: font.cormorant, fontWeight: 300 }}>Password</em></>
@@ -197,7 +235,7 @@ const AuthScreen: React.FC = () => {
       fontFamily: font.dmSans, color: C.cream, overflowX: 'hidden',
     }}>
 
-      {/* ââ Left panel â hero / branding ââ */}
+      {/* ── Left panel — hero / branding ── */}
       <div style={{
         flex: '0 0 55%', position: 'relative', display: 'flex', flexDirection: 'column',
         justifyContent: 'space-between', padding: '3rem 4rem',
@@ -214,14 +252,14 @@ const AuthScreen: React.FC = () => {
           <GeometricOrnament />
         </div>
 
-        {/* Top â wordmark */}
+        {/* Top — wordmark */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ fontFamily: font.playfair, fontSize: '1.35rem', fontWeight: 700, color: C.gold, letterSpacing: '0.04em' }}>
             Harmony<span style={{ color: C.cream, fontWeight: 300 }}> Lifestyle Academy</span>
           </div>
         </div>
 
-        {/* Middle â hero copy */}
+        {/* Middle — hero copy */}
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '560px' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
@@ -248,11 +286,11 @@ const AuthScreen: React.FC = () => {
             fontSize: '1rem', color: C.muted, lineHeight: 1.75, fontWeight: 300,
             maxWidth: '460px', animation: 'hla-fadeUp 0.6s ease 0.6s both',
           }}>
-            A holistic transformation programme for students â combining self-awareness, life values, and practical skills for the modern world.
+            A holistic transformation programme for students — combining self-awareness, life values, and practical skills for the modern world.
           </p>
         </div>
 
-        {/* Bottom â stats */}
+        {/* Bottom — stats */}
         <div style={{
           position: 'relative', zIndex: 2, display: 'flex', gap: '3rem',
           borderTop: `1px solid rgba(201,168,76,0.2)`,
@@ -271,7 +309,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Right panel â auth form ââ */}
+      {/* ── Right panel — auth form ── */}
       <div className="auth-right-panel" style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 'clamp(1.25rem, 5vw, 2.5rem)', background: C.deep,
@@ -306,14 +344,25 @@ const AuthScreen: React.FC = () => {
           {/* Gold divider */}
           <div className="auth-divider-mb" style={{ height: 1, background: `linear-gradient(90deg, ${C.gold}, transparent)`, marginBottom: '2rem', opacity: 0.5 }}/>
 
+          {notice && (
+            <div role="status" style={{
+              border: `1px solid ${C.border}`, background: 'rgba(201,168,76,0.08)', color: C.cream,
+              padding: '0.85rem 1rem', fontSize: '0.82rem', lineHeight: 1.5, marginBottom: '1.25rem',
+            }}>
+              {notice}
+            </div>
+          )}
+
           {/* Form */}
           <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-            {/* Full Name â register only */}
+            {/* Full Name — register only */}
             {isRegister && (
               <div>
-                <label style={labelStyle('fullName')}>Full Name</label>
+                <label htmlFor="auth-fullname" style={labelStyle('fullName')}>Full Name <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
                 <input
+                  id="auth-fullname"
+                  autoComplete="name"
                   type="text"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
@@ -327,8 +376,11 @@ const AuthScreen: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label style={labelStyle('email')}>Email Address</label>
+              <label htmlFor="auth-email" style={labelStyle('email')}>Email Address</label>
               <input
+                id="auth-email"
+                autoComplete="email"
+                inputMode="email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -340,18 +392,20 @@ const AuthScreen: React.FC = () => {
               />
             </div>
 
-            {/* Password â hidden on forgot mode */}
+            {/* Password — hidden on forgot mode */}
             {!isForgot && (
               <div>
-                <label style={labelStyle('password')}>Password</label>
+                <label htmlFor="auth-password" style={labelStyle('password')}>Password</label>
                 <div style={{ position: 'relative' }}>
                   <input
+                    id="auth-password"
+                    autoComplete={isRegister ? 'new-password' : 'current-password'}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
-                    placeholder={isRegister ? 'Min 6 characters' : 'â¢â¢â¢â¢â¢â¢â¢â¢'}
+                    placeholder={isRegister ? 'Min 6 characters' : '••••••••'}
                     required
                     minLength={6}
                     style={{ ...inputStyle('password'), paddingRight: '3rem' }}
@@ -372,12 +426,17 @@ const AuthScreen: React.FC = () => {
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 </div>
-                {/* Forgot password link â login mode only */}
+                {isRegister && (
+                  <p style={{ fontSize: '0.72rem', color: C.muted, marginTop: '0.5rem' }}>
+                    At least 6 characters. Mix letters and numbers to make it stronger — and don&apos;t share it with anyone.
+                  </p>
+                )}
+                {/* Forgot password link — login mode only */}
                 {isLogin && (
                   <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
                     <button
                       type="button"
-                      onClick={() => setMode('forgot')}
+                      onClick={() => switchMode('forgot')}
                       style={{
                         background: 'none', border: 'none', color: C.muted, cursor: 'pointer',
                         fontFamily: font.dmSans, fontSize: '0.75rem', padding: 0,
@@ -418,7 +477,7 @@ const AuthScreen: React.FC = () => {
             </button>
           </form>
 
-          {/* Social login â not on forgot mode */}
+          {/* Social login — not on forgot mode */}
           {!isForgot && (
             <>
               <div className="auth-social-mt" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.75rem 0' }}>
@@ -434,6 +493,7 @@ const AuthScreen: React.FC = () => {
                 ]).map(({ provider, Icon, label }) => (
                   <button
                     key={provider}
+                    type="button"
                     onClick={() => handleSocialLogin(provider)}
                     disabled={loading}
                     style={{
@@ -461,26 +521,32 @@ const AuthScreen: React.FC = () => {
             {isForgot ? (
               <>
                 Remember your password?{' '}
-                <button onClick={() => setMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Back to Sign In
                 </button>
               </>
             ) : isLogin ? (
               <>
                 Don&apos;t have an account?{' '}
-                <button onClick={() => setMode('register')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('register')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Register
                 </button>
               </>
             ) : (
               <>
                 Already a member?{' '}
-                <button onClick={() => setMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <button type="button" onClick={() => switchMode('login')} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontFamily: font.dmSans, fontSize: '0.82rem', padding: 0, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
                   Sign In
                 </button>
               </>
             )}
           </p>
+
+          {isRegister && (
+            <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.72rem', color: C.muted, lineHeight: 1.5 }}>
+              Under 13? Please ask a parent or guardian to help you sign up.
+            </p>
+          )}
 
           {/* Footer */}
           <p className="auth-footer-mt" style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.7rem', letterSpacing: '0.05em', color: 'rgba(138,138,154,0.5)' }}>
@@ -489,7 +555,7 @@ const AuthScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ââ Keyframe animations ââ */}
+      {/* ── Keyframe animations ── */}
       <style>{`
         @keyframes hla-fadeUp {
           from { opacity: 0; transform: translateY(28px); }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { SurveyAnswers, AnalysisResult, UserStatus, UserProfile, LifeVision, Goal } from '../types';
 import { getPersonalityAnalysis } from '../services/geminiService';
 import { DEFAULT_ANALYSIS_RESULT } from '../constants';
@@ -82,6 +82,10 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [selectedCareers, setSelectedCareers] = useState<string[]>([]);
   const [userSkills, setUserSkills] = useState<string[]>([]);
+  // Guards the one-time save: the persist effect below re-runs whenever any of its
+  // dependencies change identity (e.g. the parent's callback), which previously
+  // caused duplicate upserts and onOnboardingComplete firing more than once.
+  const hasPersistedRef = useRef(false);
 
   // ─── Derived state: is this a Muslim student? ───
   // Available after PersonalInfoStep completes
@@ -108,7 +112,10 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
     // If student skips, default to universal (non-Muslim) path
     // This is the safest default — no Islamic content shown without explicit choice
     setUserProfile({
-      name: user?.email?.split('@')[0] || 'Member',
+      // Prefer the name typed at sign-up (or from Google/GitHub) over the email prefix
+      name: (typeof user?.user_metadata?.full_name === 'string' && user.user_metadata.full_name.trim())
+        || user?.email?.split('@')[0]
+        || 'Member',
       age: null,
       gender: 'Prefer not to say',
       race: 'Prefer not to say',
@@ -139,6 +146,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
   }, [isMuslim]);
   
   const handleSkipAssessment = useCallback(() => {
+    setError(null);
     setResults(DEFAULT_ANALYSIS_RESULT);
     setStep('results');
   }, []);
@@ -174,8 +182,10 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
 
   // ─── PERSIST TO SUPABASE ───
   useEffect(() => {
+    if (step !== 'generating') return;
     const persistData = async () => {
-      if (step === 'generating' && userProfile && results && userStatus && lifeVision && user) {
+      if (!hasPersistedRef.current && userProfile && results && userStatus && lifeVision && user) {
+        hasPersistedRef.current = true;
         try {
           const { error: upsertError } = await supabase
             .from('profiles')
@@ -214,6 +224,8 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
         }
       }
     };
+    // No cleanup: the ref guard guarantees this runs once, and the hand-off timer must
+    // survive later re-runs of this effect (App keeps the callback alive).
     persistData();
   }, [step, userProfile, results, userStatus, lifeVision, onOnboardingComplete, userSkills, user, addToast, isMuslim]);
 
@@ -248,7 +260,7 @@ const OnboardingFlow = ({ onOnboardingComplete }: OnboardingFlowProps) => {
         return results ? (
           <ResultsStep 
             results={results} 
-            onRestart={() => setStep('welcome')} 
+            onRestart={() => setStep('assessment')} 
             onNext={() => setStep('lifeGoals')} 
           />
         ) : (

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useToast } from '../../../contexts/ToastContext';
 import { ChatAlt2Icon, DocumentTextIcon, UsersIcon } from '../Icons';
 
 const CommunicationPage: React.FC = () => {
+    const { addToast } = useToast();
   const communicationAreas = [
     {
       icon: <UsersIcon className="h-10 w-10 text-purple-500" />,
@@ -38,7 +40,7 @@ const CommunicationPage: React.FC = () => {
                 <div className="mb-4">{area.icon}</div>
                 <h3 className="font-bold text-lg text-[var(--foreground)]">{area.title}</h3>
                 <p className="text-sm text-[var(--muted)] mt-2 flex-grow">{area.description}</p>
-                <button className="mt-6 bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition w-full">
+                <button type="button" onClick={() => addToast(`"${area.action}" is coming soon — stay tuned!`, 'info')} className="mt-6 bg-[var(--primary)] text-white font-bold py-2 px-6 rounded-full hover:opacity-90 transition w-full">
                   {area.action}
                 </button>
               </div>

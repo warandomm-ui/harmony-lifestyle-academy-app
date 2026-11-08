@@ -1,9 +1,11 @@
 import React from 'react';
+import { useToast } from '../../../contexts/ToastContext';
 import CommunityHighlightsSection from '../CommunityHighlightsSection';
 import ChatGroupsSection from '../sections/ChatGroupsSection';
 import { HeartIcon } from '../Icons';
 
 const VolunteeringSection: React.FC = () => {
+    const { addToast } = useToast();
   const opportunities = [
     {
       title: 'Tutor for Underprivileged Kids',
@@ -39,7 +41,7 @@ const VolunteeringSection: React.FC = () => {
                 <span className={`px-2 py-0.5 rounded-full font-semibold ${op.type === 'Online' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>{op.type}</span>
               </div>
             </div>
-            <button className="font-semibold text-sm bg-[var(--primary)] text-white px-4 py-1.5 rounded-full hover:opacity-90">
+            <button type="button" onClick={() => addToast(`More details about "${op.title}" are coming soon!`, 'info')} className="font-semibold text-sm bg-[var(--primary)] text-white px-4 py-1.5 rounded-full hover:opacity-90">
               Learn More
             </button>
           </div>

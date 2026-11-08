@@ -38,15 +38,16 @@ const SkillSelectionStep: React.FC<SkillSelectionStepProps> = ({ onComplete, per
   }, [personalityType, goal, selectedCareers]);
 
   const handleSelectSkill = (skill: string) => {
+    // Side effects (toast) must stay outside the state updater: React may run
+    // updaters twice, which showed the "max 10" toast twice.
+    if (!selectedSkills.has(skill) && selectedSkills.size >= 10) {
+      addToast("You can only select up to 10 skills.", "info");
+      return;
+    }
     setSelectedSkills(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(skill)) {
-        newSet.delete(skill);
-      } else if (newSet.size < 10) {
-        newSet.add(skill);
-      } else {
-        addToast("You can only select up to 10 skills.", "info");
-      }
+      if (newSet.has(skill)) newSet.delete(skill);
+      else if (newSet.size < 10) newSet.add(skill);
       return newSet;
     });
   };
