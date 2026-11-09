@@ -72,7 +72,10 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
 }) => {
   const { toggleChat, isChatOpen } = useChat();
   const { isAdminMode, toggleAdminMode, adminRole, setAdminRole } = useAdmin();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
+  // Only staff accounts may see the Admin Mode switch. `app_metadata` is set
+  // server-side in Supabase and cannot be edited by the student themselves.
+  const canUseAdmin = ['admin', 'super-admin'].includes((user?.app_metadata as { role?: string } | undefined)?.role ?? '');
 
   const isMuslim = dashboardMode === 'muslim';
 
@@ -128,16 +131,8 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             <button
               onClick={signOut}
               className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              title="Log Out"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-            <button
-              onClick={signOut}
-              className="p-2 text-[var(--muted)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              title="Log Out"
+              title={isMuslim ? "Log Keluar" : "Log Out"}
+              aria-label={isMuslim ? "Log Keluar" : "Log Out"}
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -165,13 +160,13 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
               />
                 <NavItem 
                 icon={<Icons.SparklesIcon />} 
-                label="Mula Di Sini" 
+                label={isMuslim ? "Mula Di Sini" : "Start Here"} 
                 isActive={currentView === 'start-here'} 
                 onClick={() => handleNavClick('start-here')} 
                 />
                 <NavItem 
                 icon={<Icons.BookOpenIcon />} 
-                label="Laluan Saya" 
+                label={isMuslim ? "Laluan Saya" : "My Path"} 
                 isActive={currentView === 'my-path'} 
                 onClick={() => handleNavClick('my-path')} 
                 />
@@ -322,7 +317,7 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
             <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Ibu Bapa</span>
+            <span>{isMuslim ? "Ibu Bapa" : "Parents"}</span>
           </button>
 
           <button
@@ -337,16 +332,18 @@ const SidebarNav: React.FC<SidebarNavProps> = ({
           </button>
         </div>
 
+        {canUseAdmin && (
         <div className="p-4 mt-auto space-y-3" style={{ borderTop: '1px solid rgba(201,168,76,0.12)' }}>
           <div className="flex items-center justify-between">
-            <label className="font-bold text-sm text-[var(--foreground)] flex items-center gap-2 cursor-pointer">
+            <span id="admin-mode-label" className="font-bold text-sm text-[var(--foreground)] flex items-center gap-2">
               <Icons.ShieldCheckIcon className="h-5 w-5" /> Admin Mode
-            </label>
-            <button role="switch" aria-checked={isAdminMode} onClick={toggleAdminMode} className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out ${isAdminMode ? 'bg-[var(--primary)]' : 'bg-gray-200 dark:bg-gray-600'}`}>
+            </span>
+            <button type="button" role="switch" aria-labelledby="admin-mode-label" aria-checked={isAdminMode} onClick={toggleAdminMode} className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out ${isAdminMode ? 'bg-[var(--primary)]' : 'bg-gray-200 dark:bg-gray-600'}`}>
               <span className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out ${isAdminMode ? 'translate-x-6' : 'translate-x-1'}`} />
             </button>
           </div>
         </div>
+        )}
       </nav>
     </>
   );

@@ -23,12 +23,25 @@ const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ resul
     });
   };
 
+  // A career can appear in both AI lists; show it once (under Top Recommended)
+  // so it isn't rendered twice with the same React key.
+  const otherOptions = useMemo(() => {
+    const topNames = new Set(results.careerRecommendations.map(c => c.name.toLowerCase()));
+    const seen = new Set<string>();
+    return results.otherCareerOptions.filter(c => {
+      const key = c.name.toLowerCase();
+      if (topNames.has(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [results.careerRecommendations, results.otherCareerOptions]);
+
   const filteredOtherOptions = useMemo(() => {
-    if (!searchTerm) return results.otherCareerOptions;
-    return results.otherCareerOptions.filter(career =>
+    if (!searchTerm) return otherOptions;
+    return otherOptions.filter(career =>
       career.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, results.otherCareerOptions]);
+  }, [searchTerm, otherOptions]);
   
   const filteredTopOptions = useMemo(() => {
     if (!searchTerm) return results.careerRecommendations;
@@ -96,8 +109,15 @@ const CareerPathSelectionStep: React.FC<CareerPathSelectionStepProps> = ({ resul
       )}
 
 
+      {filteredTopOptions.length === 0 && filteredOtherOptions.length === 0 && (
+        <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+          No career paths match “{searchTerm}”. Try another word.
+        </p>
+      )}
+
       <div className="text-center mt-10 pt-6 border-t dark:border-gray-700">
         <button
+          type="button"
           onClick={() => onComplete(Array.from(selectedCareers))}
           disabled={selectedCareers.size === 0}
           className="bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed dark:disabled:bg-gray-600 enabled:hover:bg-green-700 enabled:hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"

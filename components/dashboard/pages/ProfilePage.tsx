@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { UserProfile, AnalysisResult } from '../../../types';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { useToast } from '../../../contexts/ToastContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { supabase } from '../../../services/supabaseClient';
 import * as Icons from '../Icons';
 import { GENDERS, RACES, RELIGIONS, STATES } from '../../../constants';
 import { getCareerIcon } from '../../../constants';
@@ -99,6 +101,16 @@ const TraitItem: React.FC<{ icon: string; label: string; value: string; }> = ({ 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onProfileUpdate }) => {
     const { profile: gamificationProfile } = useGamification();
     const { addToast } = useToast();
+    const { user } = useAuth();
+
+    const handlePasswordReset = async () => {
+        if (!user?.email) {
+            addToast('No email address found for this account.', 'error');
+            return;
+        }
+        const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin });
+        addToast(error ? 'Could not send the reset email. Please try again later.' : `We emailed a password reset link to ${user.email}.`, error ? 'error' : 'success');
+    };
 
     const [editableProfile, setEditableProfile] = useState<UserProfile>(userProfile);
     
@@ -217,8 +229,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userProfile, userResults, onP
                  <section className="bento-card">
                     <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Account Settings</h2>
                     <div className="space-y-4">
-                        <button className="w-full text-left p-3 rounded-lg bg-[var(--background)] hover:bg-[var(--secondary)] transition font-medium">Change Email or Password</button>
-                         <button className="w-full text-left p-3 rounded-lg bg-red-500/10 text-red-700 dark:text-red-300 hover:bg-red-500/20 transition font-medium">Delete Account</button>
+                        <button type="button" onClick={handlePasswordReset} className="w-full text-left p-3 rounded-lg bg-[var(--background)] hover:bg-[var(--secondary)] transition font-medium">Change Password</button>
+                         <button type="button" onClick={() => addToast('To delete your account, please ask a parent or guardian to contact us through Counseling & Support.', 'info')} className="w-full text-left p-3 rounded-lg bg-red-500/10 text-red-700 dark:text-red-300 hover:bg-red-500/20 transition font-medium">Delete Account</button>
                     </div>
                 </section>
             </div>

@@ -75,7 +75,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
 
         {/* Right: icons */}
         <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Search icon Ã¢ÂÂ xs only */}
+          {/* Search icon — xs only */}
           <button
             className="sm:hidden flex items-center justify-center w-11 h-11 rounded-full transition-colors"
             style={{ color: '#8a8a9a' }}

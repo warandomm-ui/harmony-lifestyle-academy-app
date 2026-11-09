@@ -2,29 +2,33 @@ import React from 'react';
 import { ChatAltIcon, BookOpenIcon, ClipboardListIcon, LightBulbIcon } from './Icons';
 
 interface QuickActionsProps {
-  onActionClick: (actionLabel: string) => void;
+  onActionClick: (actionId: string) => void;
 }
 
 const ACTIONS = [
   {
+    id: 'ask-harmony',
     label: 'Tanya Harmony',
     subtitle: 'Rakan AI',
     icon: <ChatAltIcon className="h-7 w-7" />,
     gold: true,
   },
   {
+    id: 'keep-learning',
     label: 'Sambung Belajar',
     subtitle: 'Kursus Saya',
     icon: <BookOpenIcon className="h-7 w-7" />,
     gold: false,
   },
   {
+    id: 'build-something',
     label: 'Bina Sesuatu',
     subtitle: 'Cipta & Lancar',
     icon: <ClipboardListIcon className="h-7 w-7" />,
     gold: false,
   },
   {
+    id: 'share-skills',
     label: 'Kongsi Kemahiran',
     subtitle: 'Ajar Rakan',
     icon: <LightBulbIcon className="h-7 w-7" />,
@@ -44,8 +48,9 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onActionClick }) => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {ACTIONS.map((action) => (
           <button
-            key={action.label}
-            onClick={() => onActionClick(action.label)}
+            key={action.id}
+            type="button"
+            onClick={() => onActionClick(action.id)}
             className="group flex flex-col items-center justify-center text-center p-5 rounded-2xl transition-all duration-300 transform hover:-translate-y-1"
             style={{
               background: action.gold

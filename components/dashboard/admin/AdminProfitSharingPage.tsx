@@ -74,7 +74,7 @@ const AdminProfitSharingPage: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100">Cycle History</h3>
-                    <button className="text-sm text-blue-600 font-semibold hover:underline">View All</button>
+                    <button type="button" onClick={() => addToast('Full payout history is coming soon.', 'info')} className="text-sm text-blue-600 font-semibold hover:underline">View All</button>
                 </div>
                 <table className="w-full text-left border-collapse">
                     <thead>

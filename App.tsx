@@ -10,7 +10,7 @@ import { useAuth } from './contexts/AuthContext';
 import ToastContainer from './components/ToastContainer';
 import { GamificationProvider } from './contexts/GamificationContext';
 import { StudyBuddyProvider } from './contexts/StudyBuddyContext';
-import { LinkedInIcon, SpinnerIcon } from './components/dashboard/Icons';
+import { SpinnerIcon } from './components/dashboard/Icons';
 import { storage } from './utils/storageUtils';
 
 const App: React.FC = () => {
@@ -101,9 +101,6 @@ const App: React.FC = () => {
   return (
     <div className="bg-[var(--background)] min-h-screen text-[var(--foreground)] transition-colors duration-300">
       <ToastContainer />
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
 
       {isOnboardingComplete && userProfile && userResults && userStatus && lifeVision ? (
         <ChatProvider>
@@ -124,10 +121,15 @@ const App: React.FC = () => {
         </ChatProvider>
       ) : (
         <div className="flex flex-col min-h-screen">
+            {/* Theme toggle lives only on the onboarding screens: on the dashboard it sat
+                on top of the header's avatar/notification buttons and blocked them. */}
+            <div className="absolute top-4 right-4 z-50">
+              <ThemeToggle />
+            </div>
             <div className="flex-grow flex flex-col items-center justify-center p-4">
               <header className="w-full max-w-4xl mx-auto mb-8 text-center">
                   <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">Harmony Lifestyle Academy</h1>
-                  <p className="text-lg text-[var(--muted)] mt-2">authenticated and ready for your glow up.</p>
+                  <p className="text-lg text-[var(--muted)] mt-2">You're signed in — let's set up your space. It only takes a few minutes.</p>
               </header>
               <main className="w-full">
                   <OnboardingFlow onOnboardingComplete={handleOnboardingComplete} />
@@ -135,12 +137,7 @@ const App: React.FC = () => {
             </div>
             <footer className="flex-shrink-0 w-full py-6 border-t border-[var(--border)]">
               <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
-                <div className="flex justify-center items-center space-x-4">
-                    <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-[var(--muted)] hover:text-[var(--primary)] transition-colors">
-                        <LinkedInIcon className="h-6 w-6" />
-                    </a>
-                </div>
-                <p className="text-sm text-[var(--muted)] mt-4">&copy; {new Date().getFullYear()} Harmony Lifestyle Academy. All rights reserved.</p>
+                <p className="text-sm text-[var(--muted)]">&copy; {new Date().getFullYear()} Harmony Lifestyle Academy. All rights reserved.</p>
               </div>
             </footer>
         </div>

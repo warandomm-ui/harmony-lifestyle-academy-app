@@ -40,7 +40,7 @@ const AdminAffiliatesPage: React.FC = () => {
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Manage influencers and students promoting Harmony.</p>
                 </div>
-                <button className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition flex items-center gap-2">
+                <button type="button" onClick={() => addToast('Invite link generation is coming soon.', 'info')} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition flex items-center gap-2">
                     <LinkIcon className="h-5 w-5" />
                     Generate Invite Link
                 </button>

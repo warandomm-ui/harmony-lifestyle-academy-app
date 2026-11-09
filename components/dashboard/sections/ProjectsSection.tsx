@@ -17,12 +17,14 @@ const ProjectsSection: React.FC = () => {
                 {/* Active Projects Grid */}
                 <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <ProjectCard
+                        onContinue={() => addToast('Project workspace is coming soon — keep your ideas in the Idea Wall for now!', 'info')}
                         icon="🎮"
                         title="Platformer Game"
                         startDate="Started 3 days ago"
                         progress={25}
                     />
                     <ProjectCard
+                        onContinue={() => addToast('Project workspace is coming soon — keep your ideas in the Idea Wall for now!', 'info')}
                         icon="📱"
                         title="Expense Tracker"
                         startDate="Started 1 week ago"
@@ -44,7 +46,7 @@ const ProjectsSection: React.FC = () => {
     );
 };
 
-const ProjectCard = ({ icon, title, startDate, progress }: { icon: string, title: string, startDate: string, progress: number }) => (
+const ProjectCard = ({ icon, title, startDate, progress, onContinue }: { icon: string, title: string, startDate: string, progress: number, onContinue?: () => void }) => (
     <div className="bg-[var(--secondary)] rounded-2xl p-6 flex flex-col">
         <div className="flex items-start justify-between">
             <div>
@@ -57,7 +59,7 @@ const ProjectCard = ({ icon, title, startDate, progress }: { icon: string, title
         <div className="my-4">
            <ProgressBar label="Progress" percentage={progress} value={`${progress}%`} />
         </div>
-        <button className="w-full mt-auto bg-[var(--primary)] text-[var(--primary-foreground)] font-bold py-2 px-4 rounded-full hover:opacity-90 transition">Continue Building</button>
+        <button type="button" onClick={onContinue} className="w-full mt-auto bg-[var(--primary)] text-[var(--primary-foreground)] font-bold py-2 px-4 rounded-full hover:opacity-90 transition">Continue Building</button>
     </div>
 );
 

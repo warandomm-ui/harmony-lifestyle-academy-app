@@ -13,10 +13,12 @@ const ICONS = {
   info: <InformationCircleIcon className="h-6 w-6 text-blue-500" />,
 };
 
+// Border accents only: the background must stay solid (bg-[var(--card)]).
+// A translucent bg-*/10 here used to override it, letting page text show through.
 const TOAST_COLORS = {
-  success: 'bg-green-500/10 border-green-500/20',
-  error: 'bg-red-500/10 border-red-500/20',
-  info: 'bg-blue-500/10 border-blue-500/20',
+  success: 'border-green-500/60',
+  error: 'border-red-500/60',
+  info: 'border-blue-500/60',
 };
 
 const Toast: React.FC<Props> = ({ toast, onClose }) => {
@@ -42,8 +44,8 @@ const Toast: React.FC<Props> = ({ toast, onClose }) => {
 
   return (
     <div
-      role="alert"
-      className={`max-w-sm w-full rounded-2xl shadow-lg p-4 border flex items-start gap-3 transition-all duration-300 ease-in-out bg-[var(--card)] ${TOAST_COLORS[toast.type]} ${animationClasses}`}
+      role={toast.type === 'error' ? 'alert' : 'status'}
+      className={`w-full sm:max-w-sm rounded-2xl shadow-2xl p-4 border border-l-4 flex items-start gap-3 transition-all duration-300 ease-in-out bg-[var(--card)] ${TOAST_COLORS[toast.type]} ${animationClasses}`}
     >
       <div className="flex-shrink-0">
         {ICONS[toast.type]}
@@ -53,6 +55,7 @@ const Toast: React.FC<Props> = ({ toast, onClose }) => {
       </div>
       <div className="flex-shrink-0">
         <button
+          type="button"
           onClick={handleClose}
           className="p-1 rounded-full text-[var(--muted)] hover:bg-[var(--secondary)] focus:outline-none"
           aria-label="Close notification"

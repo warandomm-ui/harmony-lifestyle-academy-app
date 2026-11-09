@@ -233,7 +233,7 @@ const IdeaWallPage: React.FC = () => {
                     <span className="text-xl">🔥</span>
                     <p className="font-bold text-sm md:text-base">Your ideas are waiting. Go build something.</p>
                 </div>
-                <button className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition">Review</button>
+                <button type="button" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition">Review</button>
             </div>
 
             {/* Header & Input Section */}

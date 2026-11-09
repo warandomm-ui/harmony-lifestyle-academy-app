@@ -97,7 +97,7 @@ const AdminCoursesPage: React.FC = () => {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-2">
-                                    <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
+                                    <button type="button" aria-label="Edit course" onClick={() => addToast('Course editing is coming soon.', 'info')} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition">
                                         <PencilIcon className="h-4 w-4" />
                                     </button>
                                     <button onClick={() => deleteCourse(course.id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
