@@ -26,7 +26,7 @@ const Toast: React.FC<Props> = ({ toast, onClose }) => {
     const timer = setTimeout(() => {
       setIsExiting(true);
       setTimeout(() => onClose(toast.id), 300); // Wait for exit animation
-    }, 5000);
+    }, Math.min(20000, Math.max(5000, toast.message.length * 60))); // long notices (e.g. helplines) stay readable
 
     return () => clearTimeout(timer);
   }, [toast.id, onClose]);

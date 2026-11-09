@@ -25,6 +25,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ setCurrentView }) => {
                     <AdminSubNavItem label="Lessons & Modules" onClick={() => setCurrentView('admin-courses')} />
                 </AdminNavGroup>
 
+                <AdminNavGroup label="AI COMPLIANCE" icon={<Icons.ShieldCheckIcon />}>
+                    <AdminSubNavItem label="Semakan Pematuhan AI" onClick={() => setCurrentView('admin-moderation')} />
+                </AdminNavGroup>
+
                 <AdminNavGroup label="SALES & MARKETING" icon={<Icons.TagIcon />}>
                     <AdminSubNavItem label="Coupons" onClick={() => setCurrentView('admin-coupons')} />
                     <AdminSubNavItem label="Affiliate Program" onClick={() => setCurrentView('admin-affiliates')} />
@@ -45,7 +49,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ setCurrentView }) => {
                 <AdminNavGroup label="MEMBERS" icon={<Icons.UsersIcon />}>
                     <AdminSubNavItem label="Member List" />
                     <AdminSubNavItem label="Automation" />
-                    <AdminSubNavItem label="Moderation" />
+                    <AdminSubNavItem label="Moderation" onClick={() => setCurrentView('admin-moderation')} />
                 </AdminNavGroup>
 
             </div>
