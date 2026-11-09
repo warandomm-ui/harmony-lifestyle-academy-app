@@ -1,4 +1,29 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
+import type { PublicComplianceInfo } from '../supabase/functions/_shared/contentCompliance';
+
+export type { PublicComplianceInfo };
+
+/** Fired on window for every compliance verdict other than 'allow'. */
+export const COMPLIANCE_EVENT = 'harmony:ai-compliance';
+
+/**
+ * Thrown when the server-side compliance agent held or blocked an AI output.
+ * The content never reached the browser; `reviewId` points to the human
+ * review queue entry (null if queuing failed).
+ */
+export class ComplianceHoldError extends Error {
+  readonly compliance: PublicComplianceInfo;
+  constructor(info: PublicComplianceInfo) {
+    super(info.message || 'Content held for human review.');
+    this.name = 'ComplianceHoldError';
+    this.compliance = info;
+  }
+}
+
+const emitCompliance = (info: PublicComplianceInfo) => {
+  if (typeof window === 'undefined' || info.verdict === 'allow') return;
+  window.dispatchEvent(new CustomEvent<PublicComplianceInfo>(COMPLIANCE_EVENT, { detail: info }));
+};
 
 /**
  * Secure AI Proxy Service
@@ -27,6 +52,7 @@ interface AIProxyResponse {
   inlineData?: { data: string; mimeType: string } | null;
   token?: string;
   error?: string;
+  compliance?: PublicComplianceInfo;
 }
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const { data: { session } } = await supabase.auth.getSession();
@@ -81,7 +107,14 @@ export async function callAI(request: AIProxyRequest): Promise<AIProxyResponse> 
     throw new Error(errorData.error || `AI service error: ${response.status}`);
   }
 
-  return response.json();
+  const data: AIProxyResponse = await response.json();
+  if (data.compliance) {
+    emitCompliance(data.compliance);
+    if (data.compliance.verdict === 'hold' || data.compliance.verdict === 'block') {
+      throw new ComplianceHoldError(data.compliance);
+    }
+  }
+  return data;
 }
 // Retry helper with exponential backoff
 async function retry<T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promise<T> {
@@ -89,7 +122,9 @@ async function retry<T>(fn: () => Promise<T>, retries = 2, delay = 3000): Promis
     try {
       return await fn();
     } catch (err: any) {
-      if (i === retries) throw err;
+      // Never regenerate around a compliance decision: it would flood the
+      // review queue and amounts to "asking until the filter says yes".
+      if (err instanceof ComplianceHoldError || i === retries) throw err;
       const waitTime = err?.message?.includes('429') ? delay * (i + 2) : delay;
       await new Promise(r => setTimeout(r, waitTime));
     }

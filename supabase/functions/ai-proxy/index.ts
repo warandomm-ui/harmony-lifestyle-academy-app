@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { evaluateContent, toPublicInfo, type ComplianceReport } from '../_shared/contentCompliance.ts';
 
 // ─────────────────────────────────────────────────────────────
 // ai-proxy — single secure gateway for all model providers.
@@ -11,7 +12,13 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 //   - liveToken                      → short-lived Gemini Live API token
 //
 // Required secrets: GEMINI_API_KEY, ANTHROPIC_API_KEY
-// (SUPABASE_URL and SUPABASE_ANON_KEY are injected by Supabase.)
+// (SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are
+//  injected by Supabase.)
+//
+// Compliance gate: every text output (and every TTS script before it is
+// voiced) passes through evaluateContent(). Held/blocked content never
+// reaches the browser; it is queued in public.ai_compliance_reviews for
+// a qualified human reviewer. See docs/AI_COMPLIANCE_AGENT.md.
 // ─────────────────────────────────────────────────────────────
 
 const corsHeaders = {
@@ -29,6 +36,54 @@ const json = (body: unknown, status = 200) =>
 const GEMINI_ROOT = 'https://generativelanguage.googleapis.com';
 const GEMINI_BASE = `${GEMINI_ROOT}/v1beta/models`;
 const MAX_ANTHROPIC_TOKENS = 4000;
+
+// Service-role client: only used to write the review queue, which
+// learners cannot read directly (RLS), so held content cannot leak.
+const serviceClient = (() => {
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const url = Deno.env.get('SUPABASE_URL');
+  return key && url ? createClient(url, key, { auth: { persistSession: false } }) : null;
+})();
+
+async function queueForReview(
+  report: ComplianceReport,
+  meta: { userId: string; action: string; model: string },
+): Promise<string | null> {
+  if (!serviceClient) {
+    console.error('compliance: SUPABASE_SERVICE_ROLE_KEY missing; review not queued');
+    return null;
+  }
+  const { data, error } = await serviceClient
+    .from('ai_compliance_reviews')
+    .insert({
+      user_id: meta.userId,
+      action: meta.action,
+      model: meta.model,
+      verdict: report.verdict,
+      status: report.verdict === 'block' ? 'blocked' : 'pending',
+      findings: report.findings,
+      held_content: report.reviewText,
+      engine_version: report.engineVersion,
+    })
+    .select('id')
+    .single();
+  if (error) {
+    console.error('compliance: failed to queue review', error.message);
+    return null;
+  }
+  return data?.id ?? null;
+}
+
+/** Runs the compliance agent; returns the text the learner may see. */
+async function gate(text: string, meta: { userId: string; action: string; model: string }) {
+  const report = evaluateContent(text);
+  if (report.verdict === 'hold' || report.verdict === 'block') {
+    const reviewId = await queueForReview(report, meta);
+    console.warn(`compliance: ${report.verdict} [${report.findings.map((f) => f.code).join(',')}] user=${meta.userId}`);
+    return { allowed: false, text: '', compliance: toPublicInfo(report, reviewId) };
+  }
+  return { allowed: true, text: report.safeText, compliance: toPublicInfo(report) };
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -87,7 +142,8 @@ Deno.serve(async (req: Request) => {
       const text = Array.isArray(data.content)
         ? data.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('')
         : '';
-      return json({ text });
+      const g = await gate(text, { userId: user.id, action, model: payload.model || 'claude-haiku-4-5-20251001' });
+      return json({ text: g.text, compliance: g.compliance });
     }
 
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
@@ -144,6 +200,13 @@ Deno.serve(async (req: Request) => {
         break;
       }
       case 'tts': {
+        // Gate the script BEFORE it is voiced: audio cannot be scanned afterwards.
+        const script = (payload.contents || [])
+          .flatMap((c: any) => c?.parts || [])
+          .map((p: any) => p?.text || '')
+          .join('\n');
+        const g = await gate(script, { userId: user.id, action, model });
+        if (!g.allowed) return json({ text: '', inlineData: null, compliance: g.compliance });
         requestBody = {
           contents: payload.contents,
           generationConfig: payload.config || {},
@@ -169,7 +232,10 @@ Deno.serve(async (req: Request) => {
     const parts = data.candidates?.[0]?.content?.parts || [];
     const text = parts.map((p: any) => p.text || '').join('');
     const inlineData = parts.find((p: any) => p.inlineData)?.inlineData || null;
-    return json({ text, inlineData });
+    if (action === 'tts') return json({ text, inlineData });
+    const g = await gate(text, { userId: user.id, action, model });
+    if (!g.allowed) return json({ text: '', inlineData: null, compliance: g.compliance });
+    return json({ text: g.text, inlineData, compliance: g.compliance });
   } catch (error) {
     console.error('Edge function error:', error);
     return json({ error: (error as Error).message || 'Internal server error' }, 500);

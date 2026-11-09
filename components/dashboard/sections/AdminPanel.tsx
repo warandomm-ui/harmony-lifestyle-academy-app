@@ -12,6 +12,7 @@ import AdminAffiliatesPage from '../admin/AdminAffiliatesPage';
 import AdminRevenuePage from '../admin/AdminRevenuePage';
 import AdminIntegrationsPage from '../admin/AdminIntegrationsPage';
 import AdminProfitSharingPage from '../admin/AdminProfitSharingPage';
+import AdminComplianceReviewPage from '../admin/AdminComplianceReviewPage';
 
 interface AdminPanelProps {
     currentView: DashboardView;
@@ -61,7 +62,7 @@ const AdminDashboard: React.FC<{ setCurrentView: (view: DashboardView) => void }
                         <li><button onClick={() => setCurrentView('admin-affiliates')} className="font-semibold text-green-600 hover:underline text-left">Manage Members</button></li>
                         <li><button onClick={() => setCurrentView('admin-revenue')} className="font-semibold text-green-600 hover:underline text-left">View Income Reports</button></li>
                         <li><button onClick={() => setCurrentView('admin-coupons')} className="font-semibold text-green-600 hover:underline text-left">Send Invites</button></li>
-                        <li><button onClick={() => setCurrentView('admin-rewards')} className="font-semibold text-green-600 hover:underline text-left">Check Moderation Queue</button></li>
+                        <li><button onClick={() => setCurrentView('admin-moderation')} className="font-semibold text-green-600 hover:underline text-left">Check Moderation Queue</button></li>
                     </ul>
                 </div>
             </div>
@@ -89,6 +90,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ currentView, setCurrentView }) 
                 return <AdminRevenuePage />;
             case 'admin-integrations':
                 return <AdminIntegrationsPage />;
+            case 'admin-moderation':
+                return <AdminComplianceReviewPage />;
             case 'admin':
             default:
                 return <AdminDashboard setCurrentView={setCurrentView} />;
