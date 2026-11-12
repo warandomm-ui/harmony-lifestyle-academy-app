@@ -635,3 +635,52 @@ declare global {
     }
   }
 }
+
+// --- Curated wellness module content (content/modules/*.json, Supabase module_topics) ---
+export type ModuleAudience = 'universal' | 'muslim';
+
+export interface ModuleLessonExample {
+  title: string;
+  scenario: string;
+  takeaway: string;
+}
+
+export interface ModuleLesson extends GeneratedLesson {
+  examples: ModuleLessonExample[];
+  /** Quran and hadith references; present on Islamic-module lessons. */
+  sources?: string[];
+}
+
+export interface ModuleFaithLens {
+  text: string;
+  sources: string[];
+}
+
+export interface ModuleTopicContent {
+  /** '<moduleId>/<slug>' */
+  id: string;
+  moduleId: string;
+  slug: string;
+  /** Exactly the topic title shown on the dimension page. */
+  title: string;
+  icon: string;
+  summary: string;
+  objectives: string[];
+  durationMinutes: number;
+  xpReward: number;
+  lesson: ModuleLesson;
+  quiz: GeneratedQuiz[];
+  reflection: GeneratedReflection;
+  /** Islamic perspective on a universal topic; show only when isMuslim(religion). */
+  faithLens?: ModuleFaithLens;
+}
+
+export interface WellnessModuleContent {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  audience: ModuleAudience;
+  order: number;
+  topics: ModuleTopicContent[];
+}

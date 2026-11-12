@@ -1,0 +1,450 @@
+{
+  "id": "emotional",
+  "name": "Emotional Wellness",
+  "icon": "💖",
+  "audience": "universal",
+  "order": 4,
+  "description": "Understand what you feel and why, manage stress and setbacks, and build the habits that support a steady, hopeful mind.",
+  "topics": [
+    {
+      "slug": "emotional-intelligence",
+      "title": "Emotional Intelligence",
+      "icon": "😊",
+      "summary": "Recognising emotions in yourself and others, and choosing your response instead of reacting.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Name the four areas of emotional intelligence.",
+        "Label your emotions precisely instead of using broad words.",
+        "Use a pause between a feeling and your response to it."
+      ],
+      "lesson": {
+        "title": "Name It to Manage It",
+        "explanation": "Emotional intelligence (EI) is the ability to recognise, understand and manage emotions, both your own and other people's. Psychologist Daniel Goleman's well-known model has four areas. Self-awareness is knowing what you feel and why. Self-management is handling those feelings so that they do not control your behaviour. Social awareness, including empathy, is reading what others feel. Relationship management is using all of this to communicate, cooperate and resolve conflict.\n\nEverything starts with self-awareness, and self-awareness starts with vocabulary. 'I feel bad' could mean disappointed, embarrassed, jealous, lonely or exhausted, and each needs a different response. Brain-imaging research led by Matthew Lieberman found that putting a feeling into words reduces activity in the brain's alarm centre. Simply naming an emotion begins to calm it.\n\nEmotions themselves are not good or bad. They are information: anger often signals that a boundary was crossed, fear that something matters, sadness that something was lost. What you can choose is the response. Between feeling and action there is a gap, and EI is the skill of widening it. Notice the feeling, name it, breathe, then decide what to do. Empathy uses the same skill outward: asking what another person might be feeling before you judge what they did.",
+        "keyPoints": [
+          "EI has four areas: self-awareness, self-management, social awareness, relationship management.",
+          "Precise emotional vocabulary leads to better responses.",
+          "Naming a feeling reduces its intensity.",
+          "Emotions are information; behaviour is a choice."
+        ],
+        "examples": [
+          {
+            "title": "\"I'm just angry\"",
+            "scenario": "Imran snaps at his mother after school and says he is 'just angry'. Later, writing in a journal, he realises the feeling was embarrassment: a teacher criticised his work in front of the class.",
+            "takeaway": "Once he names the real emotion, the right action becomes clear. He apologises to his mother and decides to ask the teacher for feedback privately."
+          },
+          {
+            "title": "The quiet teammate",
+            "scenario": "Chloe is annoyed that her lab partner has stopped contributing. Before complaining, she asks, 'You've seemed quiet this week. Is everything okay?' He explains that his grandmother is in hospital.",
+            "takeaway": "Asking before judging is empathy in practice. The problem was not laziness, and they agree to split the work differently for now."
+          }
+        ],
+        "practicalTip": "Three times a day for one week, pause and complete this sentence in a note on your phone: 'Right now I feel ___ because ___.' Use a word more specific than good, bad, fine or stressed.",
+        "deeperInsight": "Emotional intelligence is not the same as being calm or 'nice' all the time, and it is not hiding what you feel. Suppressing emotions tends to make them return more strongly. The skill is to feel fully and still act wisely."
+      },
+      "quiz": [
+        {
+          "question": "Which of these is one of the four areas of emotional intelligence?",
+          "options": [
+            "Memory speed",
+            "Self-awareness",
+            "Physical strength",
+            "Verbal fluency"
+          ],
+          "correctIndex": 1,
+          "explanation": "The four areas are self-awareness, self-management, social awareness and relationship management."
+        },
+        {
+          "question": "What does research suggest happens when you put a strong feeling into words?",
+          "options": [
+            "The feeling becomes more intense and much harder to control",
+            "Nothing changes at all",
+            "The brain's alarm response becomes less active",
+            "You forget what caused the feeling"
+          ],
+          "correctIndex": 2,
+          "explanation": "Labelling an emotion is associated with reduced activity in the brain's threat-detection centre, which helps you calm down and think."
+        },
+        {
+          "question": "A friend cancels plans at the last minute and you feel hurt. Which response shows emotional intelligence?",
+          "options": [
+            "Sending an angry message straight away so they know how you feel",
+            "Pretending you never cared about the plan",
+            "Ignoring the friend for a week",
+            "Noticing the hurt, then asking calmly what happened"
+          ],
+          "correctIndex": 3,
+          "explanation": "EI means recognising your feeling and choosing a response that helps the situation, instead of reacting or suppressing."
+        }
+      ],
+      "reflection": {
+        "prompt": "What was the strongest emotion you felt today, and what was it telling you?",
+        "guidingQuestions": [
+          "Which emotion do you find hardest to admit to, even to yourself?",
+          "When did you last react in a way you later regretted? What were you feeling just before?",
+          "Who around you might be struggling in a way you have not asked about?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ showed that deep feeling and firm faith go together. When his young son Ibrahim died, he wept and said: the eyes shed tears and the heart grieves, and we say only what pleases our Lord. He felt fully, named the feeling honestly and still governed his words. He was also attentive to what others felt, shortening the prayer when he heard a child crying out of mercy for its mother.",
+        "sources": [
+          "Sahih al-Bukhari 1303",
+          "Sahih al-Bukhari 709"
+        ]
+      }
+    },
+    {
+      "slug": "stress-management",
+      "title": "Stress Management",
+      "icon": "🧘",
+      "summary": "What stress does in your body, when it helps, when it harms, and practical ways to bring it down.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Describe the body's stress response and its purpose.",
+        "Distinguish helpful short-term stress from harmful chronic stress.",
+        "Use a breathing technique and a planning technique to reduce stress."
+      ],
+      "lesson": {
+        "title": "Stress Is a Signal, Not an Enemy",
+        "explanation": "Stress is your body's response to a demand. When your brain detects a challenge, it releases adrenaline and cortisol. Your heart beats faster, your breathing quickens and your muscles tense. This fight-or-flight response evolved to help you deal with danger, and in short bursts it is useful: a moderate level of stress before an exam or a match sharpens focus and energy.\n\nThe trouble starts when stress is too intense or never switches off. Chronic stress, lasting weeks or months, is linked with poor sleep, headaches, stomach problems, irritability, low mood and difficulty concentrating. Learn your own early warning signs, because they appear long before a crisis.\n\nManaging stress works on two levels. The first is calming the body. Slow breathing with a long exhale activates the body's rest-and-recover system. Try box breathing: in for four counts, hold for four, out for four, hold for four, and repeat for a few minutes. Movement, sleep and time outdoors all reduce stress hormones too. The second level is dealing with the cause. Write down everything on your mind, then sort the list into what you can control and what you cannot. For the first group, choose the next small action. For the second, practise letting go. Talking to someone you trust helps on both levels.",
+        "keyPoints": [
+          "The stress response prepares the body for action and is helpful in short bursts.",
+          "Chronic stress that never switches off harms sleep, mood and health.",
+          "Slow breathing with a long exhale calms the body within minutes.",
+          "Sort worries into what you can control and what you cannot, then act on the first group."
+        ],
+        "examples": [
+          {
+            "title": "Exam week overload",
+            "scenario": "With five papers in six days, Farid feels paralysed and keeps scrolling instead of studying. He writes every task on paper, crosses out what he cannot change (the timetable), and breaks the rest into one-hour blocks.",
+            "takeaway": "Getting the worries out of his head and onto paper made them finite. A clear next step replaced the frozen feeling."
+          },
+          {
+            "title": "Before the presentation",
+            "scenario": "Mei's hands shake before a class presentation. She does two minutes of box breathing in the corridor and tells herself, 'This energy is my body getting ready.'",
+            "takeaway": "Slow breathing settled her body, and seeing the nervous energy as preparation instead of a threat helped her use it."
+          }
+        ],
+        "practicalTip": "Practise box breathing for two minutes each night this week, when you are calm. A technique you have rehearsed is far easier to use when you are actually stressed.",
+        "deeperInsight": "How you interpret stress changes its effect. People who see their racing heart as the body preparing to perform tend to do better under pressure than those who read it as a sign of failing. You cannot always lower the demand, but you can change what you tell yourself about your response."
+      },
+      "quiz": [
+        {
+          "question": "What is the purpose of the body's fight-or-flight response?",
+          "options": [
+            "To prepare the body to deal with a challenge or danger",
+            "To make you fall asleep quickly whenever a situation becomes dangerous",
+            "To slow down your heart rate",
+            "To improve digestion"
+          ],
+          "correctIndex": 0,
+          "explanation": "Adrenaline and cortisol raise heart rate, breathing and muscle tension so the body is ready to act."
+        },
+        {
+          "question": "Which describes the box breathing technique?",
+          "options": [
+            "Breathe as fast as possible for one minute",
+            "Inhale 4, hold 4, exhale 4, hold 4",
+            "Hold your breath for as long as you can",
+            "Inhale through the mouth only"
+          ],
+          "correctIndex": 1,
+          "explanation": "Box breathing uses four equal counts: in, hold, out, hold. The slow, steady rhythm activates the body's calming system."
+        },
+        {
+          "question": "You feel overwhelmed by many worries. According to this lesson, what is a useful first step?",
+          "options": [
+            "Try not to think about any of them",
+            "Stay up all night so that you can deal with every single one of them at once",
+            "Write them down and sort what you can control from what you cannot",
+            "Wait until the stress goes away by itself"
+          ],
+          "correctIndex": 2,
+          "explanation": "Listing and sorting your worries makes them manageable and shows where a small action is possible."
+        }
+      ],
+      "reflection": {
+        "prompt": "How does your body tell you that you are stressed? Where do you feel it first?",
+        "guidingQuestions": [
+          "What are your three biggest sources of stress right now?",
+          "Which of them are within your control?",
+          "What do you usually do when stressed, and does it actually help?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran gives two anchors for a stressed heart: 'Surely in the remembrance of Allah do hearts find rest', and 'Allah does not burden a soul beyond what it can bear.' The Prophet ﷺ regularly sought refuge in Allah from anxiety and grief, which shows that feeling worried is human, and that turning to Allah with it, alongside practical steps, is the believer's way.",
+        "sources": [
+          "Quran 13:28",
+          "Quran 2:286",
+          "Sahih al-Bukhari 6369"
+        ]
+      }
+    },
+    {
+      "slug": "coping-mechanisms",
+      "title": "Coping Mechanisms",
+      "icon": "❤️",
+      "summary": "Telling healthy coping from unhealthy coping, and building your own toolkit for hard days.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Distinguish problem-focused coping from emotion-focused coping.",
+        "Recognise coping habits that give short relief but cause long-term harm.",
+        "Build a personal coping toolkit and know when to seek help."
+      ],
+      "lesson": {
+        "title": "Relief Now, or Better Later?",
+        "explanation": "A coping mechanism is anything you do to deal with difficult feelings or situations. Everyone has them. What matters is whether they help you over time.\n\nPsychologists Richard Lazarus and Susan Folkman described two broad types. Problem-focused coping tackles the cause: making a plan, asking for help, having the difficult conversation. Emotion-focused coping soothes the feeling: talking to a friend, exercising, praying, writing, resting. You need both. When a situation can be changed, work on the problem. When it cannot, as with a loss or a result that is already final, care for the feeling.\n\nUnhealthy coping gives quick relief and a later cost. Common examples are avoiding the problem, endless scrolling or gaming to numb out, overeating or not eating, lashing out at others, smoking or vaping, and self-harm. A simple test is to ask: 'Will I feel better or worse about this tomorrow?'\n\nBuild a toolkit before you need it. Include something for your body (a walk, a shower, sleep), something for your mind (journaling, reframing the thought), something for connection (a person you can message), and something for meaning (prayer, nature, helping someone). If your feelings are overwhelming, last more than two weeks, or include thoughts of harming yourself, talk to a trusted adult or call a helpline such as Befrienders KL (03-7627 2929) or Talian Kasih (15999).",
+        "keyPoints": [
+          "Problem-focused coping changes the situation; emotion-focused coping soothes the feeling.",
+          "Use problem-focused coping for what you can change and emotion-focused coping for what you cannot.",
+          "Unhealthy coping feels good now and worse later.",
+          "Asking for help is a healthy coping skill, not a weakness."
+        ],
+        "examples": [
+          {
+            "title": "After a bad result",
+            "scenario": "Syafiq fails a trial exam. His first instinct is to game all weekend and avoid thinking about it. Instead he lets himself be upset on Friday night, talks to his cousin, and on Saturday asks his teacher which topics to focus on.",
+            "takeaway": "He used emotion-focused coping first (feel it, talk about it) and then problem-focused coping (make a plan). Avoidance would only have delayed the pain."
+          },
+          {
+            "title": "What cannot be fixed",
+            "scenario": "Anjali's close friend moves overseas. There is no problem to solve, and she feels low for weeks. She starts a weekly video call, joins a badminton group and writes about what she misses.",
+            "takeaway": "When the situation cannot change, healthy coping means caring for the feeling and building new sources of connection."
+          }
+        ],
+        "practicalTip": "Write your toolkit on a card or phone note: two things for your body, two for your mind, two people you can contact and one helpline number. Decide on it now, while you are calm.",
+        "deeperInsight": "Avoidance is the most common unhealthy coping habit because it works at first: the bad feeling drops as soon as you look away. The brain learns to avoid again, and the problem grows in the dark. Facing a hard thing in small steps teaches the opposite lesson, that you can handle it."
+      },
+      "quiz": [
+        {
+          "question": "Your grandmother has passed away and you are grieving. Which type of coping fits this situation best?",
+          "options": [
+            "Problem-focused coping, because the cause can be fixed with a good plan",
+            "Avoidance, because thinking about it is painful",
+            "No coping is needed",
+            "Emotion-focused coping, because the loss cannot be undone"
+          ],
+          "correctIndex": 3,
+          "explanation": "When a situation cannot be changed, healthy coping means caring for the feeling: talking, remembering, praying, resting and being with others."
+        },
+        {
+          "question": "Which is a sign that a coping habit is unhealthy?",
+          "options": [
+            "It gives quick relief but leaves you worse off later",
+            "It involves talking to someone about what happened and how you feel",
+            "It takes some effort to do",
+            "It helps you understand your feelings"
+          ],
+          "correctIndex": 0,
+          "explanation": "Unhealthy coping trades short-term relief for a longer-term cost, such as a bigger problem, guilt or harm to health."
+        },
+        {
+          "question": "A friend says they have felt hopeless for a month and sometimes think about hurting themselves. What should you do?",
+          "options": [
+            "Promise to keep it completely secret",
+            "Tell them to stop being dramatic",
+            "Encourage them to talk to a trusted adult or a helpline, and stay with them",
+            "Avoid them until they feel better"
+          ],
+          "correctIndex": 2,
+          "explanation": "Thoughts of self-harm need support from a trusted adult or professional. Listen, stay with them and help them reach out. Do not keep it secret."
+        }
+      ],
+      "reflection": {
+        "prompt": "What do you usually do when you have had a very bad day?",
+        "guidingQuestions": [
+          "Does that habit leave you feeling better or worse the next day?",
+          "Which part of your toolkit is weakest: body, mind, connection or meaning?",
+          "Who is one person you could tell if things became too heavy?"
+        ]
+      },
+      "faithLens": {
+        "text": "Allah directs believers to two resources in difficulty: 'Seek help through patience and prayer.' He also gives a promise repeated twice in one surah: with hardship comes ease. The Prophet ﷺ taught that no fatigue, illness, worry, grief or harm afflicts a Muslim, even the prick of a thorn, without Allah expiating some of his sins by it. Hardship met with sabr is never wasted.",
+        "sources": [
+          "Quran 2:153",
+          "Quran 94:5-6",
+          "Sahih al-Bukhari 5641",
+          "Sahih Muslim 2573"
+        ]
+      }
+    },
+    {
+      "slug": "building-resilience",
+      "title": "Building Resilience",
+      "icon": "🧠",
+      "summary": "Resilience is a set of learnable habits that help you recover from setbacks and grow through them.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Define resilience and explain why it is not the same as never struggling.",
+        "Identify the main factors that make people more resilient.",
+        "Reframe a setback using a more accurate and helpful explanation."
+      ],
+      "lesson": {
+        "title": "Bending Without Breaking",
+        "explanation": "Resilience is the ability to adapt and recover when life is hard. Resilient people still feel pain, fear and disappointment. What differs is that they find a way back, and often come out with new strength or understanding. Researcher Ann Masten calls resilience 'ordinary magic', because it grows from ordinary things and not from rare personal toughness.\n\nSeveral factors show up again and again in resilience research. The strongest is supportive relationships: at least one person who believes in you. Others are a sense of purpose, belief that your actions make a difference, practical problem-solving skills, the ability to manage strong feelings, and looking after your body.\n\nHow you explain a setback to yourself also matters. Psychologist Martin Seligman found that people struggle most when they see a bad event as personal ('it's all my fault'), pervasive ('it ruins everything') and permanent ('it will always be like this'). A resilient explanation is more accurate: what part was mine and what was not, which area of life is affected and which is fine, and what can change with time and effort.\n\nResilience grows like a muscle. Each difficulty you face and get through, with support, becomes evidence for the next one: 'I have handled hard things before.'",
+        "keyPoints": [
+          "Resilience means recovering and adapting, not avoiding all struggle.",
+          "Supportive relationships are the strongest resilience factor.",
+          "Challenge the three Ps: personal, pervasive, permanent.",
+          "Past difficulties you have come through are evidence you can use."
+        ],
+        "examples": [
+          {
+            "title": "Not selected",
+            "scenario": "Hafiz is dropped from the school football team and thinks, 'I'm useless at everything and I always will be.' His coach asks him to write what is actually true. Hafiz writes: 'My fitness was below the others this term. My schoolwork and friendships are fine. I can train and try again in three months.'",
+            "takeaway": "The second version is not fake positivity. It is more accurate, it limits the damage to one area, and it points to an action."
+          },
+          {
+            "title": "The business that failed",
+            "scenario": "Li Na's online craft shop makes no sales in two months and she closes it. She lists what she learned about pricing, photos and customers, and asks a cousin who runs a shop for advice before starting again.",
+            "takeaway": "Treating the failure as information, and reaching out to someone supportive, turned an ending into preparation for the next attempt."
+          }
+        ],
+        "practicalTip": "Write a 'proof list' of three hard things you have already come through, and what helped each time. Keep it where you can read it the next time something goes wrong.",
+        "deeperInsight": "Resilience is not something you build alone. Children and teenagers who do well after serious hardship almost always had at least one stable, caring adult. Asking for support is the main way resilience is built, and being that person for someone else builds it too."
+      },
+      "quiz": [
+        {
+          "question": "Which statement best describes resilience?",
+          "options": [
+            "Never feeling sad, stressed or disappointed about anything",
+            "Adapting and recovering after difficulty",
+            "Hiding your feelings from everyone",
+            "Handling every problem alone"
+          ],
+          "correctIndex": 1,
+          "explanation": "Resilient people still feel hard emotions. Resilience is the capacity to recover and adapt, usually with support from others."
+        },
+        {
+          "question": "According to research, which factor contributes most strongly to resilience?",
+          "options": [
+            "Having a high IQ",
+            "Never experiencing failure",
+            "Being naturally cheerful",
+            "Supportive relationships"
+          ],
+          "correctIndex": 3,
+          "explanation": "Having at least one stable, supportive relationship is the factor most consistently linked with resilience."
+        },
+        {
+          "question": "After failing one test, a student thinks, \"I'm a failure at everything.\" Which of the three Ps is this?",
+          "options": [
+            "Pervasive: one setback spreads to all of life",
+            "Practical: making a step-by-step plan to improve next time",
+            "Patient: waiting for things to improve",
+            "Positive: seeing the good side"
+          ],
+          "correctIndex": 0,
+          "explanation": "Believing that one failure affects everything is the 'pervasive' pattern. A more accurate view limits the setback to the area where it happened."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think of the hardest thing you have come through so far. What, or who, helped you get through it?",
+        "guidingQuestions": [
+          "When something goes wrong, which of the three Ps do you fall into most?",
+          "Who is on your support team, and do they know it?",
+          "What did that hard experience teach you that you still use?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ described the believer's situation as remarkable: all of it is good for him. If something pleasing happens he is grateful, and that is good for him. If hardship strikes he is patient, and that is good for him. The Quran also tells of prophets who endured loss and waiting, such as Ya'qub عليه السلام, who answered grief with 'beautiful patience' and never lost hope in Allah's mercy.",
+        "sources": [
+          "Sahih Muslim 2999",
+          "Quran 12:18",
+          "Quran 12:87"
+        ]
+      }
+    },
+    {
+      "slug": "positive-psychology",
+      "title": "Positive Psychology",
+      "icon": "✨",
+      "summary": "The science of what makes life go well, and small practices shown to raise well-being.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain what positive psychology studies and what it does not claim.",
+        "List the five elements of the PERMA model of well-being.",
+        "Carry out the 'three good things' exercise."
+      ],
+      "lesson": {
+        "title": "More Than the Absence of Problems",
+        "explanation": "For most of its history, psychology focused on what goes wrong. Positive psychology, a field launched by Martin Seligman in the late 1990s, studies what goes right: the conditions under which people and communities do well. It does not say you should be happy all the time or ignore problems. Its claim is that well-being can be understood and deliberately built.\n\nSeligman's PERMA model describes five building blocks. Positive emotion includes joy, gratitude, calm and hope. Engagement is being fully absorbed in an activity that stretches your skills, a state Mihaly Csikszentmihalyi called flow. Relationships are close, supportive connections, which are the strongest single predictor of well-being. Meaning is belonging to and serving something larger than yourself. Accomplishment is working towards goals and achieving them.\n\nThe field has tested practical exercises. In 'three good things', you write down three things that went well each night and why they happened. In a study by Seligman and colleagues, people who did this for a week reported feeling happier for months afterwards. Other tested practices include using your personal strengths in new ways, performing deliberate acts of kindness, and expressing thanks directly to someone. The brain naturally notices threats more than good things, and these practices train attention in the other direction.",
+        "keyPoints": [
+          "Positive psychology studies what helps people do well; it does not deny difficulty.",
+          "PERMA: Positive emotion, Engagement, Relationships, Meaning, Accomplishment.",
+          "Close relationships are the strongest predictor of well-being.",
+          "Simple exercises such as 'three good things' have measurable effects."
+        ],
+        "examples": [
+          {
+            "title": "Three good things",
+            "scenario": "Hui Min feels her days are 'all the same and all tiring'. For one week she writes three good things each night: a friend shared notes, the rain cooled the evening, she finally understood a chemistry topic.",
+            "takeaway": "Her days did not change, but what she noticed did. By the end of the week she finds herself looking for good moments during the day."
+          },
+          {
+            "title": "Finding flow",
+            "scenario": "Adam drifts through most homework but loses track of time when coding small games. The challenge is just above his current skill and he gets instant feedback when something works.",
+            "takeaway": "Flow happens when challenge and skill are well matched. Knowing where you find it is a clue to your strengths and to work you may love."
+          }
+        ],
+        "practicalTip": "Tonight, write down three things that went well today and one sentence on why each happened. Repeat for seven nights and notice whether your attention during the day begins to shift.",
+        "deeperInsight": "Chasing happiness directly often backfires, and buying things brings only brief satisfaction because people adapt quickly to what they have. Well-being tends to arrive as a side effect of good relationships, meaningful effort and helping others."
+      },
+      "quiz": [
+        {
+          "question": "What does the \"R\" in the PERMA model stand for?",
+          "options": [
+            "Responsibility",
+            "Rewards",
+            "Relationships",
+            "Resilience"
+          ],
+          "correctIndex": 2,
+          "explanation": "PERMA stands for Positive emotion, Engagement, Relationships, Meaning and Accomplishment."
+        },
+        {
+          "question": "Which statement best describes positive psychology?",
+          "options": [
+            "The belief that you should never feel any negative emotions",
+            "The scientific study of what helps people do well",
+            "A method of ignoring your problems",
+            "The idea that success always brings happiness"
+          ],
+          "correctIndex": 1,
+          "explanation": "Positive psychology studies well-being scientifically. It does not deny difficult emotions or problems."
+        },
+        {
+          "question": "In the 'three good things' exercise, what do you write each night?",
+          "options": [
+            "Three goals you want to achieve in the next year",
+            "Three mistakes you made today",
+            "Three people who annoyed you",
+            "Three things that went well and why"
+          ],
+          "correctIndex": 3,
+          "explanation": "Recording three things that went well, and the reason for each, trains attention towards the good that is already present."
+        }
+      ],
+      "reflection": {
+        "prompt": "Which of the five PERMA elements is strongest in your life right now, and which is weakest?",
+        "guidingQuestions": [
+          "When did you last lose track of time doing something you enjoy?",
+          "Who makes your life better simply by being in it? Have you told them?",
+          "What gives your daily effort a sense of meaning?"
+        ]
+      },
+      "faithLens": {
+        "text": "Gratitude is the Quran's formula for increase: 'If you are grateful, I will surely give you more.' The Prophet ﷺ gave a practical rule for contentment: look at those who have less than you, not at those who have more, so that you do not belittle Allah's favours upon you. Lasting well-being, in the Islamic view, rests on a heart that is content and at rest with its Lord.",
+        "sources": [
+          "Quran 14:7",
+          "Sahih Muslim 2963",
+          "Quran 89:27-30"
+        ]
+      }
+    }
+  ]
+}

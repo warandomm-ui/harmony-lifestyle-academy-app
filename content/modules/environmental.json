@@ -1,0 +1,452 @@
+{
+  "id": "environmental",
+  "name": "Environmental Wellness",
+  "icon": "🌿",
+  "audience": "universal",
+  "order": 5,
+  "description": "Care for the places that care for you: your room, your neighbourhood and the natural world you depend on.",
+  "topics": [
+    {
+      "slug": "sustainable-living",
+      "title": "Sustainable Living",
+      "icon": "♻️",
+      "summary": "Everyday choices about what you buy, use and throw away, and which ones make the biggest difference.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain what sustainability means in everyday terms.",
+        "Rank the waste hierarchy from most to least effective action.",
+        "Identify the changes in your own routine that would cut the most waste."
+      ],
+      "lesson": {
+        "title": "Use Less Before You Recycle More",
+        "explanation": "Sustainable living means meeting your needs today without making it harder for others, including future generations, to meet theirs. In practice it is about three flows through your life: the things you buy, the energy and water you use, and the waste you create.\n\nThe waste hierarchy puts actions in order of impact. Refuse what you do not need. Reduce what you do use. Reuse items many times. Repurpose or repair them when they wear out. Recycle only what is left. Recycling comes last because it still takes energy and transport, and many items placed in recycling bins are never actually recycled. The most sustainable product is usually the one you did not buy.\n\nFocus on what matters most. Food waste is a major one: Malaysian households throw away thousands of tonnes of food every day, and a large share of it was still edible. Single-use plastics such as bags, straws, cups and food containers are another. Clothing is a third, since fast fashion uses large amounts of water and is often worn only a few times. At home, air conditioning and water heating are typically the biggest users of electricity.\n\nYou do not have to be perfect. A few consistent habits, such as carrying a bottle and a bag, taking only the food you will finish, and switching off what you are not using, add up across a year and influence the people around you.",
+        "keyPoints": [
+          "Sustainability means meeting present needs without harming the future's ability to do the same.",
+          "The waste hierarchy: refuse, reduce, reuse, repurpose, recycle, in that order.",
+          "Food waste, single-use plastic and fast fashion are high-impact areas for young people.",
+          "Consistent small habits beat occasional grand gestures."
+        ],
+        "examples": [
+          {
+            "title": "The canteen audit",
+            "scenario": "For one week, Aina counts what she throws away at school: five plastic cups, five straws, three polystyrene boxes and about a third of each lunch.",
+            "takeaway": "She brings a bottle and a container and asks for smaller rice portions. Her weekly waste falls to almost nothing, and she saves money on drinks."
+          },
+          {
+            "title": "The RM15 T-shirt",
+            "scenario": "Ethan buys five cheap T-shirts in a sale. Two shrink, one fades and two are never worn. His sister buys one good shirt second-hand and wears it for three years.",
+            "takeaway": "Cost per wear, not price, shows the real value. Buying less and choosing well is cheaper and creates far less waste."
+          }
+        ],
+        "practicalTip": "Build a 'leave-the-house kit': a refillable bottle, a foldable bag and a food container. Keep it by the door or in your school bag for one week and count how many single-use items you avoid.",
+        "deeperInsight": "Individual habits matter partly because they are visible. When one person in a class brings a bottle, others follow, canteens adapt and norms shift. Your influence on what the people around you see as normal is often larger than your personal footprint."
+      },
+      "quiz": [
+        {
+          "question": "In the waste hierarchy, which action has the greatest positive impact?",
+          "options": [
+            "Recycling everything you use",
+            "Buying biodegradable packaging",
+            "Refusing what you do not need",
+            "Sorting rubbish into colours"
+          ],
+          "correctIndex": 2,
+          "explanation": "Not creating the waste in the first place is the most effective step. Recycling is the last resort for what remains."
+        },
+        {
+          "question": "Why is recycling placed last in the waste hierarchy?",
+          "options": [
+            "It still uses energy, and not everything collected is recycled",
+            "It is illegal in most places",
+            "It only works for glass",
+            "It creates more waste than sending everything straight to a landfill"
+          ],
+          "correctIndex": 0,
+          "explanation": "Recycling is useful but requires energy, transport and processing, and a share of collected material is never recycled."
+        },
+        {
+          "question": "Which habit reduces food waste most directly?",
+          "options": [
+            "Eating faster",
+            "Taking only the amount you will actually eat",
+            "Buying food in the largest packs available at the shop",
+            "Using paper plates"
+          ],
+          "correctIndex": 1,
+          "explanation": "Most household food waste comes from taking, cooking or buying more than is eaten. Right-sized portions prevent it at the source."
+        }
+      ],
+      "reflection": {
+        "prompt": "Look at what you threw away yesterday. What was the largest item or category?",
+        "guidingQuestions": [
+          "Which single-use item do you use most often?",
+          "What did you buy in the last month that you did not really need?",
+          "Which one habit could you change this week with almost no effort?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran forbids waste in plain terms: eat of its fruit and give its due on the day of harvest, and do not be excessive, for Allah does not love the wasteful. It describes those who squander as brothers of the devils. The Prophet ﷺ taught people to pick up a dropped morsel, clean it and eat it, and to finish what is in the dish, because you do not know in which part of your food the blessing lies. Moderation in consumption is obedience, not just good ecology.",
+        "sources": [
+          "Quran 6:141",
+          "Quran 17:26-27",
+          "Sahih Muslim 2033"
+        ]
+      }
+    },
+    {
+      "slug": "conservation-efforts",
+      "title": "Conservation Efforts",
+      "icon": "🌳",
+      "summary": "Why biodiversity matters, what threatens it in Malaysia, and how ordinary people help protect it.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain what biodiversity is and why people depend on it.",
+        "Name the main threats to wildlife and habitats.",
+        "Describe practical ways a young person can support conservation."
+      ],
+      "lesson": {
+        "title": "We Live Inside the Web",
+        "explanation": "Biodiversity is the variety of life in a place: its plants, animals, fungi and microorganisms, and the ecosystems they form. People depend on it constantly. Forests store carbon, release oxygen, hold soil in place and regulate rainfall. Mangroves protect coasts from storms and serve as nurseries for fish. Insects pollinate many of the crops we eat. When species disappear, these services weaken.\n\nMalaysia is recognised as one of the world's megadiverse countries. Its rainforests are among the oldest on Earth, and its seas hold some of the richest coral reefs. Much of this is under pressure. The Malayan tiger, the national animal, is critically endangered, with fewer than 150 estimated to remain in the wild. The main threats are the same worldwide: habitat loss from clearing land, poaching and illegal wildlife trade, pollution, invasive species and climate change.\n\nConservation is the work of protecting and restoring nature. Governments create protected areas and laws, and scientists monitor species. Ordinary people matter too. You can refuse to buy wildlife products or exotic pets, choose products with credible sustainability certification, reduce waste and plastic, join tree-planting or river and beach clean-ups, record wildlife sightings for citizen-science projects, and speak up when you see illegal dumping or trade. Learning the names of the plants and birds around you is a real first step, because people protect what they know.",
+        "keyPoints": [
+          "Biodiversity provides clean air and water, food, climate regulation and protection from disasters.",
+          "Malaysia is megadiverse, and species such as the Malayan tiger are critically endangered.",
+          "Major threats: habitat loss, poaching, pollution, invasive species, climate change.",
+          "Individuals help through their purchases, volunteering, reporting and awareness."
+        ],
+        "examples": [
+          {
+            "title": "The river clean-up",
+            "scenario": "A school group in Selangor spends one morning a month collecting rubbish along a nearby river and records what they find. After six months their data show that food packaging is the largest category, and they present it to the local council.",
+            "takeaway": "Clean-ups remove waste, and the records they produce can support better bins, signs or enforcement. Action plus evidence is more powerful than action alone."
+          },
+          {
+            "title": "The 'cute' pet",
+            "scenario": "Marcus sees a slow loris for sale online and thinks it would make an unusual pet. He looks it up and learns it is a protected species taken from the wild, and that its teeth are often cut out by traders.",
+            "takeaway": "Demand drives the illegal trade. He reports the listing instead. Checking before buying is one of the simplest conservation acts."
+          }
+        ],
+        "practicalTip": "Learn to identify five birds, trees or insects that live within walking distance of your home. Use a field guide or a nature identification app, and write down where and when you saw each one.",
+        "deeperInsight": "Ecosystems can absorb damage for a long time and then change suddenly. Removing one species may seem to have no effect until a link in the food web breaks. This is why conservationists aim to protect whole habitats, not just individual famous animals."
+      },
+      "quiz": [
+        {
+          "question": "What does the term biodiversity refer to?",
+          "options": [
+            "The variety of living things and ecosystems in an area",
+            "The total number of people living in a country or region",
+            "The amount of rainfall in a forest",
+            "The size of a national park"
+          ],
+          "correctIndex": 0,
+          "explanation": "Biodiversity is the variety of life at every level, from genes and species to whole ecosystems."
+        },
+        {
+          "question": "Why are mangrove forests valuable to coastal communities?",
+          "options": [
+            "They make sea water clean enough for people to drink safely",
+            "They increase the temperature of the sea",
+            "They stop all rain from falling inland",
+            "They protect coasts from storms and shelter young fish"
+          ],
+          "correctIndex": 3,
+          "explanation": "Mangroves buffer waves and storm surges, hold sediment and act as nurseries for many fish and crustaceans."
+        },
+        {
+          "question": "Which everyday choice most directly reduces the illegal wildlife trade?",
+          "options": [
+            "Watching wildlife documentaries",
+            "Refusing to buy wildlife products or wild-caught exotic pets",
+            "Visiting more shopping malls",
+            "Using more paper bags"
+          ],
+          "correctIndex": 1,
+          "explanation": "Illegal trade exists because of demand. Refusing to buy, and reporting sellers, removes the incentive."
+        }
+      ],
+      "reflection": {
+        "prompt": "Which natural place near you would you be saddest to lose? Why does it matter to you?",
+        "guidingQuestions": [
+          "How many local plants or animals can you actually name?",
+          "Which of your regular purchases might be linked to habitat loss?",
+          "What conservation activity near you could you join once this term?"
+        ]
+      },
+      "faithLens": {
+        "text": "Humanity is placed on earth as khalifah, a steward answerable for what was entrusted. The Quran warns that corruption has appeared on land and sea because of what people's hands have earned. The Prophet ﷺ said that the world is sweet and green, and that Allah has made you successors in it to see how you will act. He also told of a person forgiven for giving water to a thirsty dog: there is reward in kindness to every living creature.",
+        "sources": [
+          "Quran 2:30",
+          "Quran 30:41",
+          "Sahih Muslim 2742",
+          "Sahih al-Bukhari 2363"
+        ]
+      }
+    },
+    {
+      "slug": "appreciation-of-nature",
+      "title": "Appreciation of Nature",
+      "icon": "🏞️",
+      "summary": "How time in nature restores attention and mood, and ways to build it into an ordinary week.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "Describe how time in nature affects stress, mood and attention.",
+        "State how much weekly time outdoors research links with better well-being.",
+        "Practise noticing nature using your senses."
+      ],
+      "lesson": {
+        "title": "Two Hours a Week Outside",
+        "explanation": "People evolved outdoors, and the body still responds to natural settings. Research links time in green and blue spaces, such as parks, forests, rivers and beaches, with lower stress, better mood and improved concentration. A large study in England, published in 2019, found that people who spent at least 120 minutes a week in nature were noticeably more likely to report good health and well-being than those who spent none. It did not matter whether the time came in one long visit or several short ones.\n\nOne explanation is attention restoration theory, proposed by Rachel and Stephen Kaplan. Screens, traffic and study demand directed attention, which tires with use. Natural scenes hold your attention gently, through moving leaves, water and birdsong, which lets the tired system recover. This is why a walk outside often clears your head better than a break spent scrolling.\n\nAppreciation is more than being outdoors. It means noticing. In Japan, the practice of shinrin-yoku, or 'forest bathing', means walking slowly among trees with all the senses open. You can do the same anywhere: look for five shades of green, listen for the furthest sound, feel the air on your skin. Nature is also closer than it seems. A neighbourhood park, a tree outside the window, the evening sky or a pot plant on a balcony all count.",
+        "keyPoints": [
+          "Time in natural settings is linked with lower stress and better mood and focus.",
+          "About 120 minutes a week, in any combination of visits, is associated with better well-being.",
+          "Nature rests the directed attention that screens and study exhaust.",
+          "Appreciation means noticing with your senses, and nearby nature counts."
+        ],
+        "examples": [
+          {
+            "title": "The study break that worked",
+            "scenario": "Dinesh usually takes study breaks on his phone and returns feeling just as foggy. One afternoon he walks around the neighbourhood park for fifteen minutes without earphones.",
+            "takeaway": "He comes back clearer and finishes his exercises faster. A scrolling break kept his attention working, while the walk let it rest."
+          },
+          {
+            "title": "The balcony garden",
+            "scenario": "Living in a high-rise flat, Sarah feels she has 'no nature'. She plants pandan, chilli and mint in pots on the balcony and spends ten minutes each morning watering them.",
+            "takeaway": "Tending something living, even on a small scale, gave her a daily moment of calm and a reason to step outside before school."
+          }
+        ],
+        "practicalTip": "Schedule your 120 minutes like any other appointment. For example: three 20-minute walks on weekdays and one hour at a park, hill or beach on the weekend. Leave your earphones in your pocket for at least part of it.",
+        "deeperInsight": "Children today spend far less time outdoors than their grandparents did, and many adults can name more brand logos than local trees. Familiarity builds care, so helping a younger sibling or cousin enjoy the outdoors is one of the most lasting contributions you can make to conservation."
+      },
+      "quiz": [
+        {
+          "question": "According to the 2019 study mentioned in this lesson, about how much weekly time in nature is linked with better health and well-being?",
+          "options": [
+            "At least 10 minutes",
+            "At least 30 minutes",
+            "At least 120 minutes",
+            "At least 500 minutes"
+          ],
+          "correctIndex": 2,
+          "explanation": "People who spent 120 minutes or more a week in nature were more likely to report good health and well-being, however the time was divided."
+        },
+        {
+          "question": "According to attention restoration theory, why does a walk in a park refresh your mind?",
+          "options": [
+            "The air in a park contains far more oxygen than the air in a classroom",
+            "Walking burns away stress hormones instantly",
+            "Natural scenes hold attention gently, letting directed attention rest",
+            "Parks are always quieter than homes"
+          ],
+          "correctIndex": 2,
+          "explanation": "Demanding tasks drain directed attention. Nature engages you effortlessly, which gives that system time to recover."
+        },
+        {
+          "question": "Which activity best matches the idea of 'forest bathing' (shinrin-yoku)?",
+          "options": [
+            "Walking slowly among trees, paying attention with all your senses",
+            "Running a timed race through a forest",
+            "Swimming in a forest river",
+            "Photographing trees for social media"
+          ],
+          "correctIndex": 0,
+          "explanation": "Shinrin-yoku is slow, mindful time among trees, taking in the sights, sounds, smells and textures."
+        }
+      ],
+      "reflection": {
+        "prompt": "Where is your favourite outdoor place, and when were you last there?",
+        "guidingQuestions": [
+          "Roughly how many minutes did you spend outdoors in nature last week?",
+          "What do you notice in your body and mood after time outside?",
+          "What piece of nearby nature have you walked past without really seeing?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran repeatedly invites people to look at creation as a way of knowing the Creator: in the creation of the heavens and the earth and the alternation of night and day are signs for people of understanding. It asks, 'Do they not look at the camels, how they are created? And at the sky, how it is raised?' Reflecting on nature (tafakkur) is an act of worship that strengthens faith and gratitude.",
+        "sources": [
+          "Quran 3:190-191",
+          "Quran 88:17-20",
+          "Quran 16:10-11"
+        ]
+      }
+    },
+    {
+      "slug": "healthy-personal-space",
+      "title": "Healthy Personal Space",
+      "icon": "🏠",
+      "summary": "How your room affects your sleep, focus and mood, and simple ways to make it work for you.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "Explain how clutter, light, air and noise affect focus and mood.",
+        "Set up separate zones for sleep and study, even in a shared room.",
+        "Use a short daily reset routine to keep a space in order."
+      ],
+      "lesson": {
+        "title": "Your Room Is Part of Your Mind",
+        "explanation": "You spend a large part of your life in a few small spaces: your bedroom, your desk, your corner of a shared room. These surroundings influence how you feel and function more than most people realise.\n\nFour things matter most. The first is order. Visual clutter competes for your attention and makes it harder to focus, and a messy space is a constant reminder of unfinished tasks. The second is light. Daylight during the day supports alertness and a healthy body clock, while dim, warm light in the evening prepares you for sleep. The third is air. Stale, humid rooms encourage mould and dust mites, which can trigger allergies and asthma, so open windows daily and keep bedding clean. The fourth is noise and temperature: a cool, quiet, dark room gives the best sleep.\n\nYour brain also links places with activities. If you study, scroll and eat on your bed, the bed stops signalling sleep. Create zones, even tiny ones: a spot for sleep, a spot for study. If you share a room, a particular chair or one side of a table can be your study zone.\n\nKeeping a space healthy is easier with small routines than with big clean-ups. Give every item a 'home', and do a five-minute reset each evening: clothes away, desk cleared, rubbish out, bag packed for tomorrow.",
+        "keyPoints": [
+          "Clutter competes for attention and adds background stress.",
+          "Daylight by day and dim light at night support your body clock.",
+          "Fresh air and clean bedding reduce allergens such as mould and dust mites.",
+          "Separate sleep and study zones, and use a five-minute daily reset."
+        ],
+        "examples": [
+          {
+            "title": "The desk that disappeared",
+            "scenario": "Khairul's desk is buried under books, cables and snack wrappers, so he studies on his bed and keeps falling asleep. He spends twenty minutes clearing the desk and gives each item a place on a shelf.",
+            "takeaway": "With a clear desk he studies sitting up, and his bed goes back to being only for sleep. Both his focus and his sleep improve."
+          },
+          {
+            "title": "Sharing with two brothers",
+            "scenario": "Vikram shares a small room with two brothers and has no desk. He agrees with them on a 'quiet hour' after dinner and claims one end of the dining table, with a box that holds all his study materials.",
+            "takeaway": "A healthy space does not need a private room. A consistent spot, a portable kit and an agreement with the family create a study zone anywhere."
+          }
+        ],
+        "practicalTip": "Tonight, set a five-minute timer and do a reset: clothes in the basket or cupboard, desk surface cleared, rubbish out, tomorrow's bag packed. Repeat nightly for a week and notice how your mornings change.",
+        "deeperInsight": "Your digital space is part of your personal space. A phone home screen full of notifications and a desktop of scattered files create the same background noise as a messy room. Turning off non-essential notifications is the digital version of clearing your desk."
+      },
+      "quiz": [
+        {
+          "question": "Why does studying on your bed often make both studying and sleeping harder?",
+          "options": [
+            "Beds are too soft to rest books and a laptop on properly",
+            "The brain stops linking the bed with sleep alone",
+            "Bedrooms have too little oxygen",
+            "Mattresses block wireless signals"
+          ],
+          "correctIndex": 1,
+          "explanation": "The brain associates places with activities. Mixing work and rest in one spot weakens the bed's signal for sleep and encourages drowsiness while studying."
+        },
+        {
+          "question": "Which bedroom conditions are best for sleep?",
+          "options": [
+            "Warm, bright and lively",
+            "Hot and humid with the television on",
+            "Cool, dark and quiet",
+            "Brightly lit with windows sealed"
+          ],
+          "correctIndex": 2,
+          "explanation": "Most people sleep best in a room that is cool, dark and quiet."
+        },
+        {
+          "question": "What is the main advantage of a five-minute daily reset over an occasional big clean-up?",
+          "options": [
+            "It means you never need to clean the room thoroughly again",
+            "It requires expensive storage boxes",
+            "It only works in large rooms",
+            "Small regular effort stops mess from building up"
+          ],
+          "correctIndex": 3,
+          "explanation": "A short daily routine keeps disorder from accumulating, so the space stays usable with very little effort."
+        }
+      ],
+      "reflection": {
+        "prompt": "Look around the space where you sleep or study. What is the first thing you would change?",
+        "guidingQuestions": [
+          "Where do you study best, and what is different about that place?",
+          "Which items in your space have no fixed 'home'?",
+          "How does your room make you feel when you walk into it?"
+        ]
+      },
+      "faithLens": {
+        "text": "Cleanliness holds a high place in Islam: the Prophet ﷺ said that purity is half of faith. He also said that Allah is beautiful and loves beauty, when a man asked whether liking good clothes and shoes was arrogance. Keeping your body, clothes and living space clean and orderly is part of worship, and it prepares a fitting place for prayer.",
+        "sources": [
+          "Sahih Muslim 223",
+          "Sahih Muslim 91",
+          "Quran 2:222"
+        ]
+      }
+    },
+    {
+      "slug": "community-green-initiatives",
+      "title": "Community Green Initiatives",
+      "icon": "🤝",
+      "summary": "Turning environmental concern into a shared project, from first idea to first event.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Give examples of green projects suited to a school or neighbourhood.",
+        "Plan a small initiative with a clear goal, team and first step.",
+        "Explain why collective action achieves more than individual action alone."
+      ],
+      "lesson": {
+        "title": "Start Small, Start Together",
+        "explanation": "Individual habits matter, but some problems can only be solved together. One person cannot clean a river, set up a recycling point or shade a playground alone. A community green initiative is any organised, shared effort to improve the local environment.\n\nMany such projects are within reach of students. A community garden (kebun komuniti) turns unused land into vegetables and herbs. A recycling collection point at a school or surau makes sorting easy. In Malaysia's colour system, blue bins take paper, brown take glass, and orange take plastic, aluminium and other metals. Other options include composting food scraps, tree planting, river or beach clean-ups, repair sessions for bicycles and electronics, and swap events for books, uniforms and clothes.\n\nGood projects follow a simple path. Begin with a specific, visible problem ('the field behind the flats is covered in litter'). Find two or three people who care. Ask permission from whoever is responsible, such as the school, the residents' committee or the local council. Set one small, measurable goal and a date. Give everyone a clear role. Afterwards, share photos and results, thank everyone and decide the next step.\n\nThe first event will be small. That is fine. Visible action attracts people, and a project that starts with five volunteers and continues monthly achieves far more than a large event held once.",
+        "keyPoints": [
+          "Shared problems need shared action.",
+          "Options include gardens, recycling points, composting, tree planting, clean-ups, repair and swap events.",
+          "Begin with a specific problem, a small team, permission, one measurable goal and a date.",
+          "Regular small events build more than one large one."
+        ],
+        "examples": [
+          {
+            "title": "From empty plot to garden",
+            "scenario": "Nabila and three neighbours ask their residents' association for permission to use a weedy corner beside the playground. They start with four raised beds of kangkung, chilli and lemongrass. Within a year, twelve families take turns watering.",
+            "takeaway": "A specific place, permission and a modest start made the project real. Others joined once they could see it growing."
+          },
+          {
+            "title": "The uniform swap",
+            "scenario": "At the end of the school year, a prefect team collects outgrown uniforms and textbooks, sorts them by size and form, and holds a free swap day in the hall.",
+            "takeaway": "Dozens of families save money and hundreds of items stay out of the bin. The idea needed no budget, only organisation."
+          }
+        ],
+        "practicalTip": "Write a one-page plan for a green project you could start: the problem, two people you would ask to join, whose permission you need, one measurable goal and a date. Then show it to one of those people this week.",
+        "deeperInsight": "Projects usually fail from lack of follow-through, not lack of enthusiasm. A garden needs watering in week ten as well as week one. Before starting, decide who will maintain the project and how responsibility will be handed on when the founders move on."
+      },
+      "quiz": [
+        {
+          "question": "In Malaysia's recycling colour system, which bin is for paper?",
+          "options": [
+            "Blue",
+            "Orange",
+            "Brown",
+            "Red"
+          ],
+          "correctIndex": 0,
+          "explanation": "Blue bins are for paper, brown for glass, and orange for plastic, aluminium and other metals."
+        },
+        {
+          "question": "What is the best first step when starting a community green project?",
+          "options": [
+            "Design a logo and order matching T-shirts for the team",
+            "Identify a specific, visible local problem",
+            "Wait for a large sponsor",
+            "Plan a nationwide campaign"
+          ],
+          "correctIndex": 1,
+          "explanation": "A clear, local problem gives the project focus and makes it easy for others to see why it matters."
+        },
+        {
+          "question": "Why is a small monthly clean-up usually more effective than one very large event?",
+          "options": [
+            "Large events are not allowed by most local councils",
+            "Small groups collect more rubbish per hour",
+            "Repeated action builds habits and lasting results",
+            "Monthly events do not need volunteers"
+          ],
+          "correctIndex": 2,
+          "explanation": "Consistency maintains the improvement, grows the group over time and makes care for the place part of community life."
+        }
+      ],
+      "reflection": {
+        "prompt": "What is one environmental problem you can see from your home or school?",
+        "guidingQuestions": [
+          "Who else is bothered by it, and have you ever talked about it?",
+          "Who would need to give permission for a project there?",
+          "What role would suit you best: organiser, promoter, record-keeper or hands-on worker?"
+        ]
+      },
+      "faithLens": {
+        "text": "Planting is rewarded as ongoing charity: the Prophet ﷺ said that no Muslim plants a tree or sows a crop from which a bird, a person or an animal eats, except that it is counted as charity for him. He also described removing something harmful from the road as a branch of faith. Working with others to care for shared land is cooperation in righteousness.",
+        "sources": [
+          "Sahih al-Bukhari 2320",
+          "Sahih Muslim 1553",
+          "Sahih Muslim 35",
+          "Quran 5:2"
+        ]
+      }
+    }
+  ]
+}

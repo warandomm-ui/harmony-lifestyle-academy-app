@@ -1,0 +1,452 @@
+{
+  "id": "social",
+  "name": "Social Wellness",
+  "icon": "🤝",
+  "audience": "universal",
+  "order": 2,
+  "description": "Learn to listen, speak, connect and disagree well, so that your relationships with family, friends and community grow stronger.",
+  "topics": [
+    {
+      "slug": "communication-skills",
+      "title": "Communication Skills",
+      "icon": "💬",
+      "summary": "Listening so people feel heard, and speaking so that your meaning arrives intact.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Use the three steps of active listening in a real conversation.",
+        "Turn a blaming 'you' statement into a clear 'I' statement.",
+        "Explain how tone and body language change the meaning of words."
+      ],
+      "lesson": {
+        "title": "Heard Before Being Understood",
+        "explanation": "Communication has two halves, and most people practise only one of them. Speaking gets the attention, but listening does most of the work. Active listening has three steps. First, give full attention: phone down, eyes up. Second, reflect back what you heard in your own words ('So you felt left out when we went without you?'). Third, ask before advising ('Do you want ideas, or do you just want me to listen?'). People who feel heard become far more willing to hear you in return.\n\nWhen it is your turn to speak, be clear and own your message. A 'you' statement such as 'You never listen to me' sounds like an attack and invites defence. An 'I' statement describes the situation, your feeling and your request: 'When I am interrupted, I feel unimportant. Could you let me finish?' It is harder to argue with and easier to act on.\n\nWords carry only part of the message. Tone of voice, facial expression and posture tell the listener how to interpret what you say. Saying 'I'm fine' with folded arms and a flat voice sends two messages, and people believe the body. In text messages, where tone is missing, misunderstandings multiply, so save important or emotional conversations for a call or face to face.",
+        "keyPoints": [
+          "Active listening: attend fully, reflect back, ask before advising.",
+          "'I' statements describe your experience and make a request without blame.",
+          "When words and body language disagree, people trust the body language.",
+          "Text removes tone, so use voice or face-to-face talk for sensitive topics."
+        ],
+        "examples": [
+          {
+            "title": "Group project tension",
+            "scenario": "Haziq is frustrated that a teammate keeps missing deadlines. His first draft message says, 'You are so lazy, you always let us down.'",
+            "takeaway": "He rewrites it: 'When the slides come in late, I get stressed because I can't finish my part. Can we agree on Thursday night as the deadline?' The teammate replies with an apology and a plan instead of an argument."
+          },
+          {
+            "title": "Listening to a friend",
+            "scenario": "Amira's friend says she failed her driving test again. Amira is about to list tips, but pauses and says, 'That sounds really disappointing after all that practice. Do you want to talk about it?'",
+            "takeaway": "Reflecting the feeling first lets the friend feel understood. Advice offered later, when asked for, is much more likely to be welcome."
+          }
+        ],
+        "practicalTip": "In your next conversation, try the two-second rule: after the other person stops talking, wait two full seconds before you reply. It stops you interrupting and gives you time to respond to what they said.",
+        "deeperInsight": "You may have heard that '93% of communication is non-verbal'. That figure comes from small 1960s experiments by Albert Mehrabian about conveying feelings with single words, and he has said it should not be applied to communication in general. The safer lesson is that tone and body language matter most when they contradict your words."
+      },
+      "quiz": [
+        {
+          "question": "Which response is the best example of active listening?",
+          "options": [
+            "\"So you felt embarrassed in front of everyone?\"",
+            "\"That happened to me too, but honestly mine was so much worse.\"",
+            "\"You should just ignore it and move on.\"",
+            "\"Anyway, did you see the match last night?\""
+          ],
+          "correctIndex": 0,
+          "explanation": "Reflecting back the speaker's meaning and feeling shows you understood. The other replies shift attention to yourself, give unrequested advice or change the subject."
+        },
+        {
+          "question": "Which sentence is a well-formed 'I' statement?",
+          "options": [
+            "\"I feel that you are always careless and never think about anyone else.\"",
+            "\"I can't believe you did that again.\"",
+            "\"I know you don't care about my time.\"",
+            "\"I feel worried when plans change late. Can you tell me earlier?\""
+          ],
+          "correctIndex": 3,
+          "explanation": "A real 'I' statement names the situation, your own feeling and a request. Starting a criticism with the word 'I' does not make it one."
+        },
+        {
+          "question": "A friend says \"It's okay, I'm not angry\" while avoiding eye contact and speaking coldly. What will most people believe?",
+          "options": [
+            "The words, because they are clear",
+            "The tone and body language",
+            "Neither, because the signals cancel out",
+            "The words, because friends are honest"
+          ],
+          "correctIndex": 1,
+          "explanation": "When verbal and non-verbal messages conflict, listeners usually trust the non-verbal signals."
+        }
+      ],
+      "reflection": {
+        "prompt": "Recall a recent conversation that went badly. At what moment did it start to go wrong?",
+        "guidingQuestions": [
+          "Were you listening to understand, or waiting for your turn to speak?",
+          "How would you rewrite one thing you said as an 'I' statement?",
+          "Who in your life makes you feel truly heard, and what do they do?"
+        ]
+      },
+      "faithLens": {
+        "text": "Allah commands believers to speak to people with good words, and the Prophet ﷺ gave a simple filter for every sentence: whoever believes in Allah and the Last Day should speak good or remain silent. He was also known to turn his whole body towards the person speaking to him, giving full attention. Careful speech and real listening are part of faith.",
+        "sources": [
+          "Quran 2:83",
+          "Quran 17:53",
+          "Sahih al-Bukhari 6018",
+          "Sahih Muslim 47"
+        ]
+      }
+    },
+    {
+      "slug": "relationship-building",
+      "title": "Relationship Building",
+      "icon": "🤝",
+      "summary": "What makes a relationship healthy, how trust is built, and how to recognise one that is harming you.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Name the qualities of a healthy relationship.",
+        "Explain how small, repeated actions build or erode trust.",
+        "Identify warning signs of an unhealthy or controlling relationship."
+      ],
+      "lesson": {
+        "title": "Trust Is Built in Small Moments",
+        "explanation": "Healthy relationships, whether with family, friends or a future spouse, share the same foundations: respect, honesty, trust, support and room for each person to be themselves. You feel safe to disagree, and you can say no without fear of punishment.\n\nTrust rarely comes from grand gestures. It builds through many small moments: replying when you said you would, keeping a secret, turning up, noticing when someone is quiet and asking why. Each one is like a small deposit in a shared account. Broken promises, gossip and being ignored are withdrawals. Relationship researcher John Gottman found that stable couples had about five positive interactions for every negative one during conflict, and the same idea is useful for friendships: the everyday balance matters more than any single event.\n\nIt is equally important to recognise what is unhealthy. Warning signs include someone who controls who you see, checks your phone, mocks you in front of others, makes you feel guilty for having other friends, or is kind only when they want something. A relationship should make your world larger, not smaller. Ending or stepping back from a harmful relationship is a healthy choice, and a trusted adult can help you do it safely.",
+        "keyPoints": [
+          "Respect, honesty, trust, support and freedom to be yourself mark a healthy relationship.",
+          "Trust grows from small promises kept consistently.",
+          "Positive moments need to clearly outnumber negative ones.",
+          "Control, isolation and humiliation are warning signs, even from someone you care about."
+        ],
+        "examples": [
+          {
+            "title": "The reliable friend",
+            "scenario": "Jun Hao is not the loudest in his group, but he remembers exam dates, saves a seat, and checks in when someone is absent. When he needs help moving house, six friends show up.",
+            "takeaway": "Small, steady acts of care built a deep reserve of goodwill. Reliability is one of the strongest forms of friendship."
+          },
+          {
+            "title": "The shrinking circle",
+            "scenario": "Since Alya became close to a new friend, she has stopped seeing her old group. The friend gets angry when Alya spends time with anyone else and insists on reading her messages.",
+            "takeaway": "Isolation and monitoring are signs of control, not closeness. Alya talks to her older sister, who helps her set limits and reconnect with her other friends."
+          }
+        ],
+        "practicalTip": "Choose one relationship that matters to you and make one small deposit today: send a message of thanks, ask a real question about their week, or keep a promise you have been putting off.",
+        "deeperInsight": "Family relationships change as you grow up. Moving from being told what to do towards being consulted takes negotiation on both sides. Showing responsibility in small things, and explaining your reasoning calmly, usually earns more freedom than arguing for it."
+      },
+      "quiz": [
+        {
+          "question": "According to this lesson, what builds trust most reliably?",
+          "options": [
+            "One expensive gift",
+            "Agreeing with everything the other person says",
+            "Spending every free hour together",
+            "Small promises kept consistently over time"
+          ],
+          "correctIndex": 3,
+          "explanation": "Trust accumulates through many small, dependable actions. Gifts and constant agreement do not replace reliability."
+        },
+        {
+          "question": "Which behaviour is a warning sign of an unhealthy relationship?",
+          "options": [
+            "They encourage you to spend time with your family",
+            "They disagree with you politely",
+            "They get angry when you see other friends",
+            "They ask how your day was"
+          ],
+          "correctIndex": 2,
+          "explanation": "Trying to cut you off from other people is a form of control. Healthy relationships leave room for your other connections."
+        },
+        {
+          "question": "In a healthy relationship, what should happen when you say \"no\" to something?",
+          "options": [
+            "Your decision is respected",
+            "You are ignored until you finally change your mind",
+            "You are made to feel guilty",
+            "You must always give a detailed reason"
+          ],
+          "correctIndex": 0,
+          "explanation": "Being able to refuse without punishment is a basic sign of respect and safety in any relationship."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think of the person you trust most. What have they done, repeatedly, that earned that trust?",
+        "guidingQuestions": [
+          "Which of your relationships makes your world feel larger?",
+          "Is there one where you feel smaller or more anxious afterwards?",
+          "What small deposit could you make in a relationship you have neglected?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ set the standard for every relationship in one sentence: none of you truly believes until he loves for his brother what he loves for himself. He also taught that the best of people are those best to their families. Maintaining ties of kinship, being reliable and wanting good for others are acts of worship as well as social skills.",
+        "sources": [
+          "Sahih al-Bukhari 13",
+          "Sahih Muslim 45",
+          "Jami' at-Tirmidhi 3895 (sahih)"
+        ]
+      }
+    },
+    {
+      "slug": "community-involvement",
+      "title": "Community Involvement",
+      "icon": "🤗",
+      "summary": "Why contributing to your community benefits you as well as others, and how to start small.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "Explain how volunteering benefits both the community and the volunteer.",
+        "Match your own skills and interests to a community need.",
+        "Plan a first, small act of service."
+      ],
+      "lesson": {
+        "title": "You Belong Where You Contribute",
+        "explanation": "A community is any group that shares a place or a purpose: your neighbourhood, school, surau or temple, sports club or online group. Being involved means giving some of your time, skill or attention to make that shared space better.\n\nThe benefits run both ways. The community gains help it needs. The volunteer gains a sense of belonging and purpose, new friendships across ages and backgrounds, and real experience in teamwork, organising and leadership that classrooms rarely provide. Studies of volunteers consistently link regular helping with better mood and lower loneliness. Malaysians have a word for this spirit of shared work: gotong-royong.\n\nThe most common mistake is waiting for a big opportunity. Start with what you have. Ask three questions: What do I care about? What can I already do? What does my community need? The place where those answers overlap is your starting point. Someone who is good at maths can tutor younger children. Someone who likes cooking can help at a soup kitchen. Someone with a phone and patience can teach an elderly neighbour to make video calls. Small and regular is better than large and once.",
+        "keyPoints": [
+          "Community involvement means contributing time, skill or attention to a shared space.",
+          "Volunteers gain belonging, purpose, friendships and practical skills.",
+          "Start where your interests, your abilities and a real need overlap.",
+          "Regular small contributions have more effect than rare large ones."
+        ],
+        "examples": [
+          {
+            "title": "Tuition under the stairs",
+            "scenario": "Kavitha notices primary pupils at her flat struggling with maths. She starts a free one-hour homework session every Saturday in the ground-floor common area. Two friends join her by the second month.",
+            "takeaway": "She matched a skill she already had to a visible need, and kept the commitment small enough to sustain. Others joined once it existed."
+          },
+          {
+            "title": "The surau clean-up",
+            "scenario": "Irfan feels he has nothing to offer because he is 'not good at anything special'. He joins a monthly gotong-royong to clean the surau and ends up managing the volunteer list.",
+            "takeaway": "Showing up reveals abilities you did not know you had. Reliability and organisation are valuable skills in any community."
+          }
+        ],
+        "practicalTip": "This week, do one useful thing for your community that nobody asked you to do: pick up litter on your street, help carry a neighbour's shopping, or offer an hour to a local group. Notice how you feel afterwards.",
+        "deeperInsight": "Helping works best when it respects the people being helped. Before starting a project, ask the community what it actually needs. Well-meaning projects designed without listening often solve the wrong problem."
+      },
+      "quiz": [
+        {
+          "question": "What is the best way to choose where to volunteer?",
+          "options": [
+            "Wait until a large, well-known organisation invites you to join",
+            "Find where your interests, skills and a real need overlap",
+            "Pick whatever looks best on a certificate",
+            "Choose the activity that needs the least effort"
+          ],
+          "correctIndex": 1,
+          "explanation": "Service that matches what you care about and can do, and that meets a real need, is the kind you are most likely to continue."
+        },
+        {
+          "question": "What does the Malaysian term gotong-royong describe?",
+          "options": [
+            "A yearly competition between neighbouring housing areas",
+            "A government tax on communities",
+            "Working together voluntarily for a shared benefit",
+            "A traditional solo craft"
+          ],
+          "correctIndex": 2,
+          "explanation": "Gotong-royong is communal, voluntary cooperation, such as neighbours cleaning a shared area together."
+        },
+        {
+          "question": "Which is a benefit volunteers commonly gain for themselves?",
+          "options": [
+            "Guaranteed top results in every school examination",
+            "Automatic payment",
+            "Less need for sleep",
+            "A stronger sense of belonging and purpose"
+          ],
+          "correctIndex": 3,
+          "explanation": "Regular volunteering is linked with belonging, purpose, friendships and practical skills. It does not guarantee grades or pay."
+        }
+      ],
+      "reflection": {
+        "prompt": "Which community do you feel most a part of, and what have you contributed to it so far?",
+        "guidingQuestions": [
+          "What problem in your neighbourhood or school bothers you most?",
+          "What can you already do that would be useful to someone else?",
+          "What stops you from getting involved, and how real is that barrier?"
+        ]
+      },
+      "faithLens": {
+        "text": "Allah commands believers to cooperate in righteousness and piety. The Prophet ﷺ widened the idea of charity to include everyday service: every joint of a person owes a charity each day, and helping someone onto their mount, a good word, and removing something harmful from the road are all charity. Serving your community is a daily form of sadaqah.",
+        "sources": [
+          "Quran 5:2",
+          "Sahih al-Bukhari 2989",
+          "Sahih Muslim 1009"
+        ]
+      }
+    },
+    {
+      "slug": "networking-and-etiquette",
+      "title": "Networking & Etiquette",
+      "icon": "🌐",
+      "summary": "Making real connections, introducing yourself with confidence, and showing respect in different settings.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why networking is about relationships and not about using people.",
+        "Introduce yourself clearly in under thirty seconds.",
+        "Apply basic etiquette in person and in digital messages."
+      ],
+      "lesson": {
+        "title": "Be Interested Before Being Interesting",
+        "explanation": "Networking simply means building relationships with people beyond your close circle: teachers, seniors, people in jobs you are curious about, and friends of friends. Many opportunities, including internships, advice and first jobs, travel through these connections. Sociologist Mark Granovetter showed that people often find jobs through 'weak ties', acquaintances who move in different circles and therefore hear different information.\n\nGood networking is generous, not transactional. Be curious about the other person, listen more than you talk, and look for ways to be useful to them. A short self-introduction helps: your name, what you are doing now, and what you are curious about. For example, 'I'm Sofia, a Form 5 student interested in architecture. I'd love to know what your first year in the field was like.' Follow up within a day or two with a brief thank-you message.\n\nEtiquette is how you show respect, and it varies by setting. In Malaysia this includes greeting elders first, using titles such as Encik, Puan, Dr or Cikgu until invited to do otherwise, and being punctual. Online, write to a teacher or employer with a greeting, a clear request, and your name. Do not send voice notes or late-night messages to people you do not know well. Remember that what you post publicly is part of how others meet you.",
+        "keyPoints": [
+          "Networking is relationship-building, and it works best when you give as well as ask.",
+          "Acquaintances ('weak ties') often bring new information and opportunities.",
+          "A good introduction covers who you are, what you do and what you are curious about.",
+          "Etiquette means adapting your manners to show respect in each setting, including online."
+        ],
+        "examples": [
+          {
+            "title": "The career-talk question",
+            "scenario": "After a school career talk, most students leave. Danish waits, thanks the speaker, asks one specific question about her engineering course, and later sends a two-line thank-you on LinkedIn.",
+            "takeaway": "A specific question and a prompt follow-up made him memorable. Months later she shares an internship posting with him."
+          },
+          {
+            "title": "The message to a lecturer",
+            "scenario": "Li Ting first writes: 'hi when is the deadline??' She rewrites it: 'Good morning Dr Rahman. I'm Li Ting from Tutorial Group 3. Could you confirm whether the report is due this Friday? Thank you.'",
+            "takeaway": "A greeting, context, a clear question and thanks take twenty extra seconds and completely change the impression."
+          }
+        ],
+        "practicalTip": "Write your thirty-second introduction now and say it aloud three times. Then send one short, polite message to someone whose work or study path interests you, asking a single specific question.",
+        "deeperInsight": "Many people avoid networking because it feels fake. The discomfort usually disappears when the aim changes from 'what can I get?' to 'what can I learn, and how can I help?'. Students often underestimate what they can offer: a fresh perspective, energy, and help with tasks that seniors have no time for."
+      },
+      "quiz": [
+        {
+          "question": "What is the healthiest way to think about networking?",
+          "options": [
+            "Building real relationships where you give as well as receive",
+            "Collecting as many contacts as possible",
+            "Only talking to senior people who can offer you a job or a reference",
+            "Impressing people by talking about yourself"
+          ],
+          "correctIndex": 0,
+          "explanation": "Lasting professional relationships are built on real interest and mutual help, not on collecting or using contacts."
+        },
+        {
+          "question": "Research on 'weak ties' suggests new opportunities often come from whom?",
+          "options": [
+            "Only your closest friends",
+            "Acquaintances in different circles",
+            "Strangers you have never met or spoken to in any way",
+            "Only your immediate family"
+          ],
+          "correctIndex": 1,
+          "explanation": "Acquaintances connect you to different groups and so carry information that your close circle does not already have."
+        },
+        {
+          "question": "Which message to a teacher shows good digital etiquette?",
+          "options": [
+            "\"cikgu can extend or not\"",
+            "A two-minute voice note sent at midnight",
+            "\"Good afternoon Cikgu, this is Adam from 4 Bestari. May I submit the essay tomorrow morning? Thank you.\"",
+            "\"URGENT!!! reply now\""
+          ],
+          "correctIndex": 2,
+          "explanation": "It greets the teacher, identifies the sender, makes a clear request and says thank you, at a reasonable hour."
+        }
+      ],
+      "reflection": {
+        "prompt": "Who is one person outside your close circle that you would like to learn from?",
+        "guidingQuestions": [
+          "What specific question would you ask them?",
+          "What could you offer in return, even something small?",
+          "If a stranger looked at your public social media today, what impression would they form?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran explains that humanity was made into peoples and tribes so that we may know one another, and that the most honoured are the most God-conscious. The Prophet ﷺ taught that spreading the greeting of salam builds love between people, and he greeted others first, including children. Good manners with everyone you meet are a mark of faith.",
+        "sources": [
+          "Quran 49:13",
+          "Sahih Muslim 54",
+          "Sahih al-Bukhari 6247"
+        ]
+      }
+    },
+    {
+      "slug": "conflict-resolution",
+      "title": "Conflict Resolution",
+      "icon": "⚖️",
+      "summary": "Staying calm in a disagreement and finding solutions that both sides can accept.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Describe the five common styles of handling conflict.",
+        "Separate a person's position from their underlying interest.",
+        "Follow a step-by-step process to resolve a disagreement."
+      ],
+      "lesson": {
+        "title": "Attack the Problem, Not the Person",
+        "explanation": "Conflict is normal wherever people have different needs. Handled badly it damages relationships. Handled well it can improve them, because problems get solved and each side understands the other better.\n\nThe Thomas-Kilmann model describes five styles. Competing means pushing to win. Avoiding means staying away from the issue. Accommodating means giving in. Compromising means each side gives up something. Collaborating means working together for a solution that meets both sides' main needs. No style is always right. Avoiding is sensible for trivial matters or when tempers are high, and collaborating is worth the effort when both the issue and the relationship matter.\n\nThe key to collaborating is to look beneath positions to interests. A position is what someone says they want ('I want the window open'). An interest is why ('I need fresh air'). Positions clash, but interests can often both be met. A practical process is: cool down first, since nobody thinks well when angry. Then let each person state their view without interruption. Name the interests on each side. Brainstorm options together. Agree on one and check later whether it is working.",
+        "keyPoints": [
+          "Conflict is normal; how it is handled decides whether it harms or helps.",
+          "Five styles: competing, avoiding, accommodating, compromising, collaborating.",
+          "Ask 'why?' to move from positions to interests.",
+          "Cool down before talking, and focus on the problem instead of the person's character."
+        ],
+        "examples": [
+          {
+            "title": "The shared room",
+            "scenario": "Two sisters argue nightly. One wants the light off at 10 p.m. and the other wants it on to study. Their positions cannot both win.",
+            "takeaway": "Asking why reveals the interests: sleep and study time. A desk lamp and an eye mask meet both. The solution was invisible while they argued about the light switch."
+          },
+          {
+            "title": "The group-chat blow-up",
+            "scenario": "Ravi feels insulted by a joke in the class group chat and starts typing an angry reply. He stops, waits an hour, then messages his classmate privately: 'That joke stung. Can we talk?'",
+            "takeaway": "Cooling down and moving the conversation from public to private stopped a small hurt becoming a class-wide fight."
+          }
+        ],
+        "practicalTip": "When you feel anger rising in a disagreement, say: 'I want to sort this out, but I need ten minutes first.' Walk, drink water, breathe slowly, then return. A pause with a promise to come back is not avoidance.",
+        "deeperInsight": "Strong anger narrows attention and makes the other person look like an enemy. This is a body state as much as an opinion, and it passes. Most things said in the first heated minutes are regretted later, which is why the cooling-off step matters more than any clever wording."
+      },
+      "quiz": [
+        {
+          "question": "Two friends each insist on a different restaurant. One wants somewhere cheap; the other wants somewhere with vegetarian food. What are 'cheap' and 'vegetarian options' in this conflict?",
+          "options": [
+            "Positions",
+            "Insults",
+            "Compromises",
+            "Interests"
+          ],
+          "correctIndex": 3,
+          "explanation": "The named restaurants are positions. The reasons behind them, low cost and suitable food, are interests, and one place may satisfy both."
+        },
+        {
+          "question": "Which conflict style aims for a solution that meets the main needs of both sides?",
+          "options": [
+            "Collaborating",
+            "Competing",
+            "Avoiding",
+            "Accommodating"
+          ],
+          "correctIndex": 0,
+          "explanation": "Collaborating means working together to satisfy both sides' key interests. Compromising, by contrast, has each side give something up."
+        },
+        {
+          "question": "You are very angry in the middle of an argument. What is the most effective next step?",
+          "options": [
+            "Say everything you feel immediately, while it is still fresh in your mind",
+            "Post about it online to get support",
+            "Ask for a short break and promise to come back to it",
+            "Give in completely so it ends"
+          ],
+          "correctIndex": 2,
+          "explanation": "A brief cooling-off period, with a commitment to come back, lets both people think clearly and prevents words that are later regretted."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think of a disagreement you are in now, or had recently. What does the other person actually need?",
+        "guidingQuestions": [
+          "Which of the five styles do you use most often, and does it serve you?",
+          "What is your position in that disagreement, and what is the interest beneath it?",
+          "What would a solution that works for both of you look like?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran calls the believers brothers and commands making peace between them, and it teaches repelling a wrong with what is better, so that an enemy may become a close friend. The Prophet ﷺ redefined strength itself: the strong person is not the one who overpowers others, but the one who controls himself when angry. Reconciling people is counted among the best of deeds.",
+        "sources": [
+          "Quran 49:10",
+          "Quran 41:34",
+          "Sahih al-Bukhari 6114",
+          "Sahih Muslim 2609"
+        ]
+      }
+    }
+  ]
+}
