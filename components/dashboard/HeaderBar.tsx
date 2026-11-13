@@ -3,14 +3,17 @@ import { useToast } from '../../contexts/ToastContext';
 import { useChat } from '../../contexts/ChatContext';
 import { BellIcon, SearchIcon, ChevronDownIcon, ShoppingCartIcon } from './Icons';
 import type { UserProfile } from '../../types';
+import PlayerHud from './game/PlayerHud';
 
 interface HeaderBarProps {
   userProfile: UserProfile;
   cartItemCount?: number;
   onMobileMenuToggle?: () => void;
+  isMuslim?: boolean;
+  onOpenQuests?: () => void;
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, onMobileMenuToggle }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, onMobileMenuToggle, isMuslim = false, onOpenQuests }) => {
   const { addToast } = useToast();
   const { toggleChat } = useChat();
   const [showSearch, setShowSearch] = useState(false);
@@ -75,6 +78,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ userProfile, cartItemCount = 0, o
 
         {/* Right: icons */}
         <div className="flex items-center gap-1 flex-shrink-0">
+          <PlayerHud variant="chip" isMuslim={isMuslim} onClick={onOpenQuests} />
           {/* Search icon Ã¢ÂÂ xs only */}
           <button
             className="sm:hidden flex items-center justify-center w-11 h-11 rounded-full transition-colors"

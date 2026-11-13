@@ -51,6 +51,8 @@ import ParentDashboardPage from './pages/ParentDashboardPage';
 import StartHerePage from './pages/StartHerePage';
 import MyPathPage from './pages/MyPathPage';
 import LessonPage from './pages/LessonPage';
+import QuestMapPage from './game/QuestMapPage';
+import WorldQuests from './game/WorldQuests';
 // Modal Imports
 import CourseCreatorModal from './CourseCreatorModal';
 import PaymentModal from './PaymentModal';
@@ -78,24 +80,24 @@ interface FullPageWrapperProps {
    HELPER: Dimension titles based on dashboard mode
    âââââââââââââââââââââââââââââââââââââââââââââââ */
 const MUSLIM_TITLES: Partial<Record<DashboardView, string>> = {
-  'physical': 'Jasad â Kekuatan Fizikal',
-  'emotional': 'Qalb â Pengurusan Emosi',
-  'social': 'Suhbah â Hubungan Sosial',
-  'intellectual': 'Aql â Kecerdasan & Ilmu',
-  'spiritual': 'Ruh â Kesedaran Spiritual',
-  'environmental': "Bi'ah â Kelestarian Alam",
-  'vocational': 'Rizq â Kemahiran & Kerjaya',
-  'sunnah-module': 'Modul Sunnah Nabi ï·º',
+  'physical': 'Jasad — Kekuatan Fizikal',
+  'emotional': 'Qalb — Pengurusan Emosi',
+  'social': 'Suhbah — Hubungan Sosial',
+  'intellectual': 'Aql — Kecerdasan & Ilmu',
+  'spiritual': 'Ruh — Kesedaran Spiritual',
+  'environmental': "Bi'ah — Kelestarian Alam",
+  'vocational': 'Rizq — Kemahiran & Kerjaya',
+  'sunnah-module': 'Modul Sunnah Nabi ﷺ',
   'school-subjects': 'Akademi Sekolah',
 };
 const UNIVERSAL_TITLES: Partial<Record<DashboardView, string>> = {
-  'physical': 'Body â Physical Wellness',
-  'emotional': 'Heart â Emotional Intelligence',
-  'social': 'Tribe â Social Wellness',
-  'intellectual': 'Mind â Intellectual Growth',
-  'spiritual': 'Spirit â Inner Awareness',
-  'environmental': 'Planet â Environmental Awareness',
-  'vocational': 'Wealth â Skills & Career',
+  'physical': 'Body — Physical Wellness',
+  'emotional': 'Heart — Emotional Intelligence',
+  'social': 'Tribe — Social Wellness',
+  'intellectual': 'Mind — Intellectual Growth',
+  'spiritual': 'Spirit — Inner Awareness',
+  'environmental': 'Planet — Environmental Awareness',
+  'vocational': 'Wealth — Skills & Career',
   'wellness-module': 'Wellness & Mindfulness',
   'school-subjects': 'School Academy',
 };
@@ -153,7 +155,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       'physical','emotional','social','social-impact','intellectual','spiritual',
       'environmental','vocational','sunnah-module','school-subjects','wellness-module',
       'wisdom','knowledge','health','financial','business','fitness','communication','behaviour',
-      'periodic-table'
+      'periodic-table','quest-map'
     ];
     return validViews.includes(hash) ? (hash as DashboardView) : 'dashboard';
   }, []);
@@ -295,6 +297,16 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
           />
         );
       // âââ Tools & Features âââ
+      case 'quest-map':
+        return (
+          <FullPageWrapper title={isMuslim ? 'Peta Misi' : 'Quest Map'}>
+            <QuestMapPage
+              isMuslim={isMuslim}
+              playerName={userProfile.name}
+              onNavigate={(view) => setCurrentView(view)}
+            />
+          </FullPageWrapper>
+        );
       case 'practice-hub':
         return (
           <FullPageWrapper title="Practice Hub">
@@ -375,18 +387,21 @@ case 'parent-dashboard':
       case 'physical':
         return (
           <FullPageWrapper title={getDimensionTitle('physical', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="physical" isMuslim={isMuslim} /></div>
             <PhysicalPage />
           </FullPageWrapper>
         );
       case 'emotional':
         return (
           <FullPageWrapper title={getDimensionTitle('emotional', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="emotional" isMuslim={isMuslim} /></div>
             <EmotionalPage />
           </FullPageWrapper>
         );
       case 'social':
         return (
           <FullPageWrapper title={getDimensionTitle('social', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="social" isMuslim={isMuslim} /></div>
             <SocialDimensionPage />
           </FullPageWrapper>
         );
@@ -399,24 +414,28 @@ case 'parent-dashboard':
       case 'intellectual':
         return (
           <FullPageWrapper title={getDimensionTitle('intellectual', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="intellectual" isMuslim={isMuslim} /></div>
             <IntellectualPage />
           </FullPageWrapper>
         );
       case 'spiritual':
         return (
           <FullPageWrapper title={getDimensionTitle('spiritual', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId={isMuslim ? 'spiritual-islamic' : 'spiritual'} isMuslim={isMuslim} /></div>
             <SpiritualPage religion={userProfile.religion} />
           </FullPageWrapper>
         );
       case 'environmental':
         return (
           <FullPageWrapper title={getDimensionTitle('environmental', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="environmental" isMuslim={isMuslim} /></div>
             <EnvironmentalPage />
           </FullPageWrapper>
         );
       case 'vocational':
         return (
           <FullPageWrapper title={getDimensionTitle('vocational', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId="vocational" isMuslim={isMuslim} /></div>
             <VocationalPage />
           </FullPageWrapper>
         );
@@ -440,6 +459,7 @@ case 'parent-dashboard':
       case 'wellness-module':
         return (
           <FullPageWrapper title={getDimensionTitle('wellness-module', dashboardMode)}>
+            <div className="mb-6"><WorldQuests moduleId={isMuslim ? 'spiritual-islamic' : 'spiritual'} isMuslim={isMuslim} /></div>
             <SpiritualPage religion={userProfile.religion} />
           </FullPageWrapper>
         );
@@ -521,6 +541,8 @@ case 'parent-dashboard':
             selectedSkills={selectedSkills}
             onQuickAction={handleQuickAction}
             activeCourses={activeCourses}
+            isMuslim={isMuslim}
+            onNavigate={(view) => setCurrentView(view)}
           />
         );
     }
@@ -544,6 +566,8 @@ case 'parent-dashboard':
           <HeaderBar
             userProfile={userProfile}
             cartItemCount={cart.length}
+            isMuslim={isMuslim}
+            onOpenQuests={() => setCurrentView('quest-map')}
             onMobileMenuToggle={() => setIsMobileMenuOpen((prev) => !prev)}
           />
         )}
@@ -553,8 +577,8 @@ case 'parent-dashboard':
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-t border-amber-900/30 z-50 safe-area-bottom">
           <div className="flex justify-around items-center h-16 px-1">
             {[
-              { view: 'home', label: 'Utama', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>) },
-              { view: 'start-here', label: 'Mula Sini', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>) },
+              { view: 'dashboard', label: 'Utama', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>) },
+              { view: 'quest-map', label: 'Misi', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>) },
               { view: 'my-path', label: 'Laluan', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>) },
               { view: 'community-space', label: 'Komuniti', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>) },
               { view: 'profile', label: 'Profil', icon: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>) },
