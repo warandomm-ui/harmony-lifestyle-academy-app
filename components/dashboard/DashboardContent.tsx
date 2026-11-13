@@ -3,7 +3,8 @@ import React from 'react';
 import HeroSection from './HeroSection';
 import QuickActions from './QuickActions';
 import CommunityHighlightsSection from './CommunityHighlightsSection';
-import { AnalysisResult, Course, UserProfile } from '../../types';
+import { AnalysisResult, Course, DashboardView, UserProfile } from '../../types';
+import QuestBanner from './game/QuestBanner';
 import EmotionTrackerSection from './sections/EmotionTrackerSection';
 import TodoListSection from './sections/TodoListSection';
 import GamificationWidget from './gamification/GamificationWidget';
@@ -18,6 +19,8 @@ interface DashboardContentProps {
   selectedSkills: string[];
   onQuickAction: (action: string) => void;
   activeCourses: Course[];
+  isMuslim?: boolean;
+  onNavigate?: (view: DashboardView) => void;
 }
 
 const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -38,6 +41,8 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
     userProfile,
     userResults,
     onQuickAction,
+    isMuslim = false,
+    onNavigate,
   } = props;
 
   return (
@@ -51,6 +56,9 @@ const DashboardContent: React.FC<DashboardContentProps> = (props) => {
 
         {/* Hero */}
         <HeroSection userProfile={userProfile} userResults={userResults} />
+
+        {/* Quest shortcut */}
+        <QuestBanner isMuslim={isMuslim} onOpenQuestMap={() => onNavigate?.('quest-map')} />
 
         {/* Quick Actions + Gamification */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">

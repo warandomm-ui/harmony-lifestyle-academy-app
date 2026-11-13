@@ -2,6 +2,7 @@ import React from 'react';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { MOCK_BADGES } from '../../../constants';
 import { BadgeCheckIcon } from '../Icons';
+import { WORLD_BADGES } from '../../../utils/gameWorld';
 
 const BadgeCard: React.FC<{ name: string; description: string; icon: string; isEarned: boolean }> = ({ name, description, icon, isEarned }) => (
   <div className={`p-6 border rounded-2xl flex flex-col items-center text-center transition-all duration-300 ${isEarned ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-[var(--background)] border-[var(--border)]'}`}>
@@ -32,7 +33,7 @@ const BadgesSection: React.FC = () => {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {MOCK_BADGES.map(badge => (
+            {[...WORLD_BADGES, ...MOCK_BADGES].map(badge => (
                 <BadgeCard
                     key={badge.id}
                     {...badge}

@@ -1,0 +1,449 @@
+{
+  "id": "intellectual",
+  "name": "Intellectual Wellness",
+  "icon": "🧠",
+  "audience": "universal",
+  "order": 3,
+  "description": "Train your mind to keep learning, think clearly, create new ideas and understand people who see the world differently.",
+  "topics": [
+    {
+      "slug": "lifelong-learning",
+      "title": "Lifelong Learning",
+      "icon": "📚",
+      "summary": "How your brain keeps changing with practice, and how to learn anything more effectively.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain neuroplasticity and what it means for your ability to learn.",
+        "Contrast a growth mindset with a fixed mindset.",
+        "Use the Feynman technique to test your understanding of a topic."
+      ],
+      "lesson": {
+        "title": "Your Brain Is Not Finished",
+        "explanation": "Learning does not end when school does. Your brain physically changes whenever you practise something: connections between nerve cells that are used repeatedly grow stronger, and unused ones weaken. This ability is called neuroplasticity, and it continues throughout life. A skill that feels impossible today is usually a skill you have not practised enough yet.\n\nPsychologist Carol Dweck describes two ways people think about ability. In a fixed mindset, talent is something you either have or lack, so mistakes feel like proof of failure and challenges are avoided. In a growth mindset, ability develops through effort, good strategies and feedback, so mistakes are information. The word 'yet' captures the difference: 'I can't do this' becomes 'I can't do this yet'.\n\nHow you study matters as much as how long. Re-reading notes feels productive but teaches little. A stronger method is the Feynman technique: choose a concept, explain it in simple words as if teaching a twelve-year-old, notice where you get stuck, go back to the source to fill that gap, then explain again. If you cannot explain it simply, you do not understand it yet. Curiosity keeps the whole process going, so follow the questions that interest you.",
+        "keyPoints": [
+          "Neuroplasticity: the brain strengthens whatever connections you use repeatedly, at any age.",
+          "A growth mindset treats mistakes as information, not as a verdict.",
+          "Explaining a concept in simple words exposes the gaps in your understanding.",
+          "Learning continues outside school through reading, courses, mentors and practice."
+        ],
+        "examples": [
+          {
+            "title": "\"I'm just bad at maths\"",
+            "scenario": "After failing an Add Maths test, Hana says she is 'not a maths person'. Her teacher asks her to list which question types she lost marks on. Almost all are in one chapter.",
+            "takeaway": "The problem was one specific gap, not her brain. Naming the gap turned a fixed label into a task she could work on."
+          },
+          {
+            "title": "Teaching to learn",
+            "scenario": "Zhi Wei thinks he understands photosynthesis until he tries to explain it to his younger brother and cannot say where the oxygen comes from.",
+            "takeaway": "Trying to teach revealed exactly what he did not know. Ten minutes with the textbook fixed a gap that re-reading had hidden."
+          }
+        ],
+        "practicalTip": "Pick one thing you are curious about that is not in any syllabus. Spend fifteen minutes a day on it for one week, then explain what you learned to someone at home.",
+        "deeperInsight": "Without review, people forget a large share of new information within days, a pattern first measured by Hermann Ebbinghaus in the 1880s. Each time you review, the memory fades more slowly. A little review spread over days therefore beats one long session."
+      },
+      "quiz": [
+        {
+          "question": "What does neuroplasticity mean?",
+          "options": [
+            "The brain stops developing completely once childhood is over",
+            "The brain's connections change with practice",
+            "Intelligence is fixed at birth",
+            "Only talented people can learn hard subjects"
+          ],
+          "correctIndex": 1,
+          "explanation": "Neuroplasticity is the brain's lifelong ability to strengthen and reorganise its connections in response to what you practise."
+        },
+        {
+          "question": "Which statement reflects a growth mindset?",
+          "options": [
+            "\"I failed, so I'm not smart enough for this.\"",
+            "\"If I have to try hard, it means I have no talent.\"",
+            "\"I'll avoid hard questions so I don't look stupid.\"",
+            "\"I haven't mastered this yet, so I need a different strategy.\""
+          ],
+          "correctIndex": 3,
+          "explanation": "A growth mindset sees ability as something that develops with effort and better strategies, and treats difficulty as part of learning."
+        },
+        {
+          "question": "What is the central step of the Feynman technique?",
+          "options": [
+            "Explaining the concept simply and finding where you get stuck",
+            "Highlighting the textbook in several different colours to mark the key ideas",
+            "Memorising the definition word for word",
+            "Reading the chapter three times quickly"
+          ],
+          "correctIndex": 0,
+          "explanation": "Explaining simply forces real understanding and shows you exactly which parts you need to revisit."
+        }
+      ],
+      "reflection": {
+        "prompt": "What is something you once could not do and now can? How did that change happen?",
+        "guidingQuestions": [
+          "Where in your life do you say 'I'm just not good at that'?",
+          "What would change if you added the word 'yet'?",
+          "What have you always wanted to learn, with no exam attached?"
+        ]
+      },
+      "faithLens": {
+        "text": "The first word revealed of the Quran was 'Read', and the only thing Allah told His Prophet ﷺ to ask for more of was knowledge: 'My Lord, increase me in knowledge.' The Prophet ﷺ said that whoever travels a path seeking knowledge, Allah makes easy for him a path to Paradise. Learning, with the right intention, is worship from cradle to grave.",
+        "sources": [
+          "Quran 96:1-5",
+          "Quran 20:114",
+          "Sahih Muslim 2699"
+        ]
+      }
+    },
+    {
+      "slug": "critical-thinking",
+      "title": "Critical Thinking",
+      "icon": "🤔",
+      "summary": "Questioning claims, checking sources and catching your own biases before you believe or share.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Distinguish a claim from the evidence offered for it.",
+        "Recognise confirmation bias in your own thinking.",
+        "Apply the SIFT method to check information before sharing it."
+      ],
+      "lesson": {
+        "title": "Slow Down Before You Share",
+        "explanation": "Critical thinking is the habit of asking 'How do we know that?' before accepting a claim. It is not being negative or doubting everything. It means matching the strength of your belief to the strength of the evidence.\n\nStart by separating the claim from the evidence. 'This drink boosts immunity' is a claim. Who tested it, on how many people, and compared with what? A personal story is weak evidence. A well-designed study is stronger. Agreement across many independent studies is stronger still. Notice also the difference between correlation and causation: two things happening together does not prove one caused the other.\n\nThe hardest part is your own mind. Confirmation bias is the tendency to notice and believe information that supports what you already think, and to dismiss what does not. Everyone has it. A useful check is to ask, 'What would change my mind?'\n\nFor online information, use SIFT, a method from digital literacy researcher Mike Caulfield. Stop before reacting or sharing. Investigate the source: who is behind it? Find better coverage: do reliable outlets report the same thing? Trace the claim, quote or image back to its original context. In Malaysia, sebenarnya.my can help verify viral claims.",
+        "keyPoints": [
+          "Ask what the evidence is, and how strong, before accepting a claim.",
+          "Correlation does not prove causation.",
+          "Confirmation bias makes agreeable information feel more true than it is.",
+          "SIFT: Stop, Investigate the source, Find better coverage, Trace to the original."
+        ],
+        "examples": [
+          {
+            "title": "The forwarded warning",
+            "scenario": "A family WhatsApp group shares a message that a common fruit 'causes cancer according to doctors'. No doctor is named and there is no link. Nurul searches the claim and finds a Ministry of Health statement that it is false.",
+            "takeaway": "An unnamed authority and no source are warning signs. Thirty seconds of checking stopped the message at her instead of spreading through her contacts."
+          },
+          {
+            "title": "Ice cream and drowning",
+            "scenario": "A chart shows that ice cream sales and drowning cases rise in the same months. A classmate jokes that ice cream causes drowning.",
+            "takeaway": "Both rise because of a third factor: hot weather brings more swimming and more ice cream. Always ask what else could explain a pattern."
+          }
+        ],
+        "practicalTip": "Before you forward or repost anything this week, apply one rule: if you cannot name the original source, do not share it. Notice how often that rule stops you.",
+        "deeperInsight": "Content designed to spread usually targets emotion, especially anger and fear, because strong feeling pushes people to share before thinking. If a post makes you feel a sudden rush of outrage, treat that feeling as a signal to slow down and check."
+      },
+      "quiz": [
+        {
+          "question": "What does the \"S\" in the SIFT method tell you to do first?",
+          "options": [
+            "Share it with a friend to get their view",
+            "Search for similar posts",
+            "Stop before reacting or sharing",
+            "Save it for later"
+          ],
+          "correctIndex": 2,
+          "explanation": "SIFT begins with Stop: pause before you react, then investigate the source, find better coverage and trace the claim."
+        },
+        {
+          "question": "You strongly support a football club and immediately believe a rumour that a rival cheated, without checking. Which bias is at work?",
+          "options": [
+            "Hindsight bias",
+            "Confirmation bias",
+            "Optimism bias",
+            "Anchoring bias"
+          ],
+          "correctIndex": 1,
+          "explanation": "Confirmation bias is the tendency to accept information that fits what you already believe or want to be true."
+        },
+        {
+          "question": "Students who eat breakfast tend to get higher grades. What can you correctly conclude from this alone?",
+          "options": [
+            "Eating breakfast is definitely the cause of the higher grades",
+            "Higher grades cause students to eat breakfast",
+            "The data must be false",
+            "The two are linked, but other factors may explain it"
+          ],
+          "correctIndex": 3,
+          "explanation": "A correlation shows two things occur together. Other factors, such as sleep or home routine, might explain both, so causation is not proven."
+        }
+      ],
+      "reflection": {
+        "prompt": "Recall something you believed and later discovered was false. Why had it seemed convincing?",
+        "guidingQuestions": [
+          "Which topics do you find hardest to think about fairly?",
+          "What is one belief you hold where you could say what would change your mind?",
+          "Whose opinions do you accept without checking, and why?"
+        ]
+      },
+      "faithLens": {
+        "text": "Verification is a Quranic command: when someone unreliable brings news, investigate, so that you do not harm people out of ignorance and then regret it. The Quran also forbids pursuing what you have no knowledge of, because hearing, sight and heart will all be questioned. The Prophet ﷺ warned that it is enough of a lie for a person to pass on everything he hears.",
+        "sources": [
+          "Quran 49:6",
+          "Quran 17:36",
+          "Sahih Muslim (Introduction), hadith 5",
+          "Sunan Abi Dawud 4992 (sahih)"
+        ]
+      }
+    },
+    {
+      "slug": "creativity-and-innovation",
+      "title": "Creativity & Innovation",
+      "icon": "💡",
+      "summary": "Creativity is a process you can practise: generate many ideas, then choose and improve the best.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Distinguish divergent thinking from convergent thinking.",
+        "Use the SCAMPER prompts to generate new ideas from an existing one.",
+        "Explain why constraints and early failures help creative work."
+      ],
+      "lesson": {
+        "title": "Many Ideas First, Good Ideas Second",
+        "explanation": "Creativity is producing something both new and useful. It is not limited to art, and it is not a gift that only some people have. It is a process with two phases, described by psychologist J. P. Guilford. Divergent thinking generates many possible ideas without judging them. Convergent thinking then evaluates, selects and refines. Most people fail at creativity because they do both at once, criticising each idea the moment it appears.\n\nSo separate the phases. In the first, aim for quantity: write twenty ideas, including silly ones. Your first few will be obvious, and the interesting ones tend to come later. In the second phase, choose and improve.\n\nWhen you are stuck, use SCAMPER, a checklist of prompts applied to something that already exists: Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse. Most innovations are recombinations of existing things, so these prompts work surprisingly well.\n\nInnovation is creativity carried through to use. It needs testing: build a rough version quickly, show it to real people, learn and adjust. Early versions are supposed to be imperfect. Limits on time, money or materials often help, because they force you to stop following the obvious route.",
+        "keyPoints": [
+          "Creativity means new and useful, and it can be practised.",
+          "Generate ideas first (divergent), judge them afterwards (convergent).",
+          "SCAMPER: Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse.",
+          "Test rough versions early; constraints and failures improve the result."
+        ],
+        "examples": [
+          {
+            "title": "The kuih stall",
+            "scenario": "Sales at Aisyah's family kuih stall are flat. Using SCAMPER she lists ideas: Combine (kuih gift boxes), Adapt (pre-orders through WhatsApp), Put to another use (mini kuih for office meetings).",
+            "takeaway": "She tests pre-orders for one week with ten customers. It works, and the office boxes follow. Structured prompts plus a small test turned vague worry into a real improvement."
+          },
+          {
+            "title": "Twenty ideas",
+            "scenario": "A class must raise funds. The first three suggestions are a bake sale, a car wash and a jogathon. Their teacher insists on twenty ideas before any discussion. Idea seventeen, a repair café where students fix bicycles and phones, wins.",
+            "takeaway": "The original ideas appeared only after the obvious ones were used up. Quantity came before quality."
+          }
+        ],
+        "practicalTip": "Take an ordinary object near you and set a three-minute timer. Write as many alternative uses for it as you can without judging any. Try again tomorrow with a different object and compare your count.",
+        "deeperInsight": "Ideas often arrive in the shower or on a walk. When you stop concentrating, the brain keeps working in the background and makes looser connections. This only happens after focused effort on the problem, so alternate hard thinking with real breaks away from screens."
+      },
+      "quiz": [
+        {
+          "question": "During the divergent thinking phase, what should you do?",
+          "options": [
+            "Pick the single best idea immediately",
+            "Reject any idea that seems unrealistic or too expensive to try",
+            "List as many ideas as possible without judging them",
+            "Wait for inspiration before writing anything"
+          ],
+          "correctIndex": 2,
+          "explanation": "Divergent thinking is about quantity and variety. Judging and selecting belongs to the later, convergent phase."
+        },
+        {
+          "question": "A student turns old school uniforms into tote bags. Which SCAMPER prompt does this best match?",
+          "options": [
+            "Put to another use",
+            "Eliminate",
+            "Reverse",
+            "Substitute"
+          ],
+          "correctIndex": 0,
+          "explanation": "The uniforms are given a new purpose, which is the 'Put to another use' prompt."
+        },
+        {
+          "question": "Why do innovators build rough early versions of an idea?",
+          "options": [
+            "Because the quality of the final product does not really matter",
+            "To learn from real feedback before investing heavily",
+            "To avoid ever showing the idea to anyone",
+            "Because first versions are usually perfect"
+          ],
+          "correctIndex": 1,
+          "explanation": "A quick, rough version lets you test assumptions cheaply and improve the idea based on how real people respond."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think of a small problem that annoys you every day. What are five different ways it could be solved?",
+        "guidingQuestions": [
+          "When do your best ideas usually come to you?",
+          "Do you tend to dismiss your own ideas too early?",
+          "What would you try if you were not worried about looking foolish?"
+        ]
+      },
+      "faithLens": {
+        "text": "In matters of worldly skill, the Prophet ﷺ welcomed expertise and new methods. When his advice on pollinating date palms did not help the farmers, he told them, 'You know best the affairs of your world.' At the Battle of the Trench he adopted Salman al-Farisi's suggestion of digging a trench, a technique new to Arabia. Beneficial innovation in worldly matters is encouraged, while acts of worship stay as they were taught.",
+        "sources": [
+          "Sahih Muslim 2363",
+          "Sirah: the Battle of the Trench (al-Khandaq), 5 AH"
+        ]
+      }
+    },
+    {
+      "slug": "cognitive-skills",
+      "title": "Cognitive Skills",
+      "icon": "🧠",
+      "summary": "Evidence-based ways to sharpen focus and memory: single-tasking, retrieval practice and spacing.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why multitasking reduces the quality of mental work.",
+        "Use retrieval practice and spaced repetition when studying.",
+        "Set up a focused work session using timed intervals."
+      ],
+      "lesson": {
+        "title": "Attention Is the Gate to Memory",
+        "explanation": "Cognitive skills are the mental tools you use to take in, hold and use information: attention, working memory, long-term memory and problem-solving. They can be trained, mainly by how you work, not by brain-game apps.\n\nAttention comes first, because you cannot remember what you never properly noticed. The brain does not truly multitask on demanding work. It switches rapidly between tasks, and every switch costs time and accuracy. Studying with a chat window open means paying that cost again and again. Working memory, the mental space where you hold information while using it, is also small, at about four items at once. Writing things down frees that space for thinking.\n\nTwo study methods have especially strong evidence. Retrieval practice means pulling information out of memory instead of putting it in again: close the book and write what you remember, or answer practice questions. Spaced repetition means reviewing material at increasing intervals, such as after one day, three days, a week and two weeks, instead of cramming it into one night.\n\nTo protect attention, work in timed blocks. The Pomodoro technique uses 25 minutes of single-task focus followed by a 5-minute break. Sleep, exercise and food are the foundation of all of it.",
+        "keyPoints": [
+          "Demanding multitasking is really task-switching, and each switch has a cost.",
+          "Working memory holds only about four items, so write things down.",
+          "Retrieval practice (testing yourself) beats re-reading.",
+          "Spacing reviews over days beats cramming the same hours into one night."
+        ],
+        "examples": [
+          {
+            "title": "Two ways to revise Biology",
+            "scenario": "Suresh re-reads his notes three times and feels confident. Amal reads once, closes the book and writes everything she can recall, then checks what she missed. A week later, Amal remembers far more.",
+            "takeaway": "Re-reading creates familiarity, which feels like knowledge. Recalling from memory is harder and that effort is what strengthens the memory."
+          },
+          {
+            "title": "The phone on the desk",
+            "scenario": "Ling studies for two hours with her phone face-up beside her. She checks it every few minutes and finishes one page of exercises. The next day she leaves it in another room and finishes three pages in an hour.",
+            "takeaway": "Each glance broke her concentration and needed minutes to rebuild. Removing the distraction worked better than trying to resist it."
+          }
+        ],
+        "practicalTip": "For your next study session: phone in another room, one subject only, timer set to 25 minutes. When it rings, close the book and write down everything you remember for two minutes. Then take a five-minute break.",
+        "deeperInsight": "Effective learning often feels worse than ineffective learning. Self-testing and spacing feel slow and effortful, while re-reading and cramming feel smooth. Researchers call this productive struggle 'desirable difficulty'. If studying feels too easy, it is probably not working."
+      },
+      "quiz": [
+        {
+          "question": "What actually happens when you try to do two demanding mental tasks at the same time?",
+          "options": [
+            "Your brain switches between them, losing time and accuracy",
+            "Your brain processes both tasks at full quality, as if each were done alone",
+            "Your working memory doubles in size",
+            "You remember both tasks better"
+          ],
+          "correctIndex": 0,
+          "explanation": "The brain alternates between demanding tasks, and every switch has a cost in speed and accuracy."
+        },
+        {
+          "question": "Which activity is an example of retrieval practice?",
+          "options": [
+            "Highlighting the key sentences in three different colours",
+            "Re-reading the chapter slowly",
+            "Copying the textbook neatly",
+            "Closing your notes and writing what you remember"
+          ],
+          "correctIndex": 3,
+          "explanation": "Retrieval practice means recalling information from memory without looking, which strengthens the memory more than reviewing it passively."
+        },
+        {
+          "question": "You have four hours to prepare for a test in two weeks. Which plan uses spaced repetition?",
+          "options": [
+            "One four-hour session the night before",
+            "Four one-hour sessions spread across the two weeks",
+            "One four-hour session today, then nothing",
+            "Two hours tonight and two hours tomorrow, then nothing"
+          ],
+          "correctIndex": 1,
+          "explanation": "Spacing the same total time across increasing intervals gives better long-term retention than massing it together."
+        }
+      ],
+      "reflection": {
+        "prompt": "Describe your last study session honestly. How many minutes of it were truly focused?",
+        "guidingQuestions": [
+          "What interrupts your attention most often?",
+          "Do you usually re-read, or test yourself?",
+          "What one change to your study space would protect your focus?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran praises 'people of understanding' who reflect deeply on the creation of the heavens and the earth, and it repeatedly asks, 'Will you not use reason?' The Prophet ﷺ said that two blessings are wasted by many people: health and free time. Guarding your attention and using your mind well is a way of being grateful for the intellect Allah gave you.",
+        "sources": [
+          "Quran 3:190-191",
+          "Sahih al-Bukhari 6412"
+        ]
+      }
+    },
+    {
+      "slug": "cultural-awareness",
+      "title": "Cultural Awareness",
+      "icon": "🌍",
+      "summary": "Understanding your own cultural lens and engaging respectfully with people whose lens is different.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain how culture shapes behaviour in ways people rarely notice.",
+        "Tell the difference between a generalisation and a stereotype.",
+        "Respond with curiosity when you meet an unfamiliar custom."
+      ],
+      "lesson": {
+        "title": "Everyone Has an Accent",
+        "explanation": "Culture is the shared set of values, habits and unwritten rules a group lives by: how to greet, what counts as polite, how directly to speak, what to eat and when. You absorb your own culture so early that it feels like 'normal', and other ways can seem strange. Cultural awareness begins with noticing that your normal is one of many.\n\nMalaysia is a daily classroom for this. Malays, Chinese, Indians, the Orang Asli, and the many peoples of Sabah and Sarawak such as the Kadazan-Dusun and Iban live side by side, with different languages, faiths and festivals. Small things carry meaning: removing shoes before entering a home, using the right hand to give and receive, how elders are addressed, what food a guest can eat.\n\nOne helpful idea comes from anthropologist Edward Hall. In high-context cultures, much of the message is carried by tone, relationship and what is left unsaid. In low-context cultures, people are expected to say exactly what they mean. Neither is better, but misunderstandings arise when the two meet.\n\nBeware of stereotypes, which are fixed beliefs applied to every member of a group. A generalisation ('many families here value...') stays open to exceptions. A stereotype does not. The best tool is respectful curiosity: observe first, ask politely, and assume good intent.",
+        "keyPoints": [
+          "Your own culture feels like 'normal', which makes it hard to see.",
+          "Communication styles differ: some cultures rely on context, others on explicit words.",
+          "Generalisations stay open to exceptions; stereotypes do not.",
+          "Observe, ask respectfully and assume good intent when customs differ."
+        ],
+        "examples": [
+          {
+            "title": "The open house",
+            "scenario": "Jason is invited to his friend Hafiz's Hari Raya open house for the first time. Unsure what to do, he asks beforehand, 'Is there anything I should know so I don't do something rude?' Hafiz explains about shoes, greetings and eating with the right hand.",
+            "takeaway": "Asking in advance showed respect and removed the anxiety. Most people are glad to explain their customs to someone who is sincerely interested."
+          },
+          {
+            "title": "\"She never says what she thinks\"",
+            "scenario": "In a group project, Emma, an exchange student, finds her teammate Mei 'unclear' because Mei says 'maybe that could be difficult' instead of 'no'. Mei finds Emma blunt.",
+            "takeaway": "They are using different communication styles, not showing bad character. Once they talk about it, Emma learns to hear a soft 'no', and Mei learns that directness from Emma is not rudeness."
+          }
+        ],
+        "practicalTip": "This week, learn three things about a culture or faith different from your own, from a person and not only from the internet: a greeting, a festival and a food. Ask them what outsiders most often misunderstand.",
+        "deeperInsight": "Learning another language does more than add vocabulary. Languages divide up the world differently, with words for relationships, feelings and courtesies that have no exact match elsewhere. Even a few phrases in someone's mother tongue show respect and let you glimpse how they see things."
+      },
+      "quiz": [
+        {
+          "question": "Which statement is a stereotype rather than a generalisation?",
+          "options": [
+            "\"Many families in this community celebrate that festival.\"",
+            "\"Greetings often differ between cultures.\"",
+            "\"Some cultures tend to communicate more indirectly.\"",
+            "\"All people from that group are bad at sports.\""
+          ],
+          "correctIndex": 3,
+          "explanation": "A stereotype applies a fixed judgement to every member of a group. The other statements describe tendencies and leave room for individual differences."
+        },
+        {
+          "question": "In a high-context communication style, how is meaning mostly carried?",
+          "options": [
+            "Only by the literal words that are spoken, with nothing implied",
+            "Through written contracts",
+            "Through tone, relationship and what is left unsaid",
+            "By speaking as loudly as possible"
+          ],
+          "correctIndex": 2,
+          "explanation": "High-context communication relies heavily on shared understanding, tone and implication, while low-context communication spells things out."
+        },
+        {
+          "question": "You are invited to a celebration from a culture you do not know well. What is the most respectful approach?",
+          "options": [
+            "Ask the host politely what you should know",
+            "Decline the invitation, to avoid making a mistake",
+            "Behave exactly as you would at home",
+            "Point out which customs seem strange to you"
+          ],
+          "correctIndex": 0,
+          "explanation": "Respectful curiosity, asking in advance and observing, shows care and helps you take part appropriately."
+        }
+      ],
+      "reflection": {
+        "prompt": "What is one custom from your own family or culture that an outsider might find surprising?",
+        "guidingQuestions": [
+          "When did you last feel like the outsider, and what helped?",
+          "Is there a group you hold a stereotype about? Where did it come from?",
+          "Who could you learn from this month about a way of life different from yours?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran presents human diversity as intended and as a sign of Allah: the variety of your languages and colours is among His signs, and people were made into nations and tribes in order to know one another. Honour comes from taqwa alone. In his Farewell Sermon the Prophet ﷺ declared that no Arab is superior to a non-Arab, nor white to black, except by piety.",
+        "sources": [
+          "Quran 30:22",
+          "Quran 49:13",
+          "Musnad Ahmad 23489 (sahih)"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,448 @@
+{
+  "id": "vocational",
+  "name": "Vocational Wellness",
+  "icon": "🧭",
+  "audience": "universal",
+  "order": 6,
+  "description": "Find work that fits you, build the skills it needs, handle money wisely and keep your life in balance while you do it.",
+  "topics": [
+    {
+      "slug": "career-exploration",
+      "title": "Career Exploration",
+      "icon": "🧭",
+      "summary": "Using your interests, strengths and values to explore career options through small real-world tests.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Identify your interests, strengths and values as the basis for career choices.",
+        "Use the RIASEC model to describe the kind of work that suits you.",
+        "Test a career idea through an informational interview or a small trial."
+      ],
+      "lesson": {
+        "title": "Explore Before You Decide",
+        "explanation": "Choosing a career is not one big decision made at seventeen. It is a series of experiments that gradually show where you fit. Most adults change direction several times, and many of today's jobs did not exist twenty years ago. The aim at your stage is a good next step, not a perfect final answer.\n\nStart with three questions. What interests me, meaning what do I do without being told? What am I good at, according to results and to other people? What do I value: helping others, income, creativity, stability, independence? Work that matches all three is satisfying. Work that matches none is draining, however prestigious it sounds.\n\nPsychologist John Holland's RIASEC model is a useful map. It describes six broad types of interest: Realistic (hands-on, building, fixing), Investigative (analysing, researching), Artistic (creating, designing), Social (teaching, helping, caring), Enterprising (leading, selling, persuading) and Conventional (organising, working with data and systems). Most people are a mix of two or three, and each combination points to families of careers. Your Harmony personality results give you a starting point.\n\nThen test your ideas in the real world. Talk to someone who does the job and ask what a normal day is like, what they find hard, and how they got there. Shadow them for a day, volunteer, take a short online course or try a small project. A week of real exposure teaches more than months of guessing.",
+        "keyPoints": [
+          "Career choice is a series of experiments, and changing direction is normal.",
+          "Look for the overlap between your interests, your strengths and your values.",
+          "RIASEC: Realistic, Investigative, Artistic, Social, Enterprising, Conventional.",
+          "Test ideas cheaply through conversations, shadowing, volunteering and small projects."
+        ],
+        "examples": [
+          {
+            "title": "\"I'll be a doctor\"",
+            "scenario": "Aiman has planned to study medicine since primary school because his family expects it. He volunteers at a clinic for two weeks and discovers he dislikes the clinical work but loves solving the scheduling and records problems.",
+            "takeaway": "The trial was cheap and revealed real information. He begins exploring health informatics and hospital management, fields he had never heard of."
+          },
+          {
+            "title": "The twenty-minute conversation",
+            "scenario": "Pei Shan is curious about graphic design but unsure about income. She messages a designer her aunt knows and asks three questions about daily work, pay progression and what she wishes she had known at eighteen.",
+            "takeaway": "One short conversation replaced vague worry with facts and gave her a contact in the field."
+          }
+        ],
+        "practicalTip": "Write down three careers that interest you. For each one, find one person who does it, through family, teachers or LinkedIn, and prepare three questions. Send one message this week.",
+        "deeperInsight": "'Follow your passion' is incomplete advice. Research suggests that interest often develops after you become good at something useful, not before. Curiosity is the right starting point, and skill, contribution and autonomy tend to turn it into passion over time."
+      },
+      "quiz": [
+        {
+          "question": "According to this lesson, what is the most useful way to think about choosing a career at your age?",
+          "options": [
+            "As one permanent decision that you must get exactly right",
+            "As something to leave entirely to your parents",
+            "As a choice based only on salary",
+            "As a series of experiments towards a good next step"
+          ],
+          "correctIndex": 3,
+          "explanation": "Careers develop through exploration and adjustment. The aim is a well-informed next step, not a final answer."
+        },
+        {
+          "question": "Someone who enjoys teaching, counselling and looking after others scores highest in which RIASEC type?",
+          "options": [
+            "Social",
+            "Realistic",
+            "Conventional",
+            "Investigative"
+          ],
+          "correctIndex": 0,
+          "explanation": "The Social type is drawn to helping, teaching and caring roles."
+        },
+        {
+          "question": "What is an informational interview?",
+          "options": [
+            "A formal interview to be hired for a job",
+            "A written test of your general knowledge",
+            "A conversation with someone in a job to learn what the work is really like",
+            "An interview with a journalist"
+          ],
+          "correctIndex": 2,
+          "explanation": "It is a short, informal conversation in which you ask a working professional about their job, path and advice."
+        }
+      ],
+      "reflection": {
+        "prompt": "What activity makes you lose track of time, and what does that tell you about the kind of work you might enjoy?",
+        "guidingQuestions": [
+          "What do other people regularly ask you for help with?",
+          "Which matters most to you in future work: income, meaning, creativity, stability or freedom?",
+          "Which career have you assumed is 'not for you' without ever testing it?"
+        ]
+      },
+      "faithLens": {
+        "text": "Work is honoured in Islam. After the prayer, believers are told to spread through the land and seek the bounty of Allah. The Prophet ﷺ said that no one has ever eaten better food than what he earns by the work of his own hands, and that the Prophet Dawud عليه السلام ate from the work of his hands. Choosing halal work that uses your abilities to benefit others is a way of thanking Allah for them.",
+        "sources": [
+          "Quran 62:10",
+          "Sahih al-Bukhari 2072"
+        ]
+      }
+    },
+    {
+      "slug": "skill-development",
+      "title": "Skill Development",
+      "icon": "🛠️",
+      "summary": "How skills are actually built, which ones employers look for, and how to show what you can do.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Distinguish technical skills from transferable (soft) skills.",
+        "Apply the principles of deliberate practice to a skill you want to build.",
+        "Collect evidence of your skills in a simple portfolio."
+      ],
+      "lesson": {
+        "title": "Practise on Purpose",
+        "explanation": "Skills fall into two broad groups. Technical or 'hard' skills are specific to a field: coding, accounting, welding, video editing, a language. Transferable or 'soft' skills apply everywhere: communication, teamwork, problem-solving, time management and reliability. Employers consistently report that technical skills get people interviews while soft skills get them hired and promoted. A useful picture is the T-shaped person, with deep ability in one area (the vertical bar) and a working understanding of several others (the horizontal bar).\n\nTime alone does not build skill. Psychologist Anders Ericsson studied top performers and found that what set them apart was deliberate practice. It has four features. You work on a specific weakness, not on what you already do well. The task is just beyond your current ability. You get immediate feedback, from a teacher, a recording or a test. And you repeat and adjust. Playing a favourite song a hundred times is not deliberate practice. Slowly working through the difficult bar you keep getting wrong is.\n\nTo build a skill, break it into parts, find good models to copy, practise the hardest part in short focused sessions, and ask for feedback often. Then make the skill visible. A portfolio of real work, such as projects, designs, code, writing, certificates or photographs of what you built, persuades far better than a claim on a résumé.",
+        "keyPoints": [
+          "Hard skills are field-specific; soft skills transfer to every job.",
+          "Aim to be T-shaped: deep in one area, broad across others.",
+          "Deliberate practice: target a weakness, stretch slightly, get feedback, repeat.",
+          "Evidence of real work is more convincing than a list of claims."
+        ],
+        "examples": [
+          {
+            "title": "Learning to edit video",
+            "scenario": "Farhan watches editing tutorials for a month but never opens the software. His cousin, an editor, tells him to make one 30-second clip each week and send it for comments. After eight clips his work is clearly better.",
+            "takeaway": "Watching is not practising. Small projects with feedback built skill, and the eight clips became the start of his portfolio."
+          },
+          {
+            "title": "The part-time job",
+            "scenario": "Kumar works weekends at a bubble tea shop and thinks it is 'just a job'. A teacher helps him list what he has learned: handling customer complaints, cash accuracy, working fast in a team, training a new staff member.",
+            "takeaway": "Everyday work builds transferable skills. Naming them, with a specific example for each, makes them usable in applications and interviews."
+          }
+        ],
+        "practicalTip": "Choose one skill you want. Write down its weakest sub-skill, schedule three 20-minute practice sessions this week on that part only, and decide who or what will give you feedback.",
+        "deeperInsight": "The popular '10,000-hour rule' oversimplifies Ericsson's research. He did not find a magic number, and hours of mindless repetition do little. The quality of practice, including feedback and working at the edge of your ability, matters far more than the total."
+      },
+      "quiz": [
+        {
+          "question": "Which of these is a transferable (soft) skill?",
+          "options": [
+            "Using accounting software",
+            "Working well in a team",
+            "Welding steel pipes",
+            "Programming in Python"
+          ],
+          "correctIndex": 1,
+          "explanation": "Teamwork applies in every field. The other three are technical skills tied to particular kinds of work."
+        },
+        {
+          "question": "Which activity is the best example of deliberate practice?",
+          "options": [
+            "Repeating the parts you already do well",
+            "Practising for many hours without any particular goal",
+            "Watching experts without trying it yourself",
+            "Working on a specific weak point with feedback"
+          ],
+          "correctIndex": 3,
+          "explanation": "Deliberate practice targets a specific weakness at the edge of your ability and uses feedback to adjust."
+        },
+        {
+          "question": "What does a 'T-shaped' set of skills mean?",
+          "options": [
+            "Deep skill in one area plus broad knowledge of others",
+            "Knowing a tiny amount about every subject without depth in any",
+            "Being skilled only in technical subjects",
+            "Having exactly two unrelated skills"
+          ],
+          "correctIndex": 0,
+          "explanation": "The vertical bar of the T is depth in one field, and the horizontal bar is breadth across related areas."
+        }
+      ],
+      "reflection": {
+        "prompt": "What is one skill you have noticeably improved in the last year? What caused the improvement?",
+        "guidingQuestions": [
+          "Which skill would open the most doors for you if you built it this year?",
+          "When you practise, do you work on what is hard or on what is comfortable?",
+          "What real evidence could you show someone today of something you can do?"
+        ]
+      },
+      "faithLens": {
+        "text": "Excellence is a religious duty in Islam. The Prophet ﷺ said that Allah has prescribed ihsan, doing things in the best way, in everything. Skill is also a trust: the Quran records that the daughter of the righteous man recommended hiring Musa عليه السلام because the best person to employ is the one who is strong and trustworthy, joining competence with character.",
+        "sources": [
+          "Sahih Muslim 1955",
+          "Quran 28:26"
+        ]
+      }
+    },
+    {
+      "slug": "work-life-balance",
+      "title": "Work-Life Balance",
+      "icon": "⚖️",
+      "summary": "Managing time and energy across study, work, family, rest and faith without burning out.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Recognise the warning signs of burnout.",
+        "Prioritise tasks using the Eisenhower matrix.",
+        "Set boundaries that protect rest, relationships and health."
+      ],
+      "lesson": {
+        "title": "You Are Not a Machine",
+        "explanation": "Balance does not mean giving equal time to everything. It means that over a week or a month, the important areas of your life, such as study or work, family, health, friends, rest and faith, each get enough of your attention that none of them collapses.\n\nIgnoring balance has a cost. The World Health Organization describes burnout as resulting from chronic stress that has not been successfully managed, with three signs: exhaustion, growing negativity or distance from your work, and reduced effectiveness. Students experience the same pattern. Rest is not a reward for finishing; it is what makes good work possible.\n\nTime management helps you choose. The Eisenhower matrix sorts tasks by two questions: is it urgent, and is it important? Urgent and important tasks, such as tomorrow's exam, are done now. Important but not urgent ones, such as exercise, revision ahead of time and relationships, are scheduled, and this is where a balanced life is built. Urgent but unimportant ones, such as most notifications, are minimised or delegated. Tasks that are neither are dropped.\n\nBalance also needs boundaries. Decide on a time when schoolwork stops, protect your sleep, keep one activity a week purely for enjoyment, and learn to say, 'I can't take that on right now.' Manage your energy as well as your hours by doing demanding work when you are most alert.",
+        "keyPoints": [
+          "Balance means every important area gets enough attention, not equal time.",
+          "Burnout shows as exhaustion, negativity and falling effectiveness.",
+          "The Eisenhower matrix sorts tasks by urgency and importance.",
+          "Boundaries around rest, sleep and relationships make sustained effort possible."
+        ],
+        "examples": [
+          {
+            "title": "Everything at once",
+            "scenario": "Nurin is a prefect, a debater, a tuition student and a netball player. She sleeps five hours, snaps at her family, and her marks are falling despite longer study hours.",
+            "takeaway": "Exhaustion, irritability and declining results are burnout signs. She drops one activity, fixes a bedtime and her marks recover. Doing less allowed her to do better."
+          },
+          {
+            "title": "The scheduled quadrant",
+            "scenario": "Jia Hao always studies in a panic the night before tests. He begins scheduling two 45-minute revision blocks each week for subjects with no test coming up.",
+            "takeaway": "Giving time to important-but-not-urgent work reduces the number of emergencies. His evenings before tests become calmer and his sleep improves."
+          }
+        ],
+        "practicalTip": "List everything you need to do this week and place each item in one of the four Eisenhower boxes. Schedule two 'important but not urgent' items in your calendar first, before anything else.",
+        "deeperInsight": "Parkinson's law observes that work expands to fill the time available. If you give homework the whole evening, it takes the whole evening. Setting a clear finishing time often improves focus and frees time for rest, because the limit forces you to prioritise."
+      },
+      "quiz": [
+        {
+          "question": "Which set of signs describes burnout?",
+          "options": [
+            "High energy, enthusiasm and strong results",
+            "Hunger, thirst and restlessness",
+            "Exhaustion, negativity towards work and reduced effectiveness",
+            "Boredom, curiosity and excitement"
+          ],
+          "correctIndex": 2,
+          "explanation": "The WHO describes burnout through three dimensions: exhaustion, mental distance or negativity, and reduced effectiveness."
+        },
+        {
+          "question": "In the Eisenhower matrix, what should you do with tasks that are important but not urgent?",
+          "options": [
+            "Drop them",
+            "Schedule them",
+            "Do them only when they become emergencies",
+            "Hand them to someone else"
+          ],
+          "correctIndex": 1,
+          "explanation": "Important-but-not-urgent tasks, such as early revision, exercise and relationships, should be planned into your week before they become crises."
+        },
+        {
+          "question": "Which statement about work-life balance is accurate?",
+          "options": [
+            "It means spending exactly the same number of hours on every activity each day",
+            "Rest should only happen after all work is finished",
+            "Saying no to new commitments shows weakness",
+            "It means each important area of life gets enough attention over time"
+          ],
+          "correctIndex": 3,
+          "explanation": "Balance is about sufficiency across your important areas over a period of time, not identical hours each day."
+        }
+      ],
+      "reflection": {
+        "prompt": "Which area of your life is getting too little of you right now?",
+        "guidingQuestions": [
+          "What is the first sign that you are overloaded?",
+          "What are you saying yes to that you should say no to?",
+          "What activity restores your energy, and when did you last do it?"
+        ]
+      },
+      "faithLens": {
+        "text": "When Salman al-Farisi saw his friend Abu ad-Darda' neglecting rest and family for extra worship, he told him: your Lord has a right over you, your self has a right over you and your family has a right over you, so give each its due. The Prophet ﷺ confirmed, 'Salman has spoken the truth.' The Quran teaches the same balance: seek the home of the Hereafter and do not forget your share of this world.",
+        "sources": [
+          "Sahih al-Bukhari 1968",
+          "Quran 28:77"
+        ]
+      }
+    },
+    {
+      "slug": "financial-literacy",
+      "title": "Financial Literacy",
+      "icon": "💰",
+      "summary": "Budgeting, saving and avoiding debt traps, so that money serves your goals.",
+      "durationMinutes": 14,
+      "xpReward": 20,
+      "objectives": [
+        "Build a simple budget that separates needs, wants and savings.",
+        "Explain how compounding grows savings over time.",
+        "Recognise high-cost debt and common financial scams."
+      ],
+      "lesson": {
+        "title": "Tell Your Money Where to Go",
+        "explanation": "Financial literacy is the ability to make informed decisions about earning, spending, saving and borrowing. It starts with one habit: knowing where your money goes. Track every ringgit for a month and you will almost certainly find spending you did not notice.\n\nA budget is simply a plan made in advance. A common starting guide is 50/30/20: about half of your income for needs (food, transport, fees), up to 30% for wants (entertainment, eating out, gadgets) and at least 20% for savings. Adjust the proportions to your situation, but keep the principle of paying yourself first: move savings aside the day money arrives, not from whatever is left.\n\nYour first savings goal is an emergency fund, ideally building towards three to six months of expenses, so that a phone repair or a lost job does not become a debt. After that, savings can grow through compounding, where returns earn returns. The 'rule of 72' gives a quick estimate: divide 72 by the annual rate of return to find roughly how many years it takes money to double. Time is the key ingredient, which is why starting young matters more than starting big.\n\nBe careful with debt. 'Buy now, pay later' schemes and credit cards make spending feel painless, and missed payments bring heavy charges. Be equally careful with promises of high, guaranteed returns. If an offer sounds too good to be true, it is. Check before you put money anywhere, and remember that in Malaysia, deposits in member banks are protected by PIDM up to RM250,000 per depositor per bank.",
+        "keyPoints": [
+          "Track your spending first; you cannot manage what you do not measure.",
+          "Budget in advance (for example 50/30/20) and save before you spend.",
+          "Build an emergency fund, then let compounding work over time.",
+          "Avoid high-cost debt and any offer of high 'guaranteed' returns."
+        ],
+        "examples": [
+          {
+            "title": "Where did RM300 go?",
+            "scenario": "Amirul receives RM300 a month in allowance and is always broke by week three. He records every purchase for a month and finds RM110 went on drinks and snacks bought in small amounts.",
+            "takeaway": "Small daily purchases were the leak. He sets a weekly limit for snacks and moves RM50 into savings on the first day of each month."
+          },
+          {
+            "title": "Two savers",
+            "scenario": "Sara saves RM100 a month from age 18 to 28 and then stops. Daniel starts at 28 and saves RM100 a month until 48. At a steady 6% annual return, compounded monthly, Sara has about RM54,000 at 48 and Daniel about RM46,000, even though Sara put in RM12,000 and Daniel put in RM24,000.",
+            "takeaway": "Sara's money had more time to compound. Starting early can matter more than how much you put in."
+          }
+        ],
+        "practicalTip": "For the next seven days, record every purchase, however small, in a notes app. At the end of the week, label each as a need or a want and add up each column.",
+        "deeperInsight": "Most poor money decisions are emotional. People spend to feel better, to keep up with friends or because a sale creates urgency. A simple defence is the 48-hour rule: for any non-essential purchase above an amount you set, wait two days. Most impulses pass."
+      },
+      "quiz": [
+        {
+          "question": "In the 50/30/20 budgeting guide, what is the 20% for?",
+          "options": [
+            "Entertainment",
+            "Food and transport",
+            "Savings",
+            "Gifts for friends"
+          ],
+          "correctIndex": 2,
+          "explanation": "The guide suggests about 50% for needs, up to 30% for wants and at least 20% for savings."
+        },
+        {
+          "question": "Using the rule of 72, about how long does money take to double at a 6% annual return?",
+          "options": [
+            "6 years",
+            "12 years",
+            "36 years",
+            "72 years"
+          ],
+          "correctIndex": 1,
+          "explanation": "72 divided by 6 is 12, so money roughly doubles in about 12 years at 6% a year."
+        },
+        {
+          "question": "An online group promises a \"guaranteed 20% return every month\" if you join quickly. What is the wisest response?",
+          "options": [
+            "Invest a small amount first to test whether it is real",
+            "Treat it as a likely scam and do not invest",
+            "Borrow money so you can invest more",
+            "Recruit friends first to earn a bonus"
+          ],
+          "correctIndex": 1,
+          "explanation": "High guaranteed returns combined with pressure to act fast are classic signs of a scam. No legitimate investment guarantees returns like that."
+        }
+      ],
+      "reflection": {
+        "prompt": "If you received RM500 today, what would you do with it? What does your answer reveal about your money habits?",
+        "guidingQuestions": [
+          "Do you know roughly how much you spent last week, and on what?",
+          "What are you saving for, and how much do you need?",
+          "What usually triggers your unplanned spending?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran describes the servants of the Most Merciful as those who, when they spend, are neither wasteful nor miserly but keep a just balance between the two. It permits trade and forbids riba (interest), and its longest verse instructs believers to write down debts. Wealth is a trust: earned lawfully, spent moderately, purified through zakat and shared through charity.",
+        "sources": [
+          "Quran 25:67",
+          "Quran 2:275",
+          "Quran 2:282"
+        ]
+      }
+    },
+    {
+      "slug": "entrepreneurship",
+      "title": "Entrepreneurship",
+      "icon": "🚀",
+      "summary": "Spotting a real problem, testing a small solution, and understanding the basic numbers of a business.",
+      "durationMinutes": 14,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why a business starts with a customer's problem, not with a product.",
+        "Describe what a minimum viable product (MVP) is and why it is used.",
+        "Calculate basic profit from revenue and costs."
+      ],
+      "lesson": {
+        "title": "Solve a Problem, Then Sell",
+        "explanation": "Entrepreneurship is creating value for other people in a way that sustains itself. It can be a full business, a weekend side income or a social project. In every case it begins in the same place: a problem that real people have and would pay to solve. Beginners often start with a product they like and then search for buyers. Experienced founders start with the customer.\n\nSo begin by observing and asking. What do people around you complain about, queue for or do inefficiently? Talk to at least ten potential customers before spending money. Ask what they do about the problem now and what it costs them.\n\nThen test the idea as cheaply as possible. A minimum viable product, or MVP, is the simplest version that lets you learn whether people will actually pay: a pre-order form, a sample batch, a single service for one client. This build-measure-learn cycle, popularised by Eric Ries in The Lean Startup, replaces guessing with evidence. If nobody buys, you have lost little and learned a lot.\n\nKnow your numbers. Revenue is the money coming in. Costs include materials, packaging, delivery, fees and your time. Profit is revenue minus all costs. A product that sells well at a price below its true cost loses money faster the more you sell.\n\nFinally, do it properly: keep records, deliver what you promise, and when the business grows, register it with the Companies Commission of Malaysia (SSM).",
+        "keyPoints": [
+          "Start from a real problem that people will pay to solve.",
+          "Talk to potential customers before building or buying anything.",
+          "An MVP tests demand cheaply; learn and adjust.",
+          "Profit = revenue minus all costs, including your own time."
+        ],
+        "examples": [
+          {
+            "title": "Pre-orders first",
+            "scenario": "Syazwani wants to sell homemade cookies for Hari Raya. Instead of buying ingredients for 200 jars, she posts photos of three sample flavours and takes pre-orders for one week. She receives 34 orders, mostly for one flavour.",
+            "takeaway": "The pre-order was her MVP. She buys ingredients for exactly what was ordered, drops the unpopular flavour and carries no unsold stock."
+          },
+          {
+            "title": "The missing costs",
+            "scenario": "Raj sells phone cases at RM15 each and buys them at RM9, so he believes he earns RM6 a case. After adding RM2 packaging, RM3 average delivery subsidy and RM1 platform fee, his real profit is zero.",
+            "takeaway": "Listing every cost showed the true picture. He raises the price to RM19 and charges delivery separately."
+          }
+        ],
+        "practicalTip": "This week, write down five problems or frustrations you hear people mention. Choose one and ask three people how they deal with it now and whether they would pay for a better way.",
+        "deeperInsight": "Most new ventures fail because they build something nobody wants, not because of competition or lack of funds. The entrepreneurial skills that matter most are listening, testing assumptions and adapting, and these are valuable in any career, including for employees."
+      },
+      "quiz": [
+        {
+          "question": "According to this lesson, where should a new business idea begin?",
+          "options": [
+            "With a real problem that customers want solved",
+            "With a product that you personally like and want to make",
+            "With a company logo and name",
+            "With a large bank loan"
+          ],
+          "correctIndex": 0,
+          "explanation": "A business creates value by solving a problem people have and will pay to fix. Products and branding follow from that."
+        },
+        {
+          "question": "What is the purpose of a minimum viable product (MVP)?",
+          "options": [
+            "To launch a perfect, finished product on the very first day",
+            "To avoid ever speaking to customers",
+            "To impress investors with features",
+            "To test cheaply whether people will actually pay"
+          ],
+          "correctIndex": 3,
+          "explanation": "An MVP is the simplest version that lets you learn from real customer behaviour before investing heavily."
+        },
+        {
+          "question": "You sell 20 keychains at RM10 each. Materials cost RM4 per keychain and you pay RM30 in total for a market table. What is your profit?",
+          "options": [
+            "RM90",
+            "RM120",
+            "RM170",
+            "RM200"
+          ],
+          "correctIndex": 0,
+          "explanation": "Revenue is 20 × RM10 = RM200. Costs are 20 × RM4 = RM80 plus RM30 = RM110. Profit is RM200 − RM110 = RM90."
+        }
+      ],
+      "reflection": {
+        "prompt": "What problem do you see around you every week that nobody seems to be solving well?",
+        "guidingQuestions": [
+          "Who has that problem, and how do they cope with it now?",
+          "What is the smallest, cheapest way you could test a solution?",
+          "What skills or resources do you already have that could help?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ was a merchant before prophethood, known as al-Amin, the trustworthy. He taught that buyer and seller keep the right to cancel until they part, and that if they are truthful and disclose defects their sale is blessed, while concealment and lying wipe out the blessing. The Quran commands trade by mutual consent and giving full measure. Honest business is a path to barakah.",
+        "sources": [
+          "Sahih al-Bukhari 2079",
+          "Sahih Muslim 1532",
+          "Quran 4:29",
+          "Quran 83:1-3"
+        ]
+      }
+    }
+  ]
+}

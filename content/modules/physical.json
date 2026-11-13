@@ -1,0 +1,447 @@
+{
+  "id": "physical",
+  "name": "Physical Wellness",
+  "icon": "💪",
+  "audience": "universal",
+  "order": 1,
+  "description": "Build the daily habits that keep your body strong, rested and safe: food, movement, sleep, health care and personal safety.",
+  "topics": [
+    {
+      "slug": "nutrition-and-diet",
+      "title": "Nutrition & Diet",
+      "icon": "🍎",
+      "summary": "How to build a balanced plate, read what your body needs, and eat well on a student budget.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Describe what carbohydrates, protein, fats, fibre and water each do for your body.",
+        "Build a balanced meal using the Malaysian Healthy Plate (Suku-Suku Separuh).",
+        "Spot hidden sugar in everyday drinks and snacks."
+      ],
+      "lesson": {
+        "title": "Fuel, Not Just Food",
+        "explanation": "Everything you eat does a job. Carbohydrates (rice, bread, noodles, fruit) are your main energy source. Protein (fish, chicken, eggs, tempeh, beans) builds and repairs muscle, skin and blood. Fats (nuts, fish, cooking oil) carry certain vitamins and protect your organs. Fibre keeps digestion moving and keeps you full, and water does almost everything else, from cooling you down to helping you concentrate.\n\nYou do not need a complicated diet to get these in the right amounts. The Ministry of Health Malaysia teaches a simple picture called Suku-Suku Separuh: fill a quarter of your plate with rice or another grain, a quarter with protein, and half with vegetables and fruit. Choose plain water as your default drink.\n\nThe usual problem for young people is not too little food but too much sugar, salt and deep-fried food hiding in drinks and snacks. The World Health Organization advises keeping added sugar below 10% of your daily energy, and ideally below about 6 teaspoons a day. A single bubble tea or canned drink can use up most of that limit.",
+        "keyPoints": [
+          "Each food group has a different job, so variety matters more than any single 'superfood'.",
+          "Suku-Suku Separuh: a quarter grains, a quarter protein, half vegetables and fruit.",
+          "Sugary drinks are the easiest place to cut excess sugar without eating less food.",
+          "Regular meals, especially breakfast, support steady energy and concentration in class."
+        ],
+        "examples": [
+          {
+            "title": "Fixing a mamak order",
+            "scenario": "Aiman usually orders nasi goreng with a fried egg and teh ais. The plate is almost all carbohydrate and oil, with no vegetables, and the drink adds several teaspoons of sugar.",
+            "takeaway": "He keeps the meal he likes but changes three things: a smaller rice portion, a side of vegetables or ulam, and teh o kosong or water. Same stall, far better balance."
+          },
+          {
+            "title": "Reading a drink label",
+            "scenario": "Mei Ling checks the label on her favourite 500 ml bottled tea and finds 35 g of sugar. One teaspoon is about 4 g, so the bottle holds almost 9 teaspoons.",
+            "takeaway": "Dividing the grams of sugar by 4 turns a label into teaspoons you can picture. That one bottle is already over the ideal daily limit."
+          }
+        ],
+        "practicalTip": "For the next three days, take a photo of every meal before you eat it. At the end, check each photo against Suku-Suku Separuh and pick the one change that would be easiest to make.",
+        "deeperInsight": "Hunger and fullness signals reach your brain slowly, roughly 15 to 20 minutes after you start eating. Eating fast or while scrolling makes it easy to overshoot. Slowing down is one of the few nutrition habits that costs nothing and needs no willpower over what is on the plate."
+      },
+      "quiz": [
+        {
+          "question": "In the Malaysian Healthy Plate (Suku-Suku Separuh), what should fill half of your plate?",
+          "options": [
+            "Vegetables and fruit",
+            "Rice, noodles or other grains",
+            "Meat, fish, eggs or tofu",
+            "Soup and gravy"
+          ],
+          "correctIndex": 0,
+          "explanation": "Half the plate is vegetables and fruit. Grains take one quarter and protein takes the other quarter."
+        },
+        {
+          "question": "A canned drink lists 28 g of sugar. About how many teaspoons is that?",
+          "options": [
+            "2 teaspoons",
+            "4 teaspoons",
+            "7 teaspoons",
+            "14 teaspoons"
+          ],
+          "correctIndex": 2,
+          "explanation": "One teaspoon of sugar is about 4 g, so 28 g divided by 4 is 7 teaspoons, which is more than the ideal daily limit of about 6."
+        },
+        {
+          "question": "Which nutrient is mainly responsible for building and repairing body tissue such as muscle?",
+          "options": [
+            "Carbohydrate",
+            "Fibre",
+            "Protein",
+            "Water"
+          ],
+          "correctIndex": 2,
+          "explanation": "Protein supplies the building blocks for muscle, skin and blood. Carbohydrate is mainly for energy, and fibre supports digestion."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think about what you ate yesterday. Which meal was closest to a balanced plate, and which was furthest?",
+        "guidingQuestions": [
+          "What usually decides what you eat: hunger, habit, price, or what friends are having?",
+          "Which sugary drink could you swap for water this week?",
+          "How do you feel in class after a heavy, oily lunch compared with a lighter one?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran joins eating with moderation in a single command: eat and drink, but do not be excessive. The Prophet ﷺ gave that a practical measure, describing a few mouthfuls as enough, and if more is needed, a third for food, a third for drink and a third for breath. Eating halal and good food in moderation is an act of gratitude for the body Allah has entrusted to you.",
+        "sources": [
+          "Quran 7:31",
+          "Quran 2:168",
+          "Jami' at-Tirmidhi 2380 (hasan sahih)"
+        ]
+      }
+    },
+    {
+      "slug": "exercise-and-fitness",
+      "title": "Exercise & Fitness",
+      "icon": "💪",
+      "summary": "How much movement your body needs each week and how to build a routine you will actually keep.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "State the World Health Organization activity guidelines for your age group.",
+        "Tell apart aerobic, strength and flexibility training and why each matters.",
+        "Plan a realistic weekly routine using small, consistent sessions."
+      ],
+      "lesson": {
+        "title": "Move Often, Not Just Hard",
+        "explanation": "Your body is built to move, and it adapts to whatever you regularly ask of it. Aerobic activity (brisk walking, cycling, futsal, swimming) trains your heart and lungs. Strength work (push-ups, squats, carrying, climbing) builds muscle and bone. Flexibility and balance work keeps joints moving freely and reduces injury.\n\nThe World Health Organization recommends that young people aged 5 to 17 average at least 60 minutes a day of moderate-to-vigorous activity, with muscle- and bone-strengthening activity on at least 3 days a week. Adults need 150 to 300 minutes of moderate activity a week, or 75 to 150 minutes of vigorous activity, plus strength training on 2 or more days.\n\nA useful test of intensity is the talk test. At moderate intensity you can talk but not sing. At vigorous intensity you can only say a few words before needing a breath. Minutes add up across the day, so walking to school, taking stairs and a short evening workout all count. Consistency beats intensity: four 20-minute sessions a week will do more for you than one exhausting session a month.",
+        "keyPoints": [
+          "Ages 5 to 17: an average of 60 minutes a day; adults: at least 150 minutes of moderate activity a week.",
+          "A complete routine includes aerobic, strength and flexibility work.",
+          "Use the talk test to judge intensity without any equipment.",
+          "Short, regular sessions build fitness more reliably than rare, intense ones."
+        ],
+        "examples": [
+          {
+            "title": "No gym, no problem",
+            "scenario": "Farah has no gym membership and little free time. She does a 15-minute circuit in her room three mornings a week: squats, wall push-ups, a plank and jumping jacks, and she walks 20 minutes home from school.",
+            "takeaway": "Bodyweight exercise plus everyday walking covers both strength and aerobic needs. The plan works because it fits into time she already has."
+          },
+          {
+            "title": "The weekend warrior",
+            "scenario": "Daniel sits most of the week, then plays two hours of hard futsal on Sunday and is sore until Wednesday.",
+            "takeaway": "Spreading activity through the week, even 20 minutes on three weekdays, would reduce his soreness and injury risk and make Sunday's game more enjoyable."
+          }
+        ],
+        "practicalTip": "Attach movement to something you already do. For example: ten squats after brushing your teeth each morning, or a 10-minute walk straight after Asar or after dinner. An existing habit is the most reliable reminder.",
+        "deeperInsight": "Exercise changes your brain as well as your muscles. Physical activity increases blood flow to the brain and is linked with better mood, sleep and attention. Many students cut exercise during exam season to save time, when a short session is one of the more effective ways to study better afterwards."
+      },
+      "quiz": [
+        {
+          "question": "According to WHO guidelines, how much moderate-to-vigorous activity should a 15-year-old average each day?",
+          "options": [
+            "At least 15 minutes",
+            "At least 30 minutes",
+            "At least 60 minutes",
+            "At least 120 minutes"
+          ],
+          "correctIndex": 2,
+          "explanation": "For ages 5 to 17 the WHO recommends an average of at least 60 minutes a day of moderate-to-vigorous activity."
+        },
+        {
+          "question": "During a jog you can speak in full sentences but could not sing. What intensity is this?",
+          "options": [
+            "Moderate intensity",
+            "Vigorous intensity",
+            "Resting level",
+            "Maximum effort"
+          ],
+          "correctIndex": 0,
+          "explanation": "The talk test: able to talk but not sing means moderate intensity. At vigorous intensity you can only manage a few words at a time."
+        },
+        {
+          "question": "Which weekly plan is most likely to build lasting fitness?",
+          "options": [
+            "One long three-hour session every second week",
+            "Hard training every single day with no rest days",
+            "Four 20-minute sessions across the week",
+            "Only stretching, with no other activity"
+          ],
+          "correctIndex": 2,
+          "explanation": "The body adapts to regular demand. Short sessions repeated through the week build fitness and are easier to keep up than rare, exhausting ones."
+        }
+      ],
+      "reflection": {
+        "prompt": "Look back over the last seven days. On how many of them did you move enough to get slightly out of breath?",
+        "guidingQuestions": [
+          "What activity do you enjoy enough to do even when you are not being told to?",
+          "What usually stops you from exercising: time, energy, space, or shyness?",
+          "Which existing daily habit could you attach ten minutes of movement to?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ said that the strong believer is better and more beloved to Allah than the weak believer, while there is good in both. Strength here includes strength of faith and resolve, and scholars also apply it to a body that is fit to worship, work and help others. Looking after your fitness with that intention turns exercise into worship.",
+        "sources": [
+          "Sahih Muslim 2664"
+        ]
+      }
+    },
+    {
+      "slug": "sleep-hygiene",
+      "title": "Sleep Hygiene",
+      "icon": "😴",
+      "summary": "Why sleep is active recovery, how much you need, and the habits that make falling asleep easier.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "State how many hours of sleep teenagers and young adults need.",
+        "Explain how light, caffeine and irregular timing disrupt sleep.",
+        "Design a wind-down routine for the last hour before bed."
+      ],
+      "lesson": {
+        "title": "Sleep Is When the Work Gets Saved",
+        "explanation": "Sleep is not switched-off time. While you sleep, your brain sorts the day's learning into long-term memory, your body repairs tissue and releases growth hormone, and your immune system resets. Teenagers aged 13 to 18 need about 8 to 10 hours a night, and young adults need 7 to 9.\n\nYour body runs on an internal clock of roughly 24 hours called the circadian rhythm. Light is its main signal. Bright light in the morning tells the clock the day has started. Bright light at night, especially from a phone held close to your face, delays the release of melatonin, the hormone that makes you sleepy. Caffeine works differently: it blocks the brain's sleepiness signal, and about half of it is still in your body five to six hours after you drink it.\n\nSleep hygiene means the habits that protect sleep. The most powerful one is regular timing: going to bed and waking at about the same time every day, including weekends. Next are a cool, dark, quiet room, no caffeine after mid-afternoon, and a screen-free wind-down before bed.",
+        "keyPoints": [
+          "Teenagers need 8 to 10 hours; young adults need 7 to 9.",
+          "Sleep is when memories are consolidated, so cutting sleep to study works against you.",
+          "A consistent wake-up time is the strongest anchor for your body clock.",
+          "Screens and caffeine late in the day both delay sleep, by different mechanisms."
+        ],
+        "examples": [
+          {
+            "title": "The all-nighter that backfired",
+            "scenario": "Before a Sejarah exam, Hakim studies until 4 a.m. and sleeps two hours. In the exam hall he recognises the questions but cannot recall the details he read at 2 a.m.",
+            "takeaway": "Material studied without sleep afterwards is poorly stored. Stopping at 11 p.m. and sleeping would have kept more of what he learned."
+          },
+          {
+            "title": "Weekend jet lag",
+            "scenario": "Priya wakes at 6 a.m. on school days but sleeps until noon on Saturday and Sunday. Every Monday she feels as if she has flown across time zones.",
+            "takeaway": "Shifting wake time by several hours confuses the body clock. Keeping weekend wake-ups within about an hour of weekdays removes the Monday crash."
+          }
+        ],
+        "practicalTip": "Set a 'phone bedtime' alarm 45 minutes before you plan to sleep. When it rings, put the phone to charge outside arm's reach, then shower, prepare tomorrow's bag, or read something on paper.",
+        "deeperInsight": "During puberty the body clock naturally shifts later, so teenagers really do feel sleepy later at night than children or adults. You cannot remove the shift, but morning daylight and a fixed wake time pull the clock earlier, while late-night screens push it later still."
+      },
+      "quiz": [
+        {
+          "question": "How much sleep is recommended each night for a 16-year-old?",
+          "options": [
+            "5 to 6 hours",
+            "6 to 7 hours",
+            "8 to 10 hours",
+            "12 to 14 hours"
+          ],
+          "correctIndex": 2,
+          "explanation": "Sleep medicine bodies recommend 8 to 10 hours for ages 13 to 18. Young adults need 7 to 9."
+        },
+        {
+          "question": "Why does using a bright phone screen in bed make it harder to fall asleep?",
+          "options": [
+            "It raises body temperature by several degrees",
+            "It uses up the brain's supply of oxygen",
+            "It increases caffeine levels",
+            "It delays the release of melatonin"
+          ],
+          "correctIndex": 3,
+          "explanation": "Light at night signals 'daytime' to the body clock and delays melatonin, the hormone that brings on sleepiness."
+        },
+        {
+          "question": "Which single habit does the most to keep your body clock steady?",
+          "options": [
+            "Waking at about the same time every day",
+            "Napping for two hours each afternoon",
+            "Sleeping in late on weekends to catch up",
+            "Drinking coffee right after dinner"
+          ],
+          "correctIndex": 0,
+          "explanation": "A consistent wake time anchors the circadian rhythm. Large weekend shifts and late caffeine both disturb it."
+        }
+      ],
+      "reflection": {
+        "prompt": "What did the last hour before you slept look like last night?",
+        "guidingQuestions": [
+          "How many hours do you actually sleep on a school night?",
+          "What is the last thing you look at before closing your eyes?",
+          "What one change to your evening would be easiest to try for a week?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran describes sleep as a mercy: Allah made the night a covering and sleep a means of rest. The Prophet ﷺ disliked sleeping before the Isha prayer and staying up in conversation after it, a pattern of early sleep and early rising that matches what we now know about the body clock. He also taught making wudu' before bed and sleeping on the right side.",
+        "sources": [
+          "Quran 78:9-11",
+          "Quran 25:47",
+          "Sahih al-Bukhari 568",
+          "Sahih al-Bukhari 247"
+        ]
+      }
+    },
+    {
+      "slug": "medical-health",
+      "title": "Medical Health",
+      "icon": "🩺",
+      "summary": "Knowing your body, using health services wisely, and recognising when to get help.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why prevention and early detection matter even when you feel well.",
+        "Recognise warning signs that need a doctor or emergency care.",
+        "Judge whether a piece of online health information is reliable."
+      ],
+      "lesson": {
+        "title": "Be the First Expert on Your Own Body",
+        "explanation": "Good medical health starts before you are sick. Prevention includes vaccinations, dental check-ups, eye tests, hand washing and knowing your family's health history. Early detection means noticing changes and getting them checked while they are still small and easy to treat.\n\nLearn what is normal for you: your usual energy, sleep, appetite, weight and mood. A change that lasts more than about two weeks, such as constant tiredness, unexplained weight change, a persistent cough or a low mood that does not lift, is worth showing to a doctor. Some signs should never wait: chest pain, difficulty breathing, fainting, severe bleeding, a severe allergic reaction, or thoughts of harming yourself. In Malaysia, call 999 in an emergency.\n\nUse medicines exactly as directed. Antibiotics treat bacterial infections only. They do nothing for colds and flu, which are caused by viruses, and misusing them helps bacteria become resistant. Be careful with health advice online. Check who is giving it, whether they are qualified, and whether they are selling something. Mental health is part of medical health, and asking for help with it is as reasonable as seeing a doctor for a broken arm.",
+        "keyPoints": [
+          "Prevention and early detection are easier and cheaper than treatment.",
+          "Know your own baseline so that you notice changes.",
+          "Chest pain, breathing difficulty, fainting, severe bleeding and thoughts of self-harm need urgent help: call 999.",
+          "Antibiotics do not work on viral illnesses such as colds and flu."
+        ],
+        "examples": [
+          {
+            "title": "The headache that was eyesight",
+            "scenario": "Siti gets a headache most afternoons and takes paracetamol every day for a month. A school nurse suggests an eye test, which shows she needs glasses.",
+            "takeaway": "A symptom that keeps returning is a message. Treating the cause is better than silencing the signal again and again."
+          },
+          {
+            "title": "The viral remedy",
+            "scenario": "A video claims a herbal drink 'cures diabetes in 7 days' and links to a shop. Arjun's uncle wants to stop his prescribed medicine and try it.",
+            "takeaway": "A dramatic cure, no named medical source and a product for sale are three red flags. Arjun suggests his uncle ask the clinic pharmacist before changing anything."
+          }
+        ],
+        "practicalTip": "Create a short health note on your phone: blood type if known, allergies, regular medicines, vaccination record, and an emergency contact. It takes ten minutes and can save crucial time in a clinic or emergency.",
+        "deeperInsight": "Many adult illnesses, including type 2 diabetes and heart disease, develop silently over years and are shaped by habits formed in the teens and twenties. That is why a person who feels perfectly healthy at 17 still benefits from good sleep, food and activity now."
+      },
+      "quiz": [
+        {
+          "question": "A friend has had a cold for two days and wants to take leftover antibiotics. What is the best response?",
+          "options": [
+            "Take a double dose so that the cold clears up faster",
+            "Take them only until the fever stops",
+            "Skip them; antibiotics do not treat colds",
+            "Share them with others who feel unwell"
+          ],
+          "correctIndex": 2,
+          "explanation": "Colds are caused by viruses, which antibiotics cannot treat. Unnecessary use also contributes to antibiotic resistance."
+        },
+        {
+          "question": "Which situation needs emergency help immediately rather than a routine appointment?",
+          "options": [
+            "A mild sore throat that started this morning",
+            "Chest pain with difficulty breathing",
+            "Slightly dry skin",
+            "Feeling sleepy after a late night"
+          ],
+          "correctIndex": 1,
+          "explanation": "Chest pain with breathing difficulty is a warning sign that should never wait. In Malaysia, call 999."
+        },
+        {
+          "question": "Which feature makes online health advice more trustworthy?",
+          "options": [
+            "It has millions of views and thousands of shares",
+            "It promises a guaranteed quick cure",
+            "It is shared by a celebrity you like",
+            "It names a qualified health body"
+          ],
+          "correctIndex": 3,
+          "explanation": "Reliable advice identifies a qualified source, such as the Ministry of Health or a registered professional. Popularity and big promises are not evidence."
+        }
+      ],
+      "reflection": {
+        "prompt": "When did you last have a health check of any kind: dental, eyes, or a general check-up?",
+        "guidingQuestions": [
+          "Is there a small symptom you have been ignoring for more than two weeks?",
+          "Who would you talk to first if you were worried about your physical or mental health?",
+          "Where do you usually get health information, and how do you know it is reliable?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Prophet ﷺ taught that Allah has not sent down any disease without also sending down its cure. Seeking treatment is therefore part of trusting Allah, not a contradiction of it. Your body is an amanah, a trust, and caring for it with proper medical help is a way of honouring that trust.",
+        "sources": [
+          "Sahih al-Bukhari 5678",
+          "Sahih Muslim 2204"
+        ]
+      }
+    },
+    {
+      "slug": "personal-safety",
+      "title": "Personal Safety",
+      "icon": "🛡️",
+      "summary": "Awareness, boundaries and simple plans that keep you safe in public, at home and online.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Practise situational awareness in everyday places.",
+        "Set and state a personal boundary clearly.",
+        "Recognise common online scams and know where to report them."
+      ],
+      "lesson": {
+        "title": "Aware, Not Afraid",
+        "explanation": "Personal safety is mostly about prevention. The goal is to notice risk early and leave before a situation becomes dangerous, not to win a fight. Situational awareness means keeping part of your attention on your surroundings: who is nearby, where the exits are, and whether anything feels wrong. Walking with both earphones in and your eyes on your phone removes that awareness.\n\nTrust your instincts. If a person or place makes you uneasy, you do not need proof before you move away, call someone or say no. A boundary is a clear statement of what you will not accept, such as 'Stop. I am not comfortable with that.' You do not owe anyone an apology for protecting yourself. If you are ever in danger, the order of priority is: get away, get to people, get help. Belongings can be replaced.\n\nOnline safety follows the same logic. Scammers create urgency ('act now or your account will be closed'), pretend to be an authority, and ask for passwords, TAC codes or money. No bank or government agency will ask for your password or TAC by phone or message. In Malaysia, call the National Scam Response Centre on 997 if money has been transferred, and 999 for emergencies.",
+        "keyPoints": [
+          "Prevention and early exit are safer than confrontation.",
+          "Keep your attention up in transit: one earphone out, phone away, know your exits.",
+          "You can set a boundary without explaining or apologising.",
+          "Urgency plus a request for codes, passwords or money is the pattern of a scam."
+        ],
+        "examples": [
+          {
+            "title": "The walk home",
+            "scenario": "Walking home at dusk, Nadia notices the same motorcycle pass her slowly twice. She crosses the road, walks into a busy kedai runcit and calls her mother to come and meet her.",
+            "takeaway": "She acted on a pattern, not on certainty. Moving towards people and light and telling someone are simple, effective responses."
+          },
+          {
+            "title": "The 'bank officer' call",
+            "scenario": "Wei Jie gets a call saying his account is frozen and he must read out the six-digit code just sent to his phone to unlock it.",
+            "takeaway": "Urgency, claimed authority and a request for a code are the classic combination. He hangs up and calls the number printed on his bank card instead."
+          }
+        ],
+        "practicalTip": "Agree a code word with your family or a close friend. Sending or saying that word means 'I need you to call me or come and get me now', with no questions asked until you are safe.",
+        "deeperInsight": "Most harm to young people comes from someone they already know, not from strangers. Safety skills therefore include recognising when someone familiar is pressuring you, isolating you from friends or asking you to keep secrets, and telling a trusted adult when that happens."
+      },
+      "quiz": [
+        {
+          "question": "If you feel you are being followed while walking, what is the safest first move?",
+          "options": [
+            "Stop, turn around and confront the person directly",
+            "Take a quiet shortcut to get home faster",
+            "Head for a busy, well-lit place and call someone",
+            "Keep walking and ignore the feeling"
+          ],
+          "correctIndex": 2,
+          "explanation": "Moving towards people and light and alerting someone reduces risk. Confrontation and isolated shortcuts increase it."
+        },
+        {
+          "question": "A caller says they are from your bank and urgently need the TAC code sent to your phone. What should you do?",
+          "options": [
+            "Hang up and call the bank yourself",
+            "Read out the code quickly before it expires",
+            "Give only half of the code",
+            "Ask them to send a second code"
+          ],
+          "correctIndex": 0,
+          "explanation": "Banks never ask for TAC codes or passwords. End the call and contact the bank through its official number. If money has been lost, call 997."
+        },
+        {
+          "question": "Which statement about personal boundaries is correct?",
+          "options": [
+            "A boundary only counts if the other person agrees to it",
+            "You may say no without giving a reason",
+            "Setting a boundary is rude to friends and family",
+            "Boundaries are only needed with strangers"
+          ],
+          "correctIndex": 1,
+          "explanation": "A boundary is your decision about what you accept. It does not need the other person's approval, and it applies to people you know as well as strangers."
+        }
+      ],
+      "reflection": {
+        "prompt": "Picture your usual route to school, work or the shops. Where on that route are you least aware of your surroundings?",
+        "guidingQuestions": [
+          "Who are the two people you would contact first if you felt unsafe?",
+          "Have you ever ignored an uneasy feeling? What happened?",
+          "Which of your online accounts would cause the most damage if someone else got in?"
+        ]
+      },
+      "faithLens": {
+        "text": "The Quran instructs believers not to throw themselves into destruction by their own hands, and to do good. When a man asked whether he should tie his camel or leave it and rely on Allah, the Prophet ﷺ answered: tie it, and rely on Allah. Taking sensible precautions is part of tawakkul, not a lack of it.",
+        "sources": [
+          "Quran 2:195",
+          "Jami' at-Tirmidhi 2517 (hasan)"
+        ]
+      }
+    }
+  ]
+}

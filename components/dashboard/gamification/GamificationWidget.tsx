@@ -1,41 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useGamification } from '../../../contexts/GamificationContext';
 import { MOCK_BADGES } from '../../../constants';
+import { WORLD_BADGES } from '../../../utils/gameWorld';
 import { ProgressBar } from '../shared/ProgressBar';
 
 const GamificationWidget: React.FC = () => {
-  const { profile } = useGamification();
+  const { profile, streak } = useGamification();
   const { level, points, xpInLevel, xpForNextLevel, badges: earnedBadgeIds } = profile;
 
   const progressPercentage = (xpInLevel / xpForNextLevel) * 100;
 
-  const recentBadges = MOCK_BADGES
+  const recentBadges = [...WORLD_BADGES, ...MOCK_BADGES]
     .filter(badge => earnedBadgeIds.includes(badge.id))
     .slice(0, 3);
 
-  
-  // Streak tracking with localStorage
-  const [streak, setStreak] = useState(0);
-  const [lastLoginDate, setLastLoginDate] = useState('');
-  
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    const savedStreak = parseInt(localStorage.getItem('hla_streak') || '0');
-    const savedDate = localStorage.getItem('hla_last_login') || '';
-    
-    if (savedDate === today) {
-      setStreak(savedStreak);
-    } else {
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-      const newStreak = savedDate === yesterday ? savedStreak + 1 : 1;
-      setStreak(newStreak);
-      localStorage.setItem('hla_streak', String(newStreak));
-      localStorage.setItem('hla_last_login', today);
-    }
-    setLastLoginDate(today);
-  }, []);
 
-return (
+  return (
     <div className="bento-card h-full" style={{ border: '1px solid rgba(201,168,76,0.3)', boxShadow: '0 0 30px rgba(201,168,76,0.06)' }}>
       <h2
         className="text-xl font-bold mb-5 flex items-center gap-2"

@@ -1,0 +1,330 @@
+{
+  "id": "spiritual",
+  "name": "Spiritual Wellness",
+  "icon": "🧘",
+  "audience": "universal",
+  "order": 7,
+  "description": "Secular mindfulness pathways: train your attention, appreciate what you have, live by your values and recover your balance when life is hard.",
+  "topics": [
+    {
+      "slug": "presence",
+      "title": "Presence",
+      "icon": "🧘",
+      "summary": "Training your attention to stay with the present moment, using the breath and the senses as anchors.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "Define mindfulness in plain language.",
+        "Explain why the mind wanders and why noticing it is the actual practice.",
+        "Carry out a three-minute breathing practice and a sensory grounding exercise."
+      ],
+      "lesson": {
+        "title": "Coming Back Is the Practice",
+        "explanation": "Presence means your attention is where your body is. Most of the time it is not. Minds drift to replaying the past, rehearsing the future or checking a screen, and a wandering mind tends to be a more anxious one.\n\nMindfulness is the skill of bringing attention back. Jon Kabat-Zinn, who developed the Mindfulness-Based Stress Reduction programme, defines it as paying attention in a particular way: on purpose, in the present moment and without judgement. Notice the three parts. 'On purpose' means you choose where attention goes. 'Present moment' means what is actually happening now: this breath, this sound, this sensation. 'Without judgement' means observing thoughts and feelings as passing events instead of criticising yourself for having them.\n\nThe basic practice is simple. Sit comfortably, breathe normally and rest your attention on the feeling of the breath at the nose or belly. Within seconds your mind will wander. This is not failure. The moment you notice that you have wandered and gently return to the breath is the exercise itself, like one repetition of a weight. Ten returns in three minutes is ten repetitions.\n\nYou can also anchor attention in the senses. The 5-4-3-2-1 exercise asks you to name five things you can see, four you can touch, three you can hear, two you can smell and one you can taste. It is especially useful when you feel anxious or overwhelmed.",
+        "keyPoints": [
+          "Mindfulness: attention on purpose, in the present moment, without judgement.",
+          "A wandering mind is normal; noticing and returning is the training.",
+          "The breath and the five senses are always available as anchors.",
+          "Short daily practice builds the skill better than occasional long sessions."
+        ],
+        "examples": [
+          {
+            "title": "\"I can't meditate\"",
+            "scenario": "Wei Ling tries a three-minute breathing exercise and gives up, saying her mind 'won't stay still'. Her counsellor asks how many times she noticed it wandering. 'Maybe fifteen,' she says.",
+            "takeaway": "Fifteen noticings means fifteen successful repetitions. The aim was never an empty mind. It was the returning."
+          },
+          {
+            "title": "Before the exam paper",
+            "scenario": "Sitting in the exam hall with a racing heart, Aaron presses his feet into the floor and silently runs through 5-4-3-2-1, starting with five things he can see on his desk.",
+            "takeaway": "Directing attention to the senses pulled his mind out of 'what if I fail' and back into the room, where he could begin the first question."
+          }
+        ],
+        "practicalTip": "Pick one daily activity, such as brushing your teeth or the first three bites of a meal, and do it with full attention this week: no phone, no planning, only the sensations. Add a three-minute breathing practice when you can.",
+        "deeperInsight": "Mindfulness is not relaxation, although calm often follows. Its purpose is awareness, including awareness of discomfort. When you can watch an urge or a worry rise and fade without immediately acting on it, you gain a choice you did not have before."
+      },
+      "quiz": [
+        {
+          "question": "During breathing practice, you notice your mind has wandered to tomorrow's homework. What should you do?",
+          "options": [
+            "Stop, because the practice has failed",
+            "Criticise yourself for losing focus",
+            "Force your mind to become completely blank",
+            "Gently return your attention to the breath"
+          ],
+          "correctIndex": 3,
+          "explanation": "Noticing and gently returning is the practice itself. Wandering is expected, and self-criticism is not part of it."
+        },
+        {
+          "question": "Which is NOT part of Jon Kabat-Zinn's definition of mindfulness?",
+          "options": [
+            "Paying attention on purpose",
+            "Staying in the present moment",
+            "Emptying the mind of all thoughts",
+            "Observing what arises without judgement"
+          ],
+          "correctIndex": 2,
+          "explanation": "Mindfulness does not require an empty mind. It means attending on purpose, in the present, without judging what you notice."
+        },
+        {
+          "question": "In the 5-4-3-2-1 grounding exercise, what do you begin with?",
+          "options": [
+            "Five things you can see",
+            "Five deep breaths",
+            "Five things you are worried about",
+            "Five things you are grateful for"
+          ],
+          "correctIndex": 0,
+          "explanation": "The exercise moves through the senses: five things seen, four touched, three heard, two smelled, one tasted."
+        }
+      ],
+      "reflection": {
+        "prompt": "Think about the last hour. How much of it were you actually present for?",
+        "guidingQuestions": [
+          "Where does your mind most often go when it wanders: the past, the future or a screen?",
+          "What daily activity do you do entirely on autopilot?",
+          "What did you notice when you tried the breathing practice?"
+        ]
+      }
+    },
+    {
+      "slug": "gratitude",
+      "title": "Gratitude",
+      "icon": "🌸",
+      "summary": "Why noticing what is good changes how you feel, and how to make gratitude a regular practice.",
+      "durationMinutes": 10,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why the mind notices problems more easily than good things.",
+        "Describe what research has found about regular gratitude practice.",
+        "Write a specific gratitude entry and a thank-you message."
+      ],
+      "lesson": {
+        "title": "What You Notice Grows",
+        "explanation": "Gratitude is noticing and appreciating what is good in your life, and recognising that much of it comes from outside yourself: other people, nature, circumstances you did not create.\n\nIt does not come automatically. The human brain has a negativity bias. It reacts more strongly to threats and problems than to good events, because noticing danger kept our ancestors alive. One criticism can outweigh ten compliments. Left alone, attention drifts towards what is missing or wrong. Gratitude practice deliberately trains it the other way.\n\nThe evidence is encouraging. In a well-known set of studies by Robert Emmons and Michael McCullough, people who wrote down things they were grateful for each week reported feeling more optimistic and more satisfied with their lives than people who recorded hassles or neutral events. Later research links gratitude with better sleep and stronger relationships.\n\nTwo things make the practice work. Be specific: 'I'm grateful my sister saved me a seat and asked about my test' affects you more than 'I'm grateful for family'. And keep it fresh: writing a few entries once or twice a week often works better than a daily list that turns into routine. Gratitude grows further when expressed. Telling someone exactly what they did and why it mattered benefits both of you. Gratitude does not mean pretending problems do not exist. It means seeing the whole picture, including the part that is going well.",
+        "keyPoints": [
+          "The brain's negativity bias makes problems more noticeable than good things.",
+          "Regular gratitude writing is linked with more optimism and life satisfaction.",
+          "Specific entries work better than general ones.",
+          "Expressing thanks to others strengthens relationships."
+        ],
+        "examples": [
+          {
+            "title": "Specific beats general",
+            "scenario": "Jasmine's first journal entries read 'family, friends, food' every night and soon feel empty. She switches to one detailed entry: 'Mum left dinner covered on the table when I came home late from training.'",
+            "takeaway": "The detail brought the moment back and with it the feeling. Specific entries make you relive the good event instead of listing a category."
+          },
+          {
+            "title": "The thank-you message",
+            "scenario": "Daniel writes to a former teacher: 'In Form 2 you stayed back to explain algebra to me three times. I'm doing well in maths now and I wanted you to know that started with you.' The teacher replies that she kept the message.",
+            "takeaway": "Expressed gratitude lifted both of them. Many people never learn the difference they made unless someone tells them."
+          }
+        ],
+        "practicalTip": "Twice this week, write three specific things you are grateful for and why each happened. Then send one short message thanking someone for something particular they did.",
+        "deeperInsight": "Gratitude and comparison pull in opposite directions. Social media constantly shows what others have, which trains attention on what you lack. A gratitude practice is partly a way of reclaiming your attention from that."
+      },
+      "quiz": [
+        {
+          "question": "What is the 'negativity bias'?",
+          "options": [
+            "A habit of always expecting good outcomes",
+            "The brain's tendency to react more strongly to bad events than good ones",
+            "A dislike of other people's success",
+            "A medical condition that causes sadness"
+          ],
+          "correctIndex": 1,
+          "explanation": "The brain gives more weight to threats and problems than to positive events, which is why gratitude takes deliberate practice."
+        },
+        {
+          "question": "Which gratitude journal entry is likely to have the strongest effect?",
+          "options": [
+            "\"I am grateful for everything.\"",
+            "\"Friends.\"",
+            "\"My friend walked me home in the rain and shared her umbrella.\"",
+            "\"Nothing bad happened today.\""
+          ],
+          "correctIndex": 2,
+          "explanation": "Specific, detailed entries bring the experience back to mind and produce more feeling than general categories."
+        },
+        {
+          "question": "What did Emmons and McCullough find among people who regularly recorded things they were grateful for?",
+          "options": [
+            "They became much less aware of the problems in their lives",
+            "They earned higher incomes",
+            "They needed fewer friends",
+            "They reported more optimism and life satisfaction"
+          ],
+          "correctIndex": 3,
+          "explanation": "Compared with people who listed hassles or neutral events, the gratitude group reported feeling more optimistic and more satisfied with life."
+        }
+      ],
+      "reflection": {
+        "prompt": "What is one good thing in your life that you have stopped noticing because it is always there?",
+        "guidingQuestions": [
+          "Who has helped you in a way you have never properly thanked them for?",
+          "What went well today, and what made it possible?",
+          "When do you most often compare yourself with others?"
+        ]
+      }
+    },
+    {
+      "slug": "purpose",
+      "title": "Purpose",
+      "icon": "🌟",
+      "summary": "Identifying your values and using them to give direction and meaning to everyday choices.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain the difference between values and goals.",
+        "Identify three to five personal core values.",
+        "Connect an ordinary daily task to something you care about."
+      ],
+      "lesson": {
+        "title": "A Compass, Not a Map",
+        "explanation": "Purpose is the sense that your life is directed towards something that matters, to you and beyond you. It does not need to be grand. Purpose can be raising a family well, mastering a craft, serving a community or caring for one person. Research consistently links a sense of purpose with better well-being and greater persistence through difficulty.\n\nPurpose rests on values. A goal is a destination you can reach and tick off, such as passing an exam or buying a car. A value is a direction you keep travelling in, such as honesty, learning, kindness, courage or family. You never finish being kind. Goals without values feel hollow once achieved. Values give you a reason to set goals and a way to choose between them. In that sense values are a compass, and a compass is more useful than a map when the road changes.\n\nTo find your values, look at evidence. When have you felt most proud of yourself? What makes you angry when you see it violated? Whom do you admire, and for what? What would you do even if nobody praised you? Patterns in your answers point to what you care about.\n\nPsychiatrist Viktor Frankl, who survived the Nazi concentration camps, observed that people who had a reason to live could endure almost any hardship. He argued that meaning can be found in three ways: through what we create or do, through what we experience and whom we love, and through the attitude we take towards suffering we cannot avoid.",
+        "keyPoints": [
+          "Purpose is direction towards something that matters to you and beyond you.",
+          "Goals are destinations; values are directions.",
+          "Your proudest moments, your anger and your admiration reveal your values.",
+          "Meaning can be found in doing, in loving and in the attitude taken towards hardship."
+        ],
+        "examples": [
+          {
+            "title": "Why am I studying this?",
+            "scenario": "Ravi finds Biology revision pointless until he connects it to a value. He wants to be a physiotherapist because he helped his grandfather recover from a stroke. 'I am learning how the body heals' replaces 'I have to memorise Chapter 4.'",
+            "takeaway": "The task did not change. Linking it to something he cares about changed his motivation and persistence."
+          },
+          {
+            "title": "The goal that felt empty",
+            "scenario": "Sophia works for a year to become head prefect. A month after achieving it she feels flat. Reflecting, she realises she values fairness and helping juniors, and begins a peer-support scheme.",
+            "takeaway": "The title was a goal, and reaching it ended the journey. Acting on her values gave her something to keep moving towards."
+          }
+        ],
+        "practicalTip": "Write down ten values that matter to you, then cross out five, then two more. For each of the three that remain, write one small action you could take this week that expresses it.",
+        "deeperInsight": "Purpose is usually built, not discovered in a flash. It tends to grow from engaging with the world: trying things, helping people and noticing what moves you. Waiting to 'find your purpose' before acting has the order backwards."
+      },
+      "quiz": [
+        {
+          "question": "Which of these is a value rather than a goal?",
+          "options": [
+            "Being honest",
+            "Scoring an A in the trial exam",
+            "Saving RM1,000 by December",
+            "Finishing a 10 km run"
+          ],
+          "correctIndex": 0,
+          "explanation": "Honesty is a direction you keep living by and never 'complete'. The others are goals that can be achieved and ticked off."
+        },
+        {
+          "question": "According to Viktor Frankl, which is one way people can find meaning?",
+          "options": [
+            "By avoiding all difficulty",
+            "Through the attitude they take towards unavoidable suffering",
+            "By comparing themselves with others",
+            "By owning more possessions"
+          ],
+          "correctIndex": 1,
+          "explanation": "Frankl described three sources of meaning: what we create or do, what we experience and love, and the attitude we take towards suffering we cannot change."
+        },
+        {
+          "question": "Which question is most useful for identifying your personal values?",
+          "options": [
+            "\"What is the highest-paying job?\"",
+            "\"What do most of my classmates want?\"",
+            "\"When have I felt most proud of how I acted?\"",
+            "\"What is trending this week?\""
+          ],
+          "correctIndex": 2,
+          "explanation": "Moments of real pride reveal what you care about. Income, popularity and trends tell you about other people's priorities."
+        }
+      ],
+      "reflection": {
+        "prompt": "Describe a moment when you felt proud of how you acted, even though nobody praised you for it.",
+        "guidingQuestions": [
+          "Which value were you living by in that moment?",
+          "Whom do you admire most, and what quality in them draws you?",
+          "Which part of your current routine feels most meaningful, and which least?"
+        ]
+      }
+    },
+    {
+      "slug": "resilience",
+      "title": "Resilience",
+      "icon": "🌊",
+      "summary": "Meeting difficulty with self-compassion and steady attention, so that you can return to balance.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Describe the three components of self-compassion.",
+        "Use the RAIN practice to work through a difficult emotion.",
+        "Explain why self-compassion supports motivation better than self-criticism."
+      ],
+      "lesson": {
+        "title": "The Strength to Return",
+        "explanation": "Everyone is knocked off balance by failure, loss or disappointment. Inner resilience is the capacity to return to steadiness. The emotional wellness module covers the outer skills, such as support networks and realistic thinking. This pathway covers the inner stance: how you treat yourself when things go wrong.\n\nMany people respond to their own mistakes with harsh self-criticism, believing it keeps them disciplined. Research by psychologist Kristin Neff points the other way. People who treat themselves with compassion after a failure are more likely to take responsibility, try again and improve, because failure no longer feels so threatening that it must be avoided or denied.\n\nSelf-compassion has three parts. Self-kindness means speaking to yourself as you would to a good friend in the same situation. Common humanity means remembering that struggle and imperfection are part of being human, so you are not alone or uniquely flawed. Mindfulness means acknowledging the pain as it is, without suppressing it or being swept away.\n\nA practical tool for hard moments is RAIN, taught by meditation teacher Tara Brach. Recognise what you are feeling and name it. Allow it to be there for a moment without fighting it. Investigate with curiosity: where is it in your body, and what does it need? Nurture yourself with a kind phrase or gesture. Emotions that are allowed and understood tend to pass, while those that are fought tend to stay.",
+        "keyPoints": [
+          "Inner resilience is returning to steadiness after being knocked off balance.",
+          "Self-compassion: self-kindness, common humanity, mindfulness.",
+          "Self-compassion supports responsibility and persistence better than self-criticism.",
+          "RAIN: Recognise, Allow, Investigate, Nurture."
+        ],
+        "examples": [
+          {
+            "title": "Two inner voices",
+            "scenario": "After forgetting her lines in a school play, Mira's first thought is, 'You idiot, you ruined everything.' She asks what she would say to a friend and tries again: 'That was painful. Everyone forgets lines sometimes. What would help for tomorrow's show?'",
+            "takeaway": "The kinder voice did not excuse the mistake. It made it possible to think about improving instead of sinking into shame."
+          },
+          {
+            "title": "RAIN after a rejection",
+            "scenario": "Ben is turned down for a scholarship. He sits quietly and works through RAIN: 'This is disappointment' (Recognise). 'It is okay to feel this' (Allow). 'It's heavy in my chest, and I think I'm afraid I've let my parents down' (Investigate). 'I worked hard. One result does not define me' (Nurture).",
+            "takeaway": "Ten minutes of honest attention settled him enough to talk to his parents and look at other options that evening."
+          }
+        ],
+        "practicalTip": "The next time you make a mistake, put a hand on your chest, take one slow breath and say to yourself what you would say to a close friend in the same situation. Notice how your body responds.",
+        "deeperInsight": "Self-compassion is often mistaken for self-pity or making excuses. Self-pity says 'poor me, this only happens to me'. Self-compassion says 'this is hard, it is hard for many people, and I can care for myself through it'. The first isolates you and the second connects you."
+      },
+      "quiz": [
+        {
+          "question": "Which of these is one of the three components of self-compassion described by Kristin Neff?",
+          "options": [
+            "Self-improvement",
+            "Competition",
+            "Perfectionism",
+            "Common humanity"
+          ],
+          "correctIndex": 3,
+          "explanation": "The three components are self-kindness, common humanity and mindfulness."
+        },
+        {
+          "question": "What does the 'A' in the RAIN practice stand for?",
+          "options": [
+            "Allow",
+            "Avoid",
+            "Analyse",
+            "Achieve"
+          ],
+          "correctIndex": 0,
+          "explanation": "RAIN stands for Recognise, Allow, Investigate, Nurture. 'Allow' means letting the feeling be present without fighting it."
+        },
+        {
+          "question": "According to research, how does self-compassion after a failure affect people?",
+          "options": [
+            "It makes them lazy and careless",
+            "It stops them from caring about results",
+            "It makes them more likely to take responsibility and try again",
+            "It causes them to blame others"
+          ],
+          "correctIndex": 2,
+          "explanation": "When failure feels less threatening, people are more able to admit mistakes, learn from them and keep trying."
+        }
+      ],
+      "reflection": {
+        "prompt": "How do you usually talk to yourself after a mistake? Would you speak that way to a friend?",
+        "guidingQuestions": [
+          "What difficult feeling have you been pushing away recently?",
+          "What kind phrase could you say to yourself in hard moments?",
+          "Who models calm recovery from setbacks in your life, and what do they do?"
+        ]
+      }
+    }
+  ]
+}

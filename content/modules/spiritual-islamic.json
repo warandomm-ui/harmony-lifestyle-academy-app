@@ -1,0 +1,468 @@
+{
+  "id": "spiritual-islamic",
+  "name": "Islamic Spiritual Wellness",
+  "icon": "🕌",
+  "audience": "muslim",
+  "order": 8,
+  "description": "Strengthen your connection with Allah through remembrance, supplication, trust, gratitude and prayer, grounded in the Quran and the authentic Sunnah.",
+  "topics": [
+    {
+      "slug": "dhikr-and-remembrance",
+      "title": "Dhikr & Remembrance",
+      "icon": "📿",
+      "summary": "What dhikr is, why it gives the heart rest, and how to build it into the day.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain the meaning of dhikr and its place in the Quran and Sunnah.",
+        "Recite and understand several authentic forms of dhikr.",
+        "Plan fixed moments of dhikr through the day."
+      ],
+      "lesson": {
+        "title": "Hearts Find Rest in Remembrance",
+        "explanation": "Dhikr means remembering Allah: with the tongue, with the heart and through actions done in awareness of Him. It is among the easiest acts of worship, since it needs no wudu', no particular place and no set time, and it is among the most rewarded. Allah says, 'So remember Me; I will remember you', and 'Surely in the remembrance of Allah do hearts find rest.'\n\nThe Prophet ﷺ compared the person who remembers his Lord and the one who does not to the living and the dead. A heart without dhikr is alive in body but starved in spirit.\n\nThe Sunnah gives specific words. Subhanallah (Glory be to Allah) declares Him free of any imperfection. Alhamdulillah (All praise is for Allah) is thanks and praise. Allahu akbar (Allah is greatest) puts every worry in proportion. La ilaha illallah (There is no god but Allah) is the foundation of faith. The Prophet ﷺ said that two phrases are light on the tongue, heavy on the scale and beloved to the Most Merciful: Subhanallahi wa bihamdihi, Subhanallahil-'Azim. After each obligatory prayer he taught saying Subhanallah, Alhamdulillah and Allahu akbar thirty-three times each, completing the hundred with La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadir.\n\nThe best dhikr joins tongue and heart. Understand what you say, and say it attentively. A small amount done every day is better than a large amount done rarely.",
+        "keyPoints": [
+          "Dhikr is remembrance of Allah with tongue, heart and action.",
+          "Allah promises to remember those who remember Him, and that hearts find rest in it.",
+          "Authentic forms include tasbih, tahmid, takbir and tahlil, especially after each prayer.",
+          "Presence of heart and consistency matter more than quantity."
+        ],
+        "examples": [
+          {
+            "title": "Anchored to the prayer",
+            "scenario": "Luqman used to stand up immediately after the salam. He begins staying seated for two minutes after each prayer to complete the thirty-three tasbih, tahmid and takbir on his fingers.",
+            "takeaway": "Attaching dhikr to something he already does five times a day made it automatic. The prayers themselves began to feel less rushed."
+          },
+          {
+            "title": "The commute",
+            "scenario": "Hannah spends forty minutes on the LRT each day scrolling. She keeps the first ten minutes of the journey for Subhanallahi wa bihamdihi and istighfar, with her phone in her bag.",
+            "takeaway": "Dead time became worship. She notices she arrives at class calmer than before."
+          }
+        ],
+        "practicalTip": "Choose one fixed anchor this week: the dhikr after each obligatory prayer. Learn the meaning of each phrase before you start, and count on your fingers, as the Prophet ﷺ was seen doing.",
+        "deeperInsight": "In a hadith qudsi, Allah says: 'I am as My servant thinks of Me, and I am with him when he remembers Me. If he remembers Me within himself, I remember him within Myself.' Dhikr is therefore a relationship, not a formula: the servant's remembrance is answered by Allah's own.",
+        "sources": [
+          "Quran 2:152",
+          "Quran 13:28",
+          "Quran 33:41-42",
+          "Sahih al-Bukhari 6407 (the living and the dead)",
+          "Sahih al-Bukhari 6406; Sahih Muslim 2694 (two phrases light on the tongue)",
+          "Sahih Muslim 597 (dhikr after prayer)",
+          "Sahih al-Bukhari 7405; Sahih Muslim 2675 (hadith qudsi)",
+          "Sunan Abi Dawud 1502 (counting tasbih on the fingers; graded sahih by al-Albani)"
+        ]
+      },
+      "quiz": [
+        {
+          "question": "What does Allah promise in Surah al-Baqarah 2:152 to those who remember Him?",
+          "options": [
+            "That they will never face any hardship",
+            "That He will remember them",
+            "That they will become wealthy",
+            "That they will not need to pray"
+          ],
+          "correctIndex": 1,
+          "explanation": "'So remember Me; I will remember you. And be grateful to Me and do not deny Me.' (Quran 2:152)"
+        },
+        {
+          "question": "Which two phrases did the Prophet ﷺ describe as light on the tongue, heavy on the scale and beloved to the Most Merciful?",
+          "options": [
+            "Bismillah and Alhamdulillah",
+            "Astaghfirullah and Insha'Allah",
+            "Allahu akbar and Masha'Allah",
+            "Subhanallahi wa bihamdihi, Subhanallahil-'Azim"
+          ],
+          "correctIndex": 3,
+          "explanation": "Narrated by Abu Hurairah (RA) in Sahih al-Bukhari and Sahih Muslim."
+        },
+        {
+          "question": "The Prophet ﷺ compared the one who remembers Allah and the one who does not to what?",
+          "options": [
+            "The living and the dead",
+            "The rich and the poor",
+            "The traveller and the resident",
+            "The young and the old"
+          ],
+          "correctIndex": 0,
+          "explanation": "'The example of the one who remembers his Lord and the one who does not is like that of the living and the dead.' (Sahih al-Bukhari 6407)"
+        }
+      ],
+      "reflection": {
+        "prompt": "At which moments in your day is your heart most forgetful of Allah, and at which is it most aware?",
+        "guidingQuestions": [
+          "Which phrase of dhikr do you say most often without thinking about its meaning?",
+          "What waiting time in your day could become time for remembrance?",
+          "How do you feel after a few minutes of attentive dhikr compared with a few minutes of scrolling?"
+        ]
+      }
+    },
+    {
+      "slug": "dua-and-supplication",
+      "title": "Du'a & Supplication",
+      "icon": "🤲",
+      "summary": "Asking Allah directly: why du'a is worship, how to make it and how it is answered.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain why du'a is itself an act of worship.",
+        "Apply the etiquette of du'a taught in the Sunnah.",
+        "Identify times when du'a is especially likely to be accepted."
+      ],
+      "lesson": {
+        "title": "He Is Near",
+        "explanation": "Du'a is calling upon Allah: asking Him, thanking Him and speaking to Him about your needs. It requires no intermediary. Allah says, 'When My servants ask you about Me, I am near. I respond to the call of the caller when he calls upon Me', and 'Call upon Me; I will respond to you.' The Prophet ﷺ said, 'Du'a is worship', because asking Allah is an admission that He alone controls all things and that you need Him.\n\nThe Sunnah teaches an etiquette. Begin by praising Allah and sending blessings on the Prophet ﷺ. Raise your hands. Ask with humility, sincerity and a present heart, certain that Allah hears. Ask for the good of this world and the next, and be specific. Acknowledge your sins and ask forgiveness. Ask repeatedly, and do not ask for anything sinful or for the cutting of family ties.\n\nSome times carry special hope of acceptance: the last third of the night, during sujud, and between the adhan and the iqamah.\n\nA sincere du'a is never wasted, but the answer is not always what or when we expect. The Prophet ﷺ taught that a person's du'a is answered so long as he is not hasty, saying, 'I prayed and was not answered', and giving up. Allah gives in the way He knows is best. The most frequent du'a of the Prophet ﷺ was: Rabbana atina fid-dunya hasanah, wa fil-akhirati hasanah, wa qina 'adhaban-nar.",
+        "keyPoints": [
+          "Du'a is worship: it expresses need of Allah and trust in Him.",
+          "Allah is near and responds to the caller directly.",
+          "Etiquette: praise Allah, send salawat, raise the hands, ask with certainty and persistence.",
+          "Do not be hasty; Allah answers in the way and time that is best."
+        ],
+        "examples": [
+          {
+            "title": "Du'a with effort",
+            "scenario": "Before SPM, Aisyah makes du'a in sujud each night for understanding and success, and studies according to a plan each day.",
+            "takeaway": "Du'a and effort work together. She asks Allah for the outcome while doing what is in her power, which is what the Prophet ﷺ practised."
+          },
+          {
+            "title": "\"My du'a wasn't answered\"",
+            "scenario": "Yusuf prays for months to be accepted to a certain university and is rejected. He is tempted to stop making du'a. His father reminds him that the Prophet ﷺ warned against haste. A year later, at a different university, Yusuf finds a course and mentors that suit him far better.",
+            "takeaway": "The answer came in a form he did not ask for. Continuing to ask, and trusting Allah's choice, is part of the worship."
+          }
+        ],
+        "practicalTip": "Tonight, in the sujud of a sunnah or night prayer, ask Allah for one thing for your Hereafter, one for this world, and one for someone else. Then learn the du'a 'Rabbana atina...' with its meaning if you have not yet.",
+        "deeperInsight": "The Prophet ﷺ taught that the du'a made for a fellow Muslim in his absence is answered, and an angel says, 'Amin, and for you the same.' Praying for others is thus one of the surest ways of being prayed for.",
+        "sources": [
+          "Quran 2:186",
+          "Quran 40:60",
+          "Quran 2:201",
+          "Sunan Abi Dawud 1479; Jami' at-Tirmidhi 2969 (du'a is worship; sahih)",
+          "Jami' at-Tirmidhi 3477 (beginning with praise and salawat; sahih)",
+          "Sunan Abi Dawud 1488 (raising the hands; sahih)",
+          "Jami' at-Tirmidhi 212 (between the adhan and the iqamah; sahih)",
+          "Sahih al-Bukhari 6340; Sahih Muslim 2735 (not being hasty)",
+          "Sahih al-Bukhari 1145; Sahih Muslim 758 (the last third of the night)",
+          "Sahih Muslim 482 (du'a in sujud)",
+          "Sahih al-Bukhari 6389; Sahih Muslim 2690 (the Prophet's most frequent du'a)",
+          "Sahih Muslim 2732 (du'a for one's brother in his absence)"
+        ]
+      },
+      "quiz": [
+        {
+          "question": "According to the Prophet ﷺ, what is du'a?",
+          "options": [
+            "A cultural custom",
+            "A last resort after all else fails",
+            "Worship",
+            "Only for scholars"
+          ],
+          "correctIndex": 2,
+          "explanation": "The Prophet ﷺ said, 'Du'a is worship', then recited: 'Your Lord says: Call upon Me; I will respond to you.' (Abu Dawud, at-Tirmidhi; Quran 40:60)"
+        },
+        {
+          "question": "In which position is a servant closest to his Lord, and so encouraged to make much du'a?",
+          "options": [
+            "While standing",
+            "In sujud (prostration)",
+            "While sitting between the two prostrations",
+            "While bowing in ruku'"
+          ],
+          "correctIndex": 1,
+          "explanation": "'The closest a servant is to his Lord is while he is prostrating, so make much du'a.' (Sahih Muslim 482)"
+        },
+        {
+          "question": "What did the Prophet ﷺ warn against regarding du'a?",
+          "options": [
+            "Asking for worldly needs",
+            "Making du'a in one's own language",
+            "Repeating the same request",
+            "Being hasty and saying, \"I prayed but was not answered\""
+          ],
+          "correctIndex": 3,
+          "explanation": "A person's du'a is answered so long as he is not hasty and does not give up. (Sahih al-Bukhari 6340; Sahih Muslim 2735)"
+        }
+      ],
+      "reflection": {
+        "prompt": "What is one thing you have been carrying alone that you have not yet asked Allah about?",
+        "guidingQuestions": [
+          "When you make du'a, is your heart present, or is it a routine of the tongue?",
+          "Has a du'a of yours been answered in a way you did not expect?",
+          "Who could you make du'a for today without them knowing?"
+        ]
+      }
+    },
+    {
+      "slug": "tawakkul-and-trust-in-allah",
+      "title": "Tawakkul & Trust in Allah",
+      "icon": "🌿",
+      "summary": "Relying on Allah with the heart while taking every lawful means with the limbs.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Define tawakkul and distinguish it from passivity.",
+        "Explain the relationship between effort, trust and outcome.",
+        "Apply tawakkul to a current worry."
+      ],
+      "lesson": {
+        "title": "Tie Your Camel, Then Trust",
+        "explanation": "Tawakkul is the heart's reliance on Allah to bring benefit and repel harm, together with taking the lawful means available. It has two halves, and removing either one changes it into something else. Effort without trust becomes anxiety and self-reliance. 'Trust' without effort is not tawakkul but negligence.\n\nThe Prophet ﷺ made this clear when a man asked whether he should tie his camel and rely on Allah, or leave it loose and rely on Allah. He replied, 'Tie it and rely on Allah.' He also said that if you relied on Allah as He deserves, He would provide for you as He provides for the birds: they go out in the morning hungry and return in the evening full. Notice that the birds leave the nest. They do not wait for food to arrive.\n\nThe Hijrah shows the balance at its highest level. The Prophet ﷺ planned carefully: he left at an unexpected time, hid in the cave of Thawr for three nights, arranged for news and provisions, and hired a skilled guide who took an unusual route. He did everything a human being could do. Yet when their pursuers stood at the mouth of the cave and Abu Bakr (RA) feared for him, he said, 'What do you think of two, when Allah is their third?'\n\nThe Quran sets the order: 'When you have decided, then rely upon Allah. Indeed, Allah loves those who rely upon Him.' Consult, plan, decide and act. Then leave the outcome to Allah and be content with what He decrees, for 'whoever relies upon Allah, He is sufficient for him.'",
+        "keyPoints": [
+          "Tawakkul is the heart's reliance on Allah combined with taking the means.",
+          "Effort belongs to the limbs; trust belongs to the heart; the outcome belongs to Allah.",
+          "The Hijrah joined careful planning with complete trust.",
+          "After doing your part, be content with what Allah decrees."
+        ],
+        "examples": [
+          {
+            "title": "The night before results",
+            "scenario": "Imran cannot sleep before his exam results. His mother asks, 'Did you study as well as you could?' He did. 'Then your part is finished. The result is with Allah, and He does not waste effort.'",
+            "takeaway": "Separating what was his responsibility (effort) from what was never his (outcome) let him rest. That is tawakkul in practice."
+          },
+          {
+            "title": "\"Allah will provide\"",
+            "scenario": "Zaid has stopped applying for jobs and says he is 'leaving it to Allah'. A friend reminds him of the camel and the birds. Zaid sends five applications that week and makes du'a after each one.",
+            "takeaway": "Trust without action misreads tawakkul. Taking the means is an act of obedience, and relying on Allah for the result is an act of faith."
+          }
+        ],
+        "practicalTip": "Take one current worry and draw two columns: 'My part' and 'Allah's decree'. Write what you can do in the first, do the first item today, and say 'Hasbunallahu wa ni'mal-wakil' (Allah is sufficient for us, and He is the best disposer of affairs) for the second.",
+        "deeperInsight": "Ibn 'Abbas (RA) reported that 'Hasbunallahu wa ni'mal-wakil' was said by Ibrahim عليه السلام when he was thrown into the fire, and by Muhammad ﷺ when people said, 'The enemy has gathered against you, so fear them.' In both cases the danger was real and the means were exhausted. Tawakkul shows its full strength exactly where human ability ends.",
+        "sources": [
+          "Quran 3:159",
+          "Quran 65:3",
+          "Quran 9:40",
+          "Quran 3:173",
+          "Jami' at-Tirmidhi 2517 (tie it and rely on Allah; hasan)",
+          "Jami' at-Tirmidhi 2344 (the birds; hasan sahih)",
+          "Sahih al-Bukhari 3905 (the planning of the Hijrah)",
+          "Sahih al-Bukhari 3653; Sahih Muslim 2381 (Allah is their third)",
+          "Sahih al-Bukhari 4563 (Hasbunallahu wa ni'mal-wakil)"
+        ]
+      },
+      "quiz": [
+        {
+          "question": "A man asked whether to tie his camel or leave it and rely on Allah. What did the Prophet ﷺ answer?",
+          "options": [
+            "\"Leave it; Allah will guard it.\"",
+            "\"Sell the camel.\"",
+            "\"Tie it and rely on Allah.\"",
+            "\"Ask someone else to watch it.\""
+          ],
+          "correctIndex": 2,
+          "explanation": "Reported by Anas ibn Malik (RA) in Jami' at-Tirmidhi. Taking the means and trusting Allah go together."
+        },
+        {
+          "question": "Which statement correctly describes tawakkul?",
+          "options": [
+            "Relying on Allah in the heart while taking lawful means",
+            "Doing nothing and waiting for results",
+            "Relying only on your own effort, planning and ability to control results",
+            "Trusting Allah only when all plans have failed"
+          ],
+          "correctIndex": 0,
+          "explanation": "Tawakkul joins effort with the limbs and reliance in the heart. Abandoning the means is negligence, and relying on effort alone is self-reliance."
+        },
+        {
+          "question": "According to Quran 3:159, when should a believer place their reliance upon Allah?",
+          "options": [
+            "Instead of consulting anyone",
+            "After consulting and reaching a decision",
+            "Only when in danger",
+            "Before thinking about the matter"
+          ],
+          "correctIndex": 1,
+          "explanation": "The verse instructs consultation, then: 'When you have decided, then rely upon Allah. Indeed, Allah loves those who rely upon Him.'"
+        }
+      ],
+      "reflection": {
+        "prompt": "What are you most anxious about at the moment? Which part of it is yours to do, and which belongs to Allah?",
+        "guidingQuestions": [
+          "Do you lean more towards worrying as if everything depends on you, or towards waiting without acting?",
+          "When has something you feared turned out to hold good for you?",
+          "What would change in your day if you truly believed Allah is sufficient for you?"
+        ]
+      }
+    },
+    {
+      "slug": "gratitude-shukr",
+      "title": "Gratitude (Shukr)",
+      "icon": "💛",
+      "summary": "Thanking Allah with the heart, the tongue and the limbs, and the promise of increase.",
+      "durationMinutes": 12,
+      "xpReward": 20,
+      "objectives": [
+        "Explain the three dimensions of shukr.",
+        "Relate shukr to Allah's promise of increase in the Quran.",
+        "Practise gratitude towards Allah and towards people."
+      ],
+      "lesson": {
+        "title": "Shall I Not Be a Grateful Servant?",
+        "explanation": "Shukr is recognising that every blessing comes from Allah and responding to it properly. Scholars such as Ibn al-Qayyim describe three dimensions. With the heart, you acknowledge that the blessing is from Allah and not simply from your own cleverness. With the tongue, you praise Him, saying Alhamdulillah. With the limbs, you use the blessing in obedience to Him and not in disobedience. Health is thanked by worship and service, wealth by charity, knowledge by teaching and acting on it.\n\nAllah attaches a promise to gratitude: 'If you are grateful, I will surely increase you.' He also reminds us that gratitude benefits the grateful person: 'Whoever is grateful is grateful only for his own good.' And He tells us how far His blessings exceed our counting: 'If you tried to count the favours of Allah, you could never number them.'\n\nThe Prophet ﷺ lived this. He stood so long in night prayer that his feet swelled. When asked why, since Allah had forgiven him, he replied, 'Shall I not be a grateful servant?' He taught that Allah is pleased with a servant who eats a meal and praises Him for it, or takes a drink and praises Him for it.\n\nTwo teachings keep gratitude alive. Look at those who have less than you in worldly matters, not those who have more, so that you do not belittle Allah's favours. And thank people, for whoever does not thank people has not thanked Allah.",
+        "keyPoints": [
+          "Shukr is with the heart (acknowledging), the tongue (praising) and the limbs (obeying).",
+          "Allah promises increase to the grateful.",
+          "The Prophet ﷺ expressed gratitude through extra worship.",
+          "Look at those with less, and thank the people through whom blessings reach you."
+        ],
+        "examples": [
+          {
+            "title": "Gratitude of the limbs",
+            "scenario": "Fatimah scores well in her exams. She says Alhamdulillah, prays two rak'at, and then offers to tutor two classmates who are struggling in the subject she is best at.",
+            "takeaway": "She thanked Allah with heart, tongue and action. Using a blessing to benefit others is the fullest form of shukr."
+          },
+          {
+            "title": "The old phone",
+            "scenario": "Amir is unhappy that his phone is two models behind his friends'. While helping at a food-bank distribution, he meets a boy his age who shares one phone with four siblings for online classes.",
+            "takeaway": "The Prophet's instruction to look at those with less changed how Amir saw what he already had. Nothing in his pocket had changed."
+          }
+        ],
+        "practicalTip": "Before sleeping tonight, name three specific blessings from today and say Alhamdulillah for each. Then choose one and decide how you will use it in obedience to Allah tomorrow.",
+        "deeperInsight": "Allah says, 'Work, O family of Dawud, in gratitude. And few of My servants are grateful.' The verse ties gratitude to work, not to words alone, and it warns that true shukr is rare. Gratitude is also owed in hardship, since the believer knows that what Allah withholds may itself be a mercy.",
+        "sources": [
+          "Quran 14:7",
+          "Quran 31:12",
+          "Quran 16:18",
+          "Quran 34:13",
+          "Sahih al-Bukhari 4836; Sahih Muslim 2819 (Shall I not be a grateful servant?)",
+          "Sahih Muslim 2734 (praising Allah after eating and drinking)",
+          "Sahih Muslim 2963 (look at those below you)",
+          "Sunan Abi Dawud 4811; Jami' at-Tirmidhi 1954 (thanking people; sahih)"
+        ]
+      },
+      "quiz": [
+        {
+          "question": "What does Allah promise in Surah Ibrahim 14:7 to those who are grateful?",
+          "options": [
+            "That He will surely increase them",
+            "That they will never be tested",
+            "That they will be praised by people",
+            "That their past will be forgotten"
+          ],
+          "correctIndex": 0,
+          "explanation": "'And when your Lord proclaimed: If you are grateful, I will surely increase you; but if you are ungrateful, My punishment is severe.' (Quran 14:7)"
+        },
+        {
+          "question": "What did the Prophet ﷺ say when asked why he prayed at night until his feet swelled?",
+          "options": [
+            "\"I fear the people's criticism.\"",
+            "\"I have many sins to erase.\"",
+            "\"It is obligatory upon me.\"",
+            "\"Shall I not be a grateful servant?\""
+          ],
+          "correctIndex": 3,
+          "explanation": "He ﷺ expressed gratitude to Allah through worship. (Sahih al-Bukhari 4836; Sahih Muslim 2819)"
+        },
+        {
+          "question": "Which of these is an example of shukr with the limbs?",
+          "options": [
+            "Feeling pleased with a gift",
+            "Using your health and time in obedience to Allah",
+            "Saying Alhamdulillah",
+            "Knowing in your heart that every blessing comes from Allah"
+          ],
+          "correctIndex": 1,
+          "explanation": "Shukr with the limbs means using blessings in ways that please Allah. Acknowledging is shukr of the heart, and saying Alhamdulillah is shukr of the tongue."
+        }
+      ],
+      "reflection": {
+        "prompt": "Which blessing do you use every day and almost never thank Allah for?",
+        "guidingQuestions": [
+          "In which area of life do you compare yourself with those who have more?",
+          "How could you use one of your strengths this week as an act of gratitude?",
+          "Which person has Allah sent good to you through, whom you have not thanked?"
+        ]
+      }
+    },
+    {
+      "slug": "prayer-and-devotion",
+      "title": "Prayer & Devotion",
+      "icon": "🕌",
+      "summary": "The five daily prayers as the believer's direct connection with Allah, and how to pray with presence.",
+      "durationMinutes": 14,
+      "xpReward": 20,
+      "objectives": [
+        "Explain the place of salah among the pillars of Islam.",
+        "Describe what khushu' means and practical ways to develop it.",
+        "Commit to guarding the five prayers on time."
+      ],
+      "lesson": {
+        "title": "Five Meetings a Day",
+        "explanation": "Salah is the second pillar of Islam and the first deed a servant will be questioned about on the Day of Judgement. It was prescribed for the believers at fixed times, and Allah states its purpose: 'Establish prayer for My remembrance.' Five times a day, whatever you are doing, you stop and stand before your Lord.\n\nThe Prophet ﷺ asked his Companions to imagine a river at someone's door in which he bathes five times a day. Would any dirt remain on him? They said no. He said that this is the likeness of the five prayers, by which Allah wipes away sins. The Quran adds that prayer restrains from indecency and wrongdoing. A prayer that is truly established changes how a person behaves between prayers.\n\nThe quality that gives prayer its life is khushu': humility and presence of heart. Allah says, 'Successful indeed are the believers, those who are humble in their prayers.' The Prophet ﷺ taught a man who had prayed hurriedly to go back and repeat it, and to be still in each position, in bowing, standing, prostration and sitting, before moving to the next. Practical steps help: make wudu' carefully, pray on time and not at the last minute, put the phone away, learn the meaning of al-Fatihah and what you recite, and move calmly.\n\nThe summit is ihsan, which the Prophet ﷺ defined as worshipping Allah as though you see Him, and though you do not see Him, He surely sees you. He ﷺ would say to Bilal (RA), 'Give us rest with it', meaning the prayer. For him it was a relief, not a burden.",
+        "keyPoints": [
+          "Salah is a pillar of Islam and the first deed to be accounted for.",
+          "The five prayers cleanse sins like bathing five times a day in a river.",
+          "Khushu' means humility and presence of heart, supported by calm, unhurried movement.",
+          "Ihsan: worship Allah as though you see Him, knowing that He sees you."
+        ],
+        "examples": [
+          {
+            "title": "From rushing to resting",
+            "scenario": "Hafiz used to finish Zuhur in two minutes during school break. After learning the meaning of al-Fatihah, he slows down, pauses after each verse and stays still in ruku' and sujud. The prayer now takes five minutes.",
+            "takeaway": "Understanding the words and observing stillness in each position turned a routine into a real pause in his day."
+          },
+          {
+            "title": "Guarding Subuh",
+            "scenario": "Maryam keeps missing Subuh. She moves her bedtime earlier, sets her alarm across the room, makes the intention before sleeping and asks her sister to wake her. Within two weeks she is praying it on time most days.",
+            "takeaway": "She joined intention and du'a with practical means. Small, steady changes built a habit that willpower alone had not."
+          }
+        ],
+        "practicalTip": "Choose one prayer today and pray it as if it were your last: careful wudu', phone in another room, and a full, still pause in every position. Learn the meaning of one phrase you recite that you did not understand before.",
+        "deeperInsight": "The Prophet ﷺ said that the deeds most beloved to Allah are those done most consistently, even if they are small. A person who guards the five obligatory prayers every day, without fail, is following this principle more closely than one who prays long voluntary prayers occasionally and neglects the obligatory ones.",
+        "sources": [
+          "Quran 20:14",
+          "Quran 29:45",
+          "Quran 23:1-2",
+          "Quran 4:103",
+          "Sahih al-Bukhari 8; Sahih Muslim 16 (the five pillars)",
+          "Jami' at-Tirmidhi 413 (the first deed to be accounted for; sahih)",
+          "Sahih al-Bukhari 528; Sahih Muslim 667 (the river)",
+          "Sahih al-Bukhari 757; Sahih Muslim 397 (stillness in each position)",
+          "Sahih Muslim 8 (ihsan, the hadith of Jibril)",
+          "Sunan Abi Dawud 4985 (Give us rest with it; sahih)",
+          "Sahih al-Bukhari 6464; Sahih Muslim 783 (consistent deeds)"
+        ]
+      },
+      "quiz": [
+        {
+          "question": "To what did the Prophet ﷺ compare the five daily prayers?",
+          "options": [
+            "A long journey through the desert",
+            "A shield carried into battle",
+            "A tree with five branches",
+            "A river at one's door in which one bathes five times a day"
+          ],
+          "correctIndex": 3,
+          "explanation": "Just as no dirt would remain after bathing five times daily, Allah wipes away sins through the five prayers. (Sahih al-Bukhari 528; Sahih Muslim 667)"
+        },
+        {
+          "question": "How did the Prophet ﷺ define ihsan in the hadith of Jibril?",
+          "options": [
+            "To give charity every day",
+            "To pray only when you feel ready",
+            "To worship Allah as though you see Him, for though you do not see Him, He sees you",
+            "To memorise the entire Quran"
+          ],
+          "correctIndex": 2,
+          "explanation": "This definition comes from the hadith of Jibril عليه السلام, narrated by 'Umar ibn al-Khattab (RA) in Sahih Muslim."
+        },
+        {
+          "question": "According to Quran 23:1-2, which quality in prayer marks the successful believers?",
+          "options": [
+            "Humility and presence of heart (khushu')",
+            "Praying as quickly as possible so as to finish early",
+            "Praying only in congregation",
+            "Reciting in a loud voice"
+          ],
+          "correctIndex": 0,
+          "explanation": "'Successful indeed are the believers, those who are humble (khashi'un) in their prayers.' (Quran 23:1-2)"
+        }
+      ],
+      "reflection": {
+        "prompt": "Which of your five prayers is strongest, and which is weakest? What makes the difference?",
+        "guidingQuestions": [
+          "What most often distracts you during prayer?",
+          "Do you understand the meaning of what you recite in each rak'ah?",
+          "What single practical change would help you guard your weakest prayer?"
+        ]
+      }
+    }
+  ]
+}

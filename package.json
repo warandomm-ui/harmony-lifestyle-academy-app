@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "content:validate": "node scripts/validate-module-content.mjs",
+    "content:seed": "node scripts/validate-module-content.mjs && node scripts/build-module-content-seed.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.5.0",
