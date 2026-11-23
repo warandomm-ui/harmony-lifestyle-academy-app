@@ -63,7 +63,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Morning Meditation (10 min)',
     category: 'life',
     sunnahNote: 'Ancient wisdom across every tradition recommends beginning the day in stillness. The Stoics, Buddhists, and Transcendentalists all shared this practice.',
-    scienceNote: '🔬 Harvard study: 8 weeks of mindfulness increases grey matter in self-awareness regions. Morning meditation reduces cortisol by up to 20% for the entire day.',
+    scienceNote: '🔬 Harvard-affiliated study (Hölzel et al., 2011): 8 weeks of mindfulness practice was linked to grey-matter changes in regions tied to learning, memory and self-awareness.',
     dimensions: {
       ruh: 'Connecting with something greater — whether nature, the universe, or your deeper purpose',
       aql: 'Meditation strengthens the prefrontal cortex — better decisions, clearer thinking all day',
@@ -95,7 +95,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Exercise / Movement (30 min)',
     category: 'health',
     sunnahNote: 'The ancient Greeks believed a sound mind requires a sound body. Every wisdom tradition recognises physical movement as essential to human flourishing.',
-    scienceNote: '🔬 Morning exercise raises BDNF (brain growth factor) — improves memory and learning (Biomolecules, 2021). 30 min/day reduces depression risk by 26% (Harvard, 2019).',
+    scienceNote: '🔬 Morning exercise raises BDNF (brain growth factor) — improves memory and learning (Biomolecules, 2021). Replacing sitting with ~15 min of running or ~1 hour of walking a day was linked to 26% lower odds of depression (Choi et al., Harvard, 2019).',
     dimensions: {
       ruh: 'Caring for your body is an act of gratitude for the gift of life',
       aql: 'BDNF surge after exercise grows new neurons — physical movement literally makes you smarter',
@@ -111,7 +111,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Healthy Breakfast',
     category: 'health',
     sunnahNote: 'Hippocrates: "Let food be thy medicine." Every culture emphasises a nourishing morning meal to fuel the body and mind for the day ahead.',
-    scienceNote: '🔬 The brain uses 20% of the body\'s energy — a proper breakfast provides stable glucose for 4-5 hours of peak focus. Skipping breakfast is linked to 20% lower cognitive performance.',
+    scienceNote: '🔬 The brain uses 20% of the body\'s energy — a balanced breakfast helps keep energy steady. Studies in school-age children link regular breakfast with better attention and memory.',
     dimensions: {
       ruh: 'Eating mindfully and appreciating where your food came from is itself a spiritual practice',
       aql: 'Stable blood sugar = stable energy for the prefrontal cortex — the seat of rational thought',
@@ -127,7 +127,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Deep Focus Study / Work (2-3 hrs)',
     category: 'study',
     sunnahNote: 'Every great philosopher, scientist and creator has uninterrupted morning deep work as their cornerstone habit. The Stoics called this simply "doing the work."',
-    scienceNote: '🔬 Cortisol peaks 8-11 AM — the brain is most alert for complex information processing. "Deep work" in the morning is 2-4x more productive than afternoon sessions (Cal Newport, MIT).',
+    scienceNote: '🔬 Cortisol naturally peaks within about an hour of waking — for many people, alertness is highest in the morning. Many people focus best on demanding "deep work" when they are most alert (Cal Newport, Deep Work, 2016).',
     dimensions: {
       ruh: 'Mastery in your craft is a form of service — developing your gifts benefits the world',
       aql: 'Morning is the golden hour for learning — cortisol peak = sharpest focus and retention',
@@ -143,7 +143,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Mindful Break (5 min walk)',
     category: 'health',
     sunnahNote: 'Aristotle did his best thinking while walking. The Peripatetic school of philosophy was literally built around walking and thinking together.',
-    scienceNote: '🔬 Short walking breaks improve creative thinking by 81% (Stanford, 2014). Five-minute movement breaks every 90 minutes prevent cognitive fatigue and maintain sustained performance.',
+    scienceNote: '🔬 Walking boosted creative idea generation by about 60% compared with sitting (Oppezzo & Schwartz, Stanford, 2014). Five-minute movement breaks every 90 minutes prevent cognitive fatigue and maintain sustained performance.',
     dimensions: {
       ruh: 'Nature walks naturally induce awe — a reminder of the vastness of existence beyond your screen',
       aql: 'The Default Mode Network activates during walks — crucial for insight and creative breakthroughs',
@@ -159,7 +159,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Mindful Lunch',
     category: 'health',
     sunnahNote: 'The Japanese "hara hachi bu" — eating until 80% full — comes from Okinawa, home to one of the world\'s longest-living populations. A universal wisdom on moderation.',
-    scienceNote: '🔬 Mindful eating increases satiety signals by 25% (Harvard Health). Eating without screens reduces overeating and significantly improves digestion and nutrient absorption.',
+    scienceNote: '🔬 Eating slowly gives the body time to register fullness. Studies link distracted eating (e.g. with screens) to eating more.',
     dimensions: {
       ruh: 'Appreciating your meal as nourishment shifts eating from automatic to intentional and sacred',
       aql: 'Moderate lunch prevents afternoon brain fog — overeating diverts blood from brain to digestion',
@@ -175,7 +175,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Power Nap (20 min)',
     category: 'health',
     sunnahNote: 'Churchill, Einstein, Da Vinci and Tesla were all famous nappers. NASA, Google, Nike and the US Military all have official nap policies. Rest is a performance tool.',
-    scienceNote: '🔬 Meta-analysis 2022 (Sleep Medicine Reviews, 54 studies): 20-min nap improves vigilance +61%, procedural memory +49%, declarative memory +38%. Must be under 30 min to avoid grogginess.',
+    scienceNote: '🔬 Research reviews show short daytime naps improve alertness and memory. Keep naps under about 30 minutes to avoid grogginess.',
     dimensions: {
       ruh: 'Rest is not weakness — it is restoration. Honouring your body\'s rhythms is its own wisdom',
       aql: 'Memory consolidation during nap — what you learnt this morning is being stored permanently',
@@ -191,7 +191,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Skill Development / Side Project',
     category: 'study',
     sunnahNote: 'Leonardo da Vinci, Benjamin Franklin and Marcus Aurelius all dedicated specific afternoon hours to practising their craft every single day without exception.',
-    scienceNote: '🔬 Deliberate practice 1 hour/day = expert in any field (Ericsson, 1993). Afternoon is ideal for creative and repetitive practice tasks — the brain is warmed up but not yet fatigued.',
+    scienceNote: '🔬 Expertise is built through years of focused, deliberate practice with feedback (Ericsson, 1993) — daily consistency matters. Afternoon can be a good time for creative and repetitive practice tasks — the brain is warmed up but not yet fatigued.',
     dimensions: {
       ruh: 'Developing a skill that serves others is a contribution to the world beyond yourself',
       aql: 'Deliberate practice builds new neural pathways — the brain literally rewires to become more capable',
@@ -223,7 +223,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Family & Quality Time',
     category: 'social',
     sunnahNote: 'The Harvard Study of Adult Development (75+ years, 724 participants) found quality relationships are the single greatest predictor of happiness and longevity — above wealth, fame or IQ.',
-    scienceNote: '🔬 Harvard study: relationship satisfaction at 50 was the strongest predictor of health and happiness at 80. Loneliness is as damaging as smoking 15 cigarettes per day (Brigham Young, 2015).',
+    scienceNote: '🔬 Harvard study: relationship satisfaction at 50 was the strongest predictor of health and happiness at 80. A large meta-analysis found weak social ties raise mortality risk comparably to smoking (Holt-Lunstad, Brigham Young, 2010).',
     dimensions: {
       ruh: 'Love and genuine connection are the deepest expressions of our shared humanity',
       aql: 'Family conversations develop communication, empathy, perspective-taking and social intelligence',
@@ -239,7 +239,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Evening Reflection (10 min)',
     category: 'life',
     sunnahNote: 'The Stoic "evening review" — asking "what did I do well? what could I improve?" — was practised nightly by Marcus Aurelius, Seneca and Epictetus without exception.',
-    scienceNote: '🔬 Meta-analysis 2020 (J Occupational Health, 9 RCTs): Self-reflection practices significantly reduce stress and depression. Eight weeks of journaling increased resilience by 23% (2022).',
+    scienceNote: '🔬 Meta-analysis 2020 (J Occupational Health, 9 RCTs): Self-reflection practices significantly reduce stress and depression. Regular journaling is linked to greater resilience.',
     dimensions: {
       ruh: 'Reviewing your day with honest eyes — celebrating growth and acknowledging lessons learned',
       aql: 'Metacognition — thinking about your thinking — is the highest level of intellectual development',
@@ -255,7 +255,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Reading (30 min)',
     category: 'study',
     sunnahNote: 'Bill Gates reads 50 books per year. Warren Buffett reads 500 pages per day. "Not all readers are leaders, but all leaders are readers." — Harry S. Truman.',
-    scienceNote: '🔬 Reading fiction increases empathy by 23% (Science, 2013). 30 minutes of reading before bed reduces stress by 68% — more effective than music or tea (University of Sussex, 2009).',
+    scienceNote: '🔬 Reading before bed can help you unwind, and replacing screens with a book reduces light that delays sleep. Some studies link fiction reading with better understanding of how other people feel.',
     dimensions: {
       ruh: 'Great books connect you to the greatest minds across centuries — expanding your inner world',
       aql: 'Reading builds vocabulary, analytical thinking, and knowledge that compounds across a lifetime',
@@ -271,7 +271,7 @@ const UNIVERSAL_ROUTINE: RoutineTask[] = [
     task: 'Sleep (7-8 hours)',
     category: 'life',
     sunnahNote: 'Benjamin Franklin: "Early to bed and early to rise makes a man healthy, wealthy and wise." Sleep is the universal medicine — revered across every culture in human history.',
-    scienceNote: '🔬 Sleep is when the brain\'s glymphatic system flushes toxins including Alzheimer\'s proteins — only active during deep sleep (Science, 2013). Chronic sleep deprivation reduces IQ by 10-15 points.',
+    scienceNote: '🔬 Sleep is when the brain\'s glymphatic system flushes toxins including Alzheimer\'s proteins — only active during deep sleep (Science, 2013). Ongoing sleep loss impairs attention, memory and mood.',
     dimensions: {
       ruh: 'Surrendering to sleep is trusting the process of restoration — letting go of control',
       aql: 'Sleep consolidates all learning — without it, memories do not form and nothing is truly retained',
@@ -357,7 +357,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Senaman / Workout (30 min)',
     category: 'health',
     sunnahNote: '"Mukmin yang kuat lebih baik dan lebih dicintai Allah dari mukmin yang lemah" (HR Muslim). Nabi ﷺ galakkan memanah, berkuda, berenang.',
-    scienceNote: '🔬 Senaman pagi naikkan BDNF (brain growth factor) — tingkatkan memory & learning (Biomolecules, 2021). 30 min/hari kurangkan risiko depression 26% (Harvard, 2019).',
+    scienceNote: '🔬 Senaman pagi naikkan BDNF (brain growth factor) — tingkatkan memory & learning (Biomolecules, 2021). Ganti duduk dengan ~15 min lari atau ~1 jam jalan sehari dikaitkan dengan risiko depression 26% lebih rendah (Choi et al., Harvard, 2019).',
     dimensions: {
       ruh: 'Badan kuat = ibadah lebih khusyuk, boleh puasa, bangun tahajjud tanpa penat',
       aql: 'BDNF naik = otak grow new neurons — literally jadi lebih pandai lepas senaman',
@@ -389,7 +389,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Belajar / Sekolah (Deep Focus)',
     category: 'study',
     sunnahNote: '"Ya Allah, aku mohon ilmu yang bermanfaat, rezeki yang halal, dan amalan yang diterima" (HR Ibn Majah). Wahyu pertama: "Iqra — Bacalah!" (Al-Alaq: 1).',
-    scienceNote: '🔬 Cortisol peak 8-11 pagi — otak paling alert & mampu proses info kompleks. "Deep work" pagi 2-4x lebih produktif dari petang (Cal Newport, MIT).',
+    scienceNote: '🔬 Cortisol memuncak secara semula jadi dalam ~1 jam selepas bangun — ramai orang paling alert waktu pagi. Buat "deep work" ketika paling fokus (Cal Newport, Deep Work, 2016).',
     dimensions: {
       ruh: 'Menuntut ilmu = ibadah. "Siapa keluar menuntut ilmu, dia di jalan Allah sehingga pulang" (HR Tirmizi)',
       aql: 'Pagi = golden hour otak. Cortisol peak = fokus & ingatan paling tajam',
@@ -405,7 +405,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Solat Zohor',
     category: 'solat',
     sunnahNote: '"Amalan paling dicintai Allah ialah solat pada waktunya" (HR Bukhari). 12 rakaat sunat rawatib (4 sebelum + 2 selepas Zohor) = rumah di syurga.',
-    scienceNote: '🔬 5x solat/hari = 5x "movement break" kurangkan risiko penyakit jantung & sakit belakang (Medical J Malaysia, 2021). Wudhu kurangkan bakteria hidung ~70% (Kajian Taif 2018).',
+    scienceNote: '🔬 5x solat/hari = 5x "movement break" kurangkan risiko penyakit jantung & sakit belakang (Medical J Malaysia, 2021). Wudhu termasuk istinsyaq (membersihkan hidung) — amalan kebersihan harian.',
     dimensions: {
       ruh: 'Solat tengah hari = reset spiritual. Dunia buat kau lupa Allah — Zohor ingatkan balik',
       aql: 'Break dari belajar beri otak masa proses maklumat — memory consolidation lebih kukuh',
@@ -421,7 +421,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Makan Tengahari',
     category: 'health',
     sunnahNote: 'Nabi ﷺ makan perlahan, tangan kanan, Bismillah, duduk. Tidak pernah mencela makanan. "Berkumpullah makan, nescaya diberkati" (HR Abu Dawud).',
-    scienceNote: '🔬 Mindful eating tingkatkan rasa kenyang 25% lebih awal — kurangkan makan berlebihan (Harvard Health). Makan bersama tingkatkan oxytocin & kurangkan cortisol.',
+    scienceNote: '🔬 Makan perlahan beri masa badan rasa kenyang. Kajian kaitkan makan sambil tengok skrin dengan makan berlebihan.',
     dimensions: {
       ruh: 'Bismillah + bersyukur = setiap suapan jadi ibadah',
       aql: 'Makan sederhana = tak ngantuk. Otak masih boleh function untuk sesi petang',
@@ -437,7 +437,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Qailulah (Power Nap 20 min)',
     category: 'health',
     sunnahNote: '"Tidur sianglah (qailulah), kerana syaitan tidak tidur siang" (HR Al-Tabarani). Sahabat amalkan tidur siang sebentar untuk bertenaga menjelang malam.',
-    scienceNote: '🔬 Meta-analysis 2022 (Sleep Medicine Reviews, 54 kajian): Power nap tingkatkan vigilance +61%, procedural memory +49%, declarative memory +38%.',
+    scienceNote: '🔬 Kajian ulasan menunjukkan tidur sekejap (qailulah) tingkatkan kewaspadaan & ingatan. Hadkan bawah ~30 minit supaya tidak mamai.',
     dimensions: {
       ruh: 'Ikut Sunnah dalam perkara "kecil" = tanda cinta pada Nabi ﷺ',
       aql: 'Memory consolidation semasa nap — apa belajar pagi "disimpan" dalam long-term memory',
@@ -469,7 +469,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Baca Al-Quran (10-30 min)',
     category: 'ibadah',
     sunnahNote: '"Setiap huruf 10 pahala — Alif satu huruf, Lam satu huruf, Mim satu huruf" (HR Tirmizi). "Quran itu penyembuh bagi apa yang ada dalam dada" (Al-Isra: 82).',
-    scienceNote: '🔬 EEG Review 2025 (22 kajian): Baca/dengar Quran naikkan alpha & theta = relaxation & fokus mendalam. Systematic Review 2022 (20 kajian): Quran perbaiki depression, anxiety, kualiti tidur & naikkan IQ.',
+    scienceNote: '🔬 EEG Review 2025 (22 kajian): Baca/dengar Quran naikkan alpha & theta = relaxation & fokus mendalam. Systematic Review 2022 (20 kajian): Quran dikaitkan dengan penurunan depression & anxiety serta kualiti tidur lebih baik.',
     dimensions: {
       ruh: 'Quran = kalam Allah langsung. Baca = ruh "minum air" — tanpa Quran, ruh dahaga & mati perlahan',
       aql: 'Hafalan Quran tingkatkan IQ & memory. Theta otak = state "super learning"',
@@ -485,7 +485,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Latih Skill / Side Project',
     category: 'study',
     sunnahNote: '"Tangan yang di atas (memberi) lebih baik dari tangan yang di bawah" (HR Bukhari & Muslim). Abu Bakar = ahli perniagaan, Ali = ahli ilmu, Khadijah = usahawan.',
-    scienceNote: '🔬 Deliberate practice 1 jam/hari = pakar dalam bidang (Ericsson, 1993). Petang = waktu baik untuk latihan kreatif — idea lebih mengalir (Wieth & Zacks, 2011).',
+    scienceNote: '🔬 Kepakaran dibina melalui latihan terarah (deliberate practice) bertahun-tahun dengan maklum balas (Ericsson, 1993) — konsisten setiap hari penting. Petang = waktu baik untuk latihan kreatif — idea lebih mengalir (Wieth & Zacks, 2011).',
     dimensions: {
       ruh: 'Skill bermanfaat = sedekah jariah. Buat app, ajar orang — pahala mengalir',
       aql: 'Deliberate practice bina neural pathways baru — otak "rewire" jadi lebih capable',
@@ -517,7 +517,7 @@ const DEFAULT_ROUTINE: RoutineTask[] = [
     task: 'Masa Keluarga / Silaturahim',
     category: 'social',
     sunnahNote: '"Sebaik-baik kamu ialah yang terbaik terhadap keluarganya" (HR Tirmizi). Nabi ﷺ bermain, bergurau, berbual dengan keluarga setiap malam.',
-    scienceNote: '🔬 Harvard Study (75+ tahun, 724 peserta): Hubungan sosial berkualiti = faktor #1 kebahagiaan & umur panjang. Masa keluarga tingkatkan oxytocin & turunkan cortisol.',
+    scienceNote: '🔬 Harvard Study (75+ tahun, 724 peserta): Hubungan sosial berkualiti adalah peramal terkuat kebahagiaan & kesihatan jangka panjang.',
     dimensions: {
       ruh: '"Siapa nak dimurahkan rezeki & dipanjangkan umur, sambunglah silaturahim" (HR Bukhari)',
       aql: 'Berbual dengan keluarga = latihan communication, empathy & problem-solving',

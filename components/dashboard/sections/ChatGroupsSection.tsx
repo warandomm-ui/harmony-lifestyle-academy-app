@@ -56,18 +56,16 @@ const ChatGroupsSection: React.FC = () => {
 
 interface GroupCardProps {
     name: string;
-    members: string;
     category: ChatGroupCategory;
     onJoin: (name: string) => void;
 }
 
-const GroupCard: React.FC<GroupCardProps> = ({ name, members, onJoin }) => (
+const GroupCard: React.FC<GroupCardProps> = ({ name, onJoin }) => (
     <div className="bg-[var(--secondary)]/50 rounded-lg p-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
             <ChatAlt2Icon className="h-6 w-6 text-[var(--muted)] flex-shrink-0"/>
             <div>
                 <p className="font-semibold text-sm text-[var(--foreground)]">{name}</p>
-                <p className="text-xs text-[var(--muted)]">{members}</p>
             </div>
         </div>
         <button

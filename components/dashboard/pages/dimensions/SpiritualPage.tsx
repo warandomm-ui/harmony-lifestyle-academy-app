@@ -296,10 +296,10 @@ const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
     description: '"The present moment is the only moment available to us, and it is the door to all moments." — Thich Nhat Hanh',
     color: 'from-teal-900 to-teal-700',
     practices: [
-      { title: 'Body Scan Meditation', duration: '10 min', desc: 'Slowly move awareness through each part of your body from feet to crown, releasing tension as you go.', benefit: 'Reduces cortisol by 20%, activates parasympathetic nervous system (Harvard, 2018)' },
-      { title: 'Mindful Breathing', duration: '5 min', desc: '4-7-8 breathing: inhale 4 counts, hold 7, exhale 8. Repeat 4 cycles to instantly calm the nervous system.', benefit: 'Lowers heart rate, reduces anxiety within 60 seconds (Journal of Clinical Psychology, 2020)' },
+      { title: 'Body Scan Meditation', duration: '10 min', desc: 'Slowly move awareness through each part of your body from feet to crown, releasing tension as you go.', benefit: 'Helps release physical tension and supports relaxation' },
+      { title: 'Mindful Breathing', duration: '5 min', desc: '4-7-8 breathing: inhale 4 counts, hold 7, exhale 8. Repeat 4 cycles to instantly calm the nervous system.', benefit: 'Slow breathing with long exhales can lower heart rate and help calm anxiety' },
       { title: 'Sensory Grounding', duration: '3 min', desc: 'Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. Full presence now.', benefit: 'Interrupts rumination and brings the mind back to the present moment immediately' },
-      { title: 'Walking Meditation', duration: '15 min', desc: 'Walk slowly, feeling each footstep. Notice the breath, surroundings, and sensations with full attention.', benefit: 'Increases grey matter in attention regions (NeuroImage, 2015). Stanford: boosts creativity 81%' },
+      { title: 'Walking Meditation', duration: '15 min', desc: 'Walk slowly, feeling each footstep. Notice the breath, surroundings, and sensations with full attention.', benefit: 'Combines mindfulness with movement; walking has been shown to boost creative thinking (Stanford, 2014)' },
     ],
   },
   {
@@ -325,7 +325,7 @@ const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
     color: 'from-amber-900 to-amber-700',
     practices: [
       { title: 'Values Clarification', duration: '20 min', desc: 'List 10 values, then ruthlessly narrow to your top 3. Ask: if I could only live by three values, what would they be?', benefit: 'Clarity on values predicts life satisfaction more than wealth or status (Self-Determination Theory, Deci & Ryan)' },
-      { title: 'Ikigai Reflection', duration: '30 min', desc: 'Map your Ikigai: What do you love? What are you good at? What does the world need? What can you be paid for? Find the intersection.', benefit: 'Purpose reduces mortality risk by 15%, lowers heart disease risk, and extends healthy lifespan (JAMA Network Open, 2019)' },
+      { title: 'Ikigai Reflection', duration: '30 min', desc: 'Map your Ikigai: What do you love? What are you good at? What does the world need? What can you be paid for? Find the intersection.', benefit: 'A stronger sense of purpose was linked to lower mortality risk in older adults (JAMA Network Open, 2019)' },
       { title: 'Legacy Letter', duration: '25 min', desc: 'Write a letter from your 80-year-old self to your current self. What do you want them to have done? What will you regret not doing?', benefit: 'Future-self reflection increases long-term goal alignment and reduces present-bias in decision making' },
       { title: 'Daily Intention Setting', duration: '3 min', desc: 'Each morning, set one clear intention: "Today I intend to..." — not a task, but a way of being. How do you want to show up?', benefit: 'Intentional living increases engagement, meaning, and consistency across all domains of life' },
     ],
@@ -338,9 +338,9 @@ const MINDFULNESS_PATHWAYS: MindfulnessPathway[] = [
     description: '"The oak fought the wind and was broken, the willow bent when it must and survived." — Robert Jordan',
     color: 'from-blue-900 to-blue-700',
     practices: [
-      { title: 'Stoic Evening Review', duration: '10 min', desc: 'Marcus Aurelius did this nightly: What did I do well today? What could I have done better? What will I improve tomorrow?', benefit: 'Self-reflection reduces stress and depression. 8 weeks of journaling increased resilience by 23% (J Occupational Health, 2022)' },
+      { title: 'Stoic Evening Review', duration: '10 min', desc: 'Marcus Aurelius did this nightly: What did I do well today? What could I have done better? What will I improve tomorrow?', benefit: 'Self-reflection reduces stress and depression. Regular reflective journaling is linked to greater resilience' },
       { title: 'Negative Visualisation', duration: '10 min', desc: 'Imagine losing something you take for granted — your health, a relationship, your sight. Then return to the present with deep appreciation.', benefit: 'Stoic practice of memento mori and negative visualisation measurably increases present-moment gratitude and hedonic adaptation' },
-      { title: 'Emotional Labelling', duration: '5 min', desc: 'When difficult emotions arise, name them precisely: "I notice frustration" or "I am feeling fear." The act of labelling reduces intensity immediately.', benefit: 'Affect labelling reduces amygdala activation by 20% — naming the emotion literally calms the brain (Lieberman, UCLA, 2007)' },
+      { title: 'Emotional Labelling', duration: '5 min', desc: 'When difficult emotions arise, name them precisely: "I notice frustration" or "I am feeling fear." The act of labelling reduces intensity immediately.', benefit: 'Affect labelling reduces amygdala activation — naming the emotion literally calms the brain (Lieberman, UCLA, 2007)' },
       { title: 'Post-Traumatic Growth Journal', duration: '15 min', desc: 'Write about a past difficulty. Ask: What did I learn? How did I grow? What strength did I discover? Reframe challenge as the training ground.', benefit: 'PTG journaling turns adversity into strength. Expressive writing reduces PTSD symptoms and improves immune function (Pennebaker, 1997)' },
     ],
   },

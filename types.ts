@@ -350,7 +350,6 @@ export type ChatGroupCategory = 'Student' | 'Parent' | 'Female Only' | 'Male Onl
 
 export interface ChatGroup {
   name: string;
-  members: string;
   category: ChatGroupCategory;
 }
 
