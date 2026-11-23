@@ -753,7 +753,7 @@ export const MOCK_WORLD_EDUCATION_DATA: EducationCountry[] = [
 export const MOCK_PRODUCTS: Product[] = [
     { id: 'prod_1', name: 'Notion Study Planner', category: 'Study Template', price: 25.00, description: 'Organize your studies like a pro with this aesthetic template.', imageUrl: 'https://placehold.co/400x300/D9CEFF/1B1B1F?text=Notion+Planner' },
     { id: 'prod_2', name: 'Harmony Hoodie', category: 'Merch', price: 120.00, description: 'Cozy and stylish official merch to rep the academy.', imageUrl: 'https://placehold.co/400x300/7F5AF0/FFFFFF?text=Harmony+Hoodie' },
-    { id: 'prod_3', name: 'SPM Sejarah Survival E-Book', category: 'E-Book', price: 15.00, description: 'Key notes and proven tips to help you ace the Sejarah paper.', imageUrl: 'https://placehold.co/400x300/00F5D4/1B1B1F?text=Sejarah+E-Book' },
+    { id: 'prod_3', name: 'SPM Sejarah Survival E-Book', category: 'E-Book', price: 15.00, description: 'Key notes and revision tips for the Sejarah paper.', imageUrl: 'https://placehold.co/400x300/00F5D4/1B1B1F?text=Sejarah+E-Book' },
     { id: 'prod_4', name: 'Focus Pomodoro Timer App', category: 'Digital Tool', price: 5.00, description: 'A minimal and beautiful timer to boost your focus sessions.', imageUrl: 'https://placehold.co/400x300/F8F7FF/1B1B1F?text=Pomodoro+App' },
     { id: 'prod_5', name: 'Aesthetic Sticker Pack', category: 'Merch', price: 12.00, description: 'High-quality vinyl stickers for your laptop, water bottle, etc.', imageUrl: 'https://placehold.co/400x300/FF6B6B/FFFFFF?text=Stickers' },
     { id: 'prod_6', name: 'Python for Beginners Video Course', category: 'E-Book', price: 50.00, description: 'A comprehensive video course to start your coding journey.', imageUrl: 'https://placehold.co/400x300/4ECDC4/FFFFFF?text=Python+Course' },
@@ -813,23 +813,23 @@ export const MOCK_ANONYMOUS_POSTS: AnonymousPost[] = [
 
 export const CHAT_GROUPS: ChatGroup[] = [
   // Student Groups
-  { name: 'Form 1-3 Hangout', members: '128 members', category: 'Student' },
-  { name: 'SPM Warriors 2024/25', members: '342 members', category: 'Student' },
-  { name: 'Pre-University & Foundation', members: '215 members', category: 'Student' },
-  { name: 'Uni Students Malaysia', members: '500+ members', category: 'Student' },
+  { name: 'Form 1-3 Hangout', category: 'Student' },
+  { name: 'SPM Warriors 2024/25', category: 'Student' },
+  { name: 'Pre-University & Foundation', category: 'Student' },
+  { name: 'Uni Students Malaysia', category: 'Student' },
   // Parent Groups
-  { name: 'Parents of Secondary Students', members: '98 members', category: 'Parent' },
-  { name: 'Parents of University Students', members: '76 members', category: 'Parent' },
+  { name: 'Parents of Secondary Students', category: 'Parent' },
+  { name: 'Parents of University Students', category: 'Parent' },
   // Female Only
-  { name: 'Girl Gamers Malaysia 🎮', members: '88 members', category: 'Female Only' },
-  { name: 'Women in Tech MY', members: '150 members', category: 'Female Only' },
+  { name: 'Girl Gamers Malaysia 🎮', category: 'Female Only' },
+  { name: 'Women in Tech MY', category: 'Female Only' },
   // Male Only
-  { name: 'Brotherhood Book Club 📚', members: '45 members', category: 'Male Only' },
-  { name: 'KL Futsal Crew', members: '112 members', category: 'Male Only' },
+  { name: 'Brotherhood Book Club 📚', category: 'Male Only' },
+  { name: 'KL Futsal Crew', category: 'Male Only' },
   // Mixed Gender (General Interest)
-  { name: 'KL & Selangor Foodies', members: '600+ members', category: 'Mixed Gender' },
-  { name: 'Malaysian Memes & Lols', members: '1000+ members', category: 'Mixed Gender' },
-  { name: 'Anime & Manga Fans', members: '450+ members', category: 'Mixed Gender' },
+  { name: 'KL & Selangor Foodies', category: 'Mixed Gender' },
+  { name: 'Malaysian Memes & Lols', category: 'Mixed Gender' },
+  { name: 'Anime & Manga Fans', category: 'Mixed Gender' },
 ];
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
